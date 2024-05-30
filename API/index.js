@@ -24,22 +24,25 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 
-/* 
-add routed here
+//The following are all routes
 
-*/
-
-//the following is an example path
+//the following is an example path/route
 app.get('/', async (req, res) => { //defining the route
     try {
-        console.log('practice route reached!!'); //standard print to the console
-        res.render("index"); //you can many things with res.${function}
+        
+        res.render("index", {name: "Hamzah"}); //you can many things with res.${function}
         
     }
     catch (error) {
         
     }
 })
+
+//to import a file with further routes, do the following
+const lolsRouter = require('./routes/lol'); //store the path for extra routes in lolsRouter
+
+app.use('/lol', lolsRouter); //This will pass the routes we stored in lolsRouter to the main routs page which is index.js
+
 
 
 const PORT = process.env.PORT || 3000;
