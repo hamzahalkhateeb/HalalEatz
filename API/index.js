@@ -8,8 +8,11 @@ const multer=require("multer"); //multer is important for uploading files, which
 
 
 
-//assigning an express instance to an "app" object
+//assigning an express instance to an "app" object, basically making the express app
 const app= express();
+
+//Setting the view engine as ejs
+app.set('view engine', 'ejs');
 
 //calling the use function to use cors and json data
 app.use(cors());
@@ -26,13 +29,15 @@ add routed here
 
 */
 
-app.get('/API/User/', async (request, response) => { //defining the route
+//the following is an example path
+app.get('/', async (req, res) => { //defining the route
     try {
-        const users = await User.findAll(); // fetch all user data from the User model table
-        response.json(users); // when the response comes, jsonify it
+        console.log('practice route reached!!'); //standard print to the console
+        res.render("index"); //you can many things with res.${function}
+        
     }
     catch (error) {
-        console.error("Error fetching users: ", error)
+        
     }
 })
 
