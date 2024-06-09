@@ -11,8 +11,9 @@ const multer=require("multer"); //multer is important for uploading files, which
 //assigning an express instance to an "app" object, basically making the express app
 const app= express();
 
-//Setting the view engine as ejs
+//Setting the view engine as ejs. The following is unnecessary as angular will handle the frontend
 app.set('view engine', 'ejs');
+
 
 //calling the use function to use cors and json data
 app.use(cors());
