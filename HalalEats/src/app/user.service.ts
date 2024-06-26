@@ -20,7 +20,7 @@ export class UserService {
 
   //defining a method that will submit user data to a specific url, and return observable emit data
   addUser(user: any): Observable<any>{
-    return this.http.post(`${this.baseUrl}/submit-form`, user);
+    return this.http.post(`${this.baseUrl}/user/adduser`, user);
   }
 }
  
