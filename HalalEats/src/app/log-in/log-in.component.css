@@ -1,0 +1,62 @@
+.logSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 80vh; /* Take at least the full height of the viewport */
+    
+}
+
+
+ .logo{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5%;
+    
+ }
+
+ 
+ .logoText{
+    display: flex;
+    align-items: center;
+ }
+
+ .logoH{
+    font-size: 10vh;
+ }
+
+
+ .btns{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+ }
+
+ .or-container {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin: 20px 0; /* Adjust spacing around the "or" container */
+}
+
+.or-container .line {
+    flex: 1; /* Make lines fill up the space */
+    height: 1px; /* Line thickness */
+    background-color: #000; /* Line color */
+}
+
+.or-text {
+    margin: 0 10px; /* Spacing around the "or" text */
+    white-space: nowrap; /* Prevents the text from wrapping */
+}
+
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    width: 100%;
+}
