@@ -34,29 +34,3 @@
 
  }
 
- .or-container {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    margin: 20px 0; /* Adjust spacing around the "or" container */
-}
-
-.or-container .line {
-    flex: 1; /* Make lines fill up the space */
-    height: 1px; /* Line thickness */
-    background-color: #000; /* Line color */
-}
-
-.or-text {
-    margin: 0 10px; /* Spacing around the "or" text */
-    white-space: nowrap; /* Prevents the text from wrapping */
-}
-
-.signup-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    width: 100%;
-}
