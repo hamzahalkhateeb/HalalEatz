@@ -52,10 +52,10 @@ app.get('/', async (req, res) => { //defining the route
 
 
 
-//might need to delete this later
+
 app.post('/login', async (req, res) => {
-    //handle a post log in request
-    console.log(req.body.id_token);
+    
+    
     const token = req.body.id_token;
     try{
         const ticket = await client.verifyIdToken({
@@ -63,22 +63,50 @@ app.post('/login', async (req, res) => {
             audience: CLIENT_ID
         });
         const payload = ticket.getPayload();
-        const {email, picture, given_name, family_name} = payload;
+        const {email} = payload;
 
-        console.log(`first name: ${given_name}, family name : ${family_name}, picture url: ${picture}`);
+        
 
-        let user = await User.findOne({email});
+        let user = await User.findOne({where: {email: email}});
 
         if(!user){
-            res.status(200).json({success: true, message: "user doesn't exist!", redirectUrl: "/error"});
+            res.status(200).json({success: true, message: "user doesn't exist, please sign up to continue!", redirectUrl: "/login"});
         } else {
             res.status(200).json({success: true, message: "user logged in!", redirectUrl: "/dashboard"});
         }
     } catch(err){
         console.error(err);
-        res.status(400).json({error: 'invalid token'});
+        res.status(400).json({error: 'invalid token', redirectUrl: "/error"});
     }
     
+});
+
+app.post('/signup', async(req, res) => {
+    const token = req.body.id_token;
+    try{
+        const ticker = await client.verifyIdToken({
+            idToken: token,
+            audience: CLIENT_ID
+        });
+    
+    const payload2 = ticket.getPayload();
+    const {email, picture, given_name, family_name} = payload2;
+
+    let user = await User.findOne({where: {email:email}});
+    if(!user){
+        user = await User.create({
+            email,
+            picture,
+            firstName: given_name,
+            lastName: family_name,
+        });
+        res.status(201).json({success: true, message: "User created!", user, redirectUrl: "/dashboard"});
+        } else {
+            res.status(200).json({success:true, message: "User Already Exists!", redirectUrl: '/login'});
+        }
+    } catch (err){
+        res.status(400).json({error: "Failed to create user", redirectUrl: "/error"});
+    }
 });
 
 

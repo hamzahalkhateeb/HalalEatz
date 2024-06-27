@@ -21,8 +21,16 @@ const User = sequelize.define('User', {
     },
     accountType:{
         type: DataTypes.INTEGER,
-        allowNull: false,
+        
     },
+    picture: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        validate:{
+            isUrl: true
+        },
+    },
+
 });
 
 module.exports = User;
