@@ -24,7 +24,7 @@ export class LogInComponent implements OnInit {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)){
       (window as any)['handleCredentialResponse'] = this.handleCredentialResponse.bind(this);
-      (window as any)['signup'] = this.signup.bind(this);
+      
     }
   }
 
@@ -48,26 +48,7 @@ export class LogInComponent implements OnInit {
       });
   }
 
-  signup(response:any): void{
-    console.log("sign up attemp initiated!");
-    const idToken = response.credential;
-    this.http.post('http://localhost:3000/signup', { id_token: idToken })
-    .subscribe({
-      next: (data:any) =>{
-        if (data.success){
-          alert(data.message);
-          this.router.navigateByUrl(data.redirectUrl);
-        } else {
-          console.log("unexpected json format! ", data);
-        }
-        
-      }, 
-      error: (error: any) =>{
-        console.error('Error: ', error);
-      }
-    });
-
-  }
+  
 }
 
 

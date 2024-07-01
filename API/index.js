@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 const { OAuth2Client } = require('google-auth-library');
 const CLIENT_ID = '490153988551-ennqdrg2knoqj3rm1encr5vq0f7tlh50.apps.googleusercontent.com';
 const client = new OAuth2Client(CLIENT_ID);
+const session = require('express-session');
+
 
 
 
@@ -23,6 +25,11 @@ app.set('view engine', 'ejs');
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(session({
+    secret: "secretfornow",
+    resave: false,
+    saveUninitialized: false,
+}));
 
 
 
@@ -57,14 +64,33 @@ app.post('/login', async (req, res) => {
                 firstName: given_name,
                 lastName: family_name,
             });
+            req.session.userId = user.id;
+            req.session.isLoggedIn = true;
             res.status(201).json({success: true, message: "You have signed up successfully!", user, redirectUrl: "/dashboard"});
         } else {
-            res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/login'});
+            req.session.userId = user.id;
+            req.session.isLoggedIn = true;
+            res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard'});
         }
     } catch(err){
         console.error(err);
         res.status(400).json({error: 'invalid token', redirectUrl: "/error"});
     }
+    
+});
+
+
+app.post('/logout', (req, res) =>{
+    try{
+        req.session.destroy();
+        res.status(200).json({success: true, message:"You have logged out successfully!", redirectUrl: "/login"});
+
+    } catch(err){
+        console.error(err);
+        res.status(400).json({error: "An error occurred while logging out", redirectUrl: "/error"});
+    }
+
+    
     
 });
 
