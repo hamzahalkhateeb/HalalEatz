@@ -21,6 +21,7 @@ const User = sequelize.define('User', {
     },
     accountType:{
         type: DataTypes.INTEGER,
+        defaultValue: 1,
         
     },
     picture: {

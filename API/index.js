@@ -34,25 +34,6 @@ const upload = multer({ storage });
 
 
 
-
-
-
-
-//the following is an example path/route
-app.get('/', async (req, res) => { //defining the route
-    try {
-        
-        res.render("index", {name: "Not much here yet!!!"}); //you can many things with res.${function}
-        
-    }
-    catch (error) {
-        
-    }
-})
-
-
-
-
 app.post('/login', async (req, res) => {
     
     
@@ -63,16 +44,22 @@ app.post('/login', async (req, res) => {
             audience: CLIENT_ID
         });
         const payload = ticket.getPayload();
-        const {email} = payload;
+        const {email, picture, given_name, family_name} = payload;
 
         
 
         let user = await User.findOne({where: {email: email}});
 
         if(!user){
-            res.status(200).json({success: true, message: "user doesn't exist, please sign up to continue!", redirectUrl: "/login"});
+            user = await User.create({
+                email,
+                picture,
+                firstName: given_name,
+                lastName: family_name,
+            });
+            res.status(201).json({success: true, message: "You have signed up successfully!", user, redirectUrl: "/dashboard"});
         } else {
-            res.status(200).json({success: true, message: "user logged in!", redirectUrl: "/dashboard"});
+            res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/login'});
         }
     } catch(err){
         console.error(err);
@@ -81,33 +68,7 @@ app.post('/login', async (req, res) => {
     
 });
 
-app.post('/signup', async(req, res) => {
-    const token = req.body.id_token;
-    try{
-        const ticker = await client.verifyIdToken({
-            idToken: token,
-            audience: CLIENT_ID
-        });
-    
-    const payload2 = ticket.getPayload();
-    const {email, picture, given_name, family_name} = payload2;
 
-    let user = await User.findOne({where: {email:email}});
-    if(!user){
-        user = await User.create({
-            email,
-            picture,
-            firstName: given_name,
-            lastName: family_name,
-        });
-        res.status(201).json({success: true, message: "User created!", user, redirectUrl: "/dashboard"});
-        } else {
-            res.status(200).json({success:true, message: "User Already Exists!", redirectUrl: '/login'});
-        }
-    } catch (err){
-        res.status(400).json({error: "Failed to create user", redirectUrl: "/error"});
-    }
-});
 
 
 
