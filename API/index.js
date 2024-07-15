@@ -43,8 +43,9 @@ const upload = multer({ storage });
 
 app.post('/login', async (req, res) => {
     
-    
+    console.log("login called");
     const token = req.body.id_token;
+    console.log("token received: ");
     try{
         const ticket = await client.verifyIdToken({
             idToken: token,
@@ -58,6 +59,7 @@ app.post('/login', async (req, res) => {
         let user = await User.findOne({where: {email: email}});
 
         if(!user){
+            console.log("user wasn't found, creating new user...");
             user = await User.create({
                 email,
                 picture,
@@ -68,6 +70,7 @@ app.post('/login', async (req, res) => {
             req.session.isLoggedIn = true;
             res.status(201).json({success: true, message: "You have signed up successfully!", user, redirectUrl: "/dashboard"});
         } else {
+            console.log("user found, logging in...");
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
             res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard'});

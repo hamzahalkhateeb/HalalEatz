@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
 .logSection {
     display: flex;
     flex-direction: column;
@@ -33,4 +36,43 @@
     align-items: center;
 
  }
+.divider {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   width: 100%;
+}
+
+.line {
+   flex-grow: 1;
+   height: 1px;
+   background-color: #000; /* Change the color as needed */
+   margin: 0 10px; /* Adjust spacing around the 'or' text */
+}
+
+
+ .cta{
+   width: 100%;
+   
+ }
+
+ button{
+   padding: 9px 25px;
+   padding-bottom: 9px;
+   width: 100%;
+   background-color: rgba(243, 159, 90, 1);
+   border: none;
+   border-radius: 50px;
+   cursor: pointer;
+   transition: all 0.3s ease 0s;
+   font-family: "Montserrat", sans-serif;
+   font-weight: 500;
+   font-size: 16px;
+   
+}
+
+button:hover{
+   background-color: rgba(237, 130, 84, 0.8);
+}
 

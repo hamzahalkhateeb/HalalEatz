@@ -2,11 +2,12 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ListingFormComponent } from '../listing-form/listing-form.component';
 
 @Component({
   selector: 'app-dash-board',
   standalone: true,
-  imports: [],
+  imports: [ListingFormComponent],
   templateUrl: './dash-board.component.html',
   styleUrl: './dash-board.component.css'
 })
@@ -17,6 +18,8 @@ export class DashBoardComponent implements OnInit {
   ngOnInit(): void {
     if(isPlatformBrowser(this.platformId)){
       (window as any)['logout'] = this.logout.bind(this);
+      
+
 
     }
   }
@@ -37,5 +40,7 @@ export class DashBoardComponent implements OnInit {
         error: (error: any) => {
           console.error('Error: ', error);
   }});}
+
+  
 
 }

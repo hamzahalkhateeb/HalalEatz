@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ListingFormComponent } from '../listing-form/listing-form.component';
 
 
 
@@ -10,7 +11,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
   selector: 'app-log-in',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule, 
+    ListingFormComponent,
     
   ],
   templateUrl: './log-in.component.html',
@@ -23,7 +25,8 @@ export class LogInComponent implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)){
-      (window as any)['handleCredentialResponse'] = this.handleCredentialResponse.bind(this);
+      (window as any)['handleCredentialResponse'] = this.handleCredentialResponse.bind(this),
+      (window as any)['OpenListingForm'] = this.OpenListingForm.bind(this);
       
     }
   }
@@ -46,6 +49,12 @@ export class LogInComponent implements OnInit {
           console.error('Error: ', error);
         }
       });
+  }
+
+  OpenListingForm(response: any): void{
+    console.log("Listing form requested!");
+    this.router.navigateByUrl("/listing-form");
+    
   }
 
   
