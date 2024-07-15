@@ -16,14 +16,6 @@ const Restaurant = sequelize.define('Restaurant', {
         type: DataTypes.JSON,
         allowNull: false,
     },
-    products: {
-        type: DataTypes.JSON,
-        allowNull: false, 
-    },
-    menue:{
-        type: DataTypes.STRING,
-        allowNull:false,
-    },
     images:{
         type: DataTypes.JSON,
         allowNull: true,

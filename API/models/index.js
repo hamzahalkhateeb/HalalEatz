@@ -4,6 +4,7 @@ const sequelize = require("./database"); //import the sequelize instance
 const User = require("./User");
 const Restaurant = require("./Restaurant");
 const Review = require("./Review");
+const Menue = require("./Menue");
 
 
 sequelize.sync()
@@ -19,5 +20,6 @@ module.exports = {
     User,
     Restaurant,
     Review,
+    Menue
     
 };
