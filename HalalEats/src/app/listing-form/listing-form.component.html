@@ -1,1 +1,113 @@
-<p>listing-form works!</p>
+<div class="container">
+    <h1>List Your Restaurant!</h1>
+    <form #resForm="ngForm" (ngSubmit)="submitForm(resInfo)">
+        <div class="form-group">
+            <label for="resName">Name</label>
+            <input type="text" class="form-control" id="resName" name="resName" [(ngModel)]="resInfo.name" required>
+        </div>
+        
+
+        <div class="form-group">
+            <label for="resLocation">Location</label>
+            <input type="text" class="form-control" id="resLocation" name="resLocation" [(ngModel)]="resInfo.location" required>
+        </div>
+
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" [(ngModel)]="resInfo.days.monday.open" name="daysMondayOpen"> Monday
+                </label>
+            </div>
+            <div class="time-inputs">
+                <label for="resMondayOpeningTime">Opening Time</label>
+                <input type="time" class="form-control" id="resMondayOpeningTime" name="resMondayOpeningTime" [(ngModel)]="resInfo.days.monday.openingHours.start">
+                <label for="resMondayClosingTime">Closing Time</label>
+                <input type="time" class="form-control" id="resMondayClosingTime" name="resMondayClosingTime" [(ngModel)]="resInfo.days.monday.openingHours.end">
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" [(ngModel)]="resInfo.days.tuesday.open" name="daysTuesdayOpen"> Tuesday
+                </label>
+            </div>
+            <div class="time-inputs">
+                <label for="resTuesdayOpeningTime">Opening Time</label>
+                <input type="time" class="form-control" id="resTuesdayOpeningTime" name="resTuesdayOpeningTime" [(ngModel)]="resInfo.days.tuesday.openingHours.start">
+                <label for="resTuesdayClosingTime">Closing Time</label>
+                <input type="time" class="form-control" id="resTuesdayClosingTime" name="resTuesdayClosingTime" [(ngModel)]="resInfo.days.tuesday.openingHours.end">
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" [(ngModel)]="resInfo.days.wednesday.open" name="daysWednesdayOpen"> Wednesday
+                </label>
+            </div>
+            <div class="time-inputs">
+                <label for="resWednesdayOpeningTime">Opening Time</label>
+                <input type="time" class="form-control" id="resWednesdayOpeningTime" name="resWednesdayOpeningTime" [(ngModel)]="resInfo.days.wednesday.openingHours.start">
+                <label for="resWednesdayClosingTime">Closing Time</label>
+                <input type="time" class="form-control" id="resWednesdayClosingTime" name="resWednesdayClosingTime" [(ngModel)]="resInfo.days.wednesday.openingHours.end">
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" [(ngModel)]="resInfo.days.thursday.open" name="daysThursdayOpen"> Thursday
+                </label>
+            </div>
+            <div class="time-inputs">
+                <label for="resThursdayOpeningTime">Opening Time</label>
+                <input type="time" class="form-control" id="resThursdayOpeningTime" name="resThursdayOpeningTime" [(ngModel)]="resInfo.days.thursday.openingHours.start">
+                <label for="resThursdayClosingTime">Closing Time</label>
+                <input type="time" class="form-control" id="resThursdayClosingTime" name="resThursdayClosingTime" [(ngModel)]="resInfo.days.thursday.openingHours.end">
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" [(ngModel)]="resInfo.days.friday.open" name="daysFridayOpen"> Friday
+                </label>
+            </div>
+            <div class="time-inputs">
+                <label for="resFridayOpeningTime">Opening Time</label>
+                <input type="time" class="form-control" id="resFridayOpeningTime" name="resFridayOpeningTime" [(ngModel)]="resInfo.days.friday.openingHours.start">
+                <label for="resFridayClosingTime">Closing Time</label>
+                <input type="time" class="form-control" id="resFridayClosingTime" name="resFridayClosingTime" [(ngModel)]="resInfo.days.friday.openingHours.end">
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" [(ngModel)]="resInfo.days.saturday.open" name="daysSaturdayOpen"> Saturday
+                </label>
+            </div>
+            <div class="time-inputs">
+                <label for="resSaturdayOpeningTime">Opening Time</label>
+                <input type="time" class="form-control" id="resSaturdayOpeningTime" name="resSaturdayOpeningTime" [(ngModel)]="resInfo.days.saturday.openingHours.start">
+                <label for="resSaturdayClosingTime">Closing Time</label>
+                <input type="time" class="form-control" id="resSaturdayClosingTime" name="resSaturdayClosingTime" [(ngModel)]="resInfo.days.saturday.openingHours.end">
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" [(ngModel)]="resInfo.days.sunday.open" name="daysSundayOpen"> Sunday
+                </label>
+            </div>
+            <div class="time-inputs">
+                <label for="resSundayOpeningTime">Opening Time</label>
+                <input type="time" class="form-control" id="resSundayOpeningTime" name="resSundayOpeningTime" [(ngModel)]="resInfo.days.sunday.openingHours.start">
+                <label for="resSundayClosingTime">Closing Time</label>
+                <input type="time" class="form-control" id="resSundayClosingTime" name="resSundayClosingTime" [(ngModel)]="resInfo.days.sunday.openingHours.end">
+            </div>
+
+            
+        </div>
+
+        <div class="form-group">
+            <label for="resPhoto">Cover Photo</label>
+            <input type="text" class="form-control" id="resPhoto" name="resPhoto" [(ngModel)]="resInfo.photo" required>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Submit">
+
+
+    </form>
+
+</div>
