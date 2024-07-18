@@ -102,7 +102,7 @@
 
         <div class="form-group">
             <label for="resPhoto">Cover Photo</label>
-            <input type="text" class="form-control" id="resPhoto" name="resPhoto" [(ngModel)]="resInfo.photo" required>
+            <input type="file" class="form-control" id="resPhoto" name="resPhoto" (change)="onFileSelected($event)" accept="image/*" required>
         </div>
 
         <input type="submit" class="btn btn-primary" value="Submit">

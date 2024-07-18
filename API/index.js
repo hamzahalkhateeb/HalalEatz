@@ -35,8 +35,8 @@ app.use(session({
 
 
 //set up multer images uploads, might also delete later
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const storage = multer.diskStorage();
+const upload = multer({ storage: storage });
 
 
 

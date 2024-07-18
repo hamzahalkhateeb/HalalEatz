@@ -31,6 +31,8 @@ export class ListingFormComponent {
       }
     };
 
+    selectedFile: File | null = null;
+
     constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router) {}
 
     ngOnInit(): void {
@@ -38,6 +40,10 @@ export class ListingFormComponent {
         (window as any)['submitForm'] = this.submitForm.bind(this)
         
       }
+    }
+
+    onFileSelected(event: any) {
+      this.selectedFile = event.target.files[0] as File;
     }
 
     submitForm(data: any) {
