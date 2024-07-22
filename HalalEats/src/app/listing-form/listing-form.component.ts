@@ -24,10 +24,14 @@ export class ListingFormComponent implements OnInit{
     @ViewChild('resLocationInput', {static: true}) resLocation!: ElementRef<HTMLInputElement>;
     predictions: google.maps.places.AutocompletePrediction[] = [];
 
+    apikey = 'AIzaSyDbzLtJqttwnCZpCkzS7iaxLRN2kjcr8n8';
     private autocompleteService!: google.maps.places.AutocompleteService;
+    
     resInfo = {
       name: '', 
       location: '',
+      lat: null as number | null,
+      lon: null as number | null,
       photo: '',
       days: {
         monday: { open: false, openingHours: { start: '', end: '' } },
@@ -84,9 +88,27 @@ export class ListingFormComponent implements OnInit{
       }
     }
 
+  
+
     selectPrediction(prediction: google.maps.places.AutocompletePrediction): void {
-      this.resInfo.location = prediction.description;
-      this.predictions = [];
-    }
+      const placeId = prediction.place_id;
+      
+      if (placeId) {
+        const service = new google.maps.places.PlacesService(document.createElement('div'));
+        service.getDetails({ placeId: placeId }, (place, status) => { 
+          this.resInfo.location = place?.formatted_address || '';
+          this.resInfo.lat = place?.geometry?.location?.lat() || null;
+          this.resInfo.lon = place?.geometry?.location?.lng() || null;
+        });
+        console.log(this.resInfo);
+      
+      
+      }
+
+      
+  }
+    
+    
     
 }
+    
