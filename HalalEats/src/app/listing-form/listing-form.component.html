@@ -4,12 +4,18 @@
         <div class="form-group">
             <label for="resName">Name</label>
             <input type="text" class="form-control" id="resName" name="resName" [(ngModel)]="resInfo.name" required>
+            
         </div>
         
 
         <div class="form-group">
             <label for="resLocation">Location</label>
-            <input type="text" class="form-control" id="resLocation" name="resLocation" [(ngModel)]="resInfo.location" required>
+            <input #resLocationInput type="text" class="form-control" id="resLocation" name="resLocation" [(ngModel)]="resInfo.location" (input)="onLocationChange($event)" required>
+            <ul *ngIf="predictions && predictions.length > 0">
+                <li *ngFor="let prediction of predictions" (click)="selectPrediction(prediction)">
+                  {{ prediction.description }}
+                </li>
+              </ul>
         </div>
 
         <div class="form-group">

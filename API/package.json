@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@agm/core": "^3.0.0-beta.0",
     "cors": "^2.8.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
