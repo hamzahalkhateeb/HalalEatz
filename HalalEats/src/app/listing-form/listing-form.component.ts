@@ -1,3 +1,4 @@
+/// <reference types="@types/google.maps" />
 import { Component , OnInit, Inject, Injectable,  PLATFORM_ID, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators'
@@ -8,7 +9,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 
-//AIzaSyDbzLtJqttwnCZpCkzS7iaxLRN2kjcr8n8
+
+
 
 @Component({
   selector: 'app-listing-form',
