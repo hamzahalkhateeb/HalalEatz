@@ -30,7 +30,14 @@ starters: [
         {
             name: "Garlic Bread",
             price: 5.99,
-            description: "Toasted bread with garlic and herbs."
+            description: "Toasted bread with garlic and herbs.",
+            vegan: true,
+            glutenFree: false,
+            vegetarian: true,
+            halalKosher: true,
+            timesBought: 0,
+            imageURL: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.bbcgoodfood.com%2Frecipes%2Fgarlic-bread&psig=AOvVaw0J4JHm9V7i4bZMz1z8Lw8G&ust=1634024350678000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCJjH0J3U1fMCFQAAAAAdAAAAABAD"
+
         },
         {
             name: "Bruschetta",

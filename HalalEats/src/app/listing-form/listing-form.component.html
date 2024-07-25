@@ -111,6 +111,89 @@
             <input type="file" class="form-control" id="resPhoto" name="resPhoto" (change)="onFileSelected($event)" accept="image/*" required>
         </div>
 
+        <hr>
+
+        <div class="menu">
+            <div class="meals">
+                <div class="form-group">
+                    <label for="mealName">Meal Name</label>
+                    <input type="text" class="form-control" id="mealName" name="mealName" required>
+                    <label for="mealDescription">Description/Ingredients</label>
+                    <input type="text" class="form-control" id="mealDescription" name="mealDescription" required>
+                    <label for="mealPrice">Price</label>
+                    <input type="number" class="form-control" id="mealPrice" name="mealPrice" required>
+                    <label for="halal">Halal</label>
+                    <input type="checkbox" class="form-control" id="halal" name="halal" required>
+                    <label for="vegan">Vegan</label>
+                    <input type="checkbox" class="form-control" id="vegan" name="vegan" required>
+                    <label for="vegetarian">Vegetarian</label>
+                    <input type="checkbox" class="form-control" id="vegetarian" name="vegetarian" required>
+                    <label for="glutenFree">Gluten Free</label>
+                    <input type="checkbox" class="form-control" id="glutenFree" name="glutenFree" required>
+                    <label for="lactoseFree">Lactose Free</label>
+                    <input type="checkbox" class="form-control" id="lactoseFree" name="lactoseFree" required>
+                    <label for="mealimg">Meal Image</label>
+                    <input type="file" class="form-control" id="mealimg" name="mealimg" accept="image/*" required>
+                </div>
+
+                <button class="addMealbtn" id="addMeal" (click)="addMeal()">Add Meal</button>
+
+            </div>
+
+            <div class="deserts">
+                <div class="form-group">
+                    <label for="desertName">Desert Name</label>
+                    <input type="text" class="form-control" id="desertName" name="desertName" required>
+                    <label for="desertDescription">Description/Ingredients</label>
+                    <input type="text" class="form-control" id="desertDescription" name="desertDescription" required>
+                    <label for="desertPrice">Price</label>
+                    <input type="number" class="form-control" id="desertPrice" name="desertPrice" required>
+                    <label for="halal">Halal</label>
+                    <input type="checkbox" class="form-control" id="halal" name="halal" required>
+                    <label for="vegan">Vegan</label>
+                    <input type="checkbox" class="form-control" id="vegan" name="vegan" required>
+                    <label for="vegetarian">Vegetarian</label>
+                    <input type="checkbox" class="form-control" id="vegetarian" name="vegetarian" required>
+                    <label for="glutenFree">Gluten Free</label>
+                    <input type="checkbox" class="form-control" id="glutenFree" name="glutenFree" required>
+                    <label for="lactoseFree">Lactose Free</label>
+                    <input type="checkbox" class="form-control" id="lactoseFree" name="lactoseFree" required>
+                    <label for="desertimg">Desert Image</label>
+                    <input type="file" class="form-control" id="desertimg" name="desertimg" accept="image/*" required>
+                </div>
+                <button class="addDesertbtn" id="addDesert" (click)="addDesert()">Add Desert</button>
+
+            </div>
+
+            <div class="drinks">
+                <div class="form-group">
+                    <label for="drinkName">Drink Name</label>
+                    <input type="text" class="form-control" id="drinkName" name="drinkName" required>
+                    <label for="drinkDescription">Description/Ingredients</label>
+                    <input type="text" class="form-control" id="drinkDescription" name="drinkDescription" required>
+                    <label for="drinkPrice">Price</label>
+                    <input type="number" class="form-control" id="drinkPrice" name="drinkPrice" required>
+                    <label for="halal">Halal</label>
+                    <input type="checkbox" class="form-control" id="halal" name="halal" required>
+                    <label for="vegan">Vegan</label>
+                    <input type="checkbox" class="form-control" id="vegan" name="vegan" required>
+                    <label for="vegetarian">Vegetarian</label>
+                    <input type="checkbox" class="form-control" id="vegetarian" name="vegetarian" required>
+                    <label for="glutenFree">Gluten Free</label>
+                    <input type="checkbox" class="form-control" id="glutenFree" name="glutenFree" required>
+                    <label for="lactoseFree">Lactose Free</label>
+                    <input type="checkbox" class="form-control" id="lactoseFree" name="lactoseFree" required>
+                    <label for="drinkimg">Drink Image</label>
+                    <input type="file" class="form-control" id="drinkimg" name="drinkimg" accept="image/*" required>
+                </div>
+
+                <button class="addDrinkbtn" id="addDrink" (click)="addDrink()">Add Drink</button>
+
+
+            </div>
+
+        </div>
+
         <input type="submit" class="btn btn-primary" value="Submit">
 
 

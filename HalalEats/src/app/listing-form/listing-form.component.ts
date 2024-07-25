@@ -104,11 +104,19 @@ export class ListingFormComponent implements OnInit{
       
       
       }
-
-      
   }
+
+    addMeal(): void{
+      //add another div to add another meal
+    }
+
+    addDesert(): void{
+      //add another div to add another meal
+    }
     
-    
+    addDrink(): void{
+      //add another div to add another meal
+    }
     
 }
     
