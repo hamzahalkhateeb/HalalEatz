@@ -1,5 +1,5 @@
 /// <reference types="@types/google.maps" />
-import { Component , OnInit, Inject, Injectable,  PLATFORM_ID, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component , OnInit, Inject, Injectable,  PLATFORM_ID, NgZone, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators'
 import { HttpClient, } from '@angular/common/http';
@@ -22,11 +22,29 @@ import { FormsModule } from '@angular/forms';
 export class ListingFormComponent implements OnInit{
 
     @ViewChild('resLocationInput', {static: true}) resLocation!: ElementRef<HTMLInputElement>;
+    @ViewChild('addMealBtn', {static: false}) addMealBtn!: ElementRef;
+    @ViewChild('addDesertBtn', {static: false}) addDesertBtn!: ElementRef;
+    @ViewChild('addDrinkBtn', {static: false}) addDrinkBtn!: ElementRef;
+
     predictions: google.maps.places.AutocompletePrediction[] = [];
 
     apikey = 'AIzaSyDbzLtJqttwnCZpCkzS7iaxLRN2kjcr8n8';
     private autocompleteService!: google.maps.places.AutocompleteService;
     
+
+    halalQuestions: string[] = [
+      'Is the chicken you sell halal?',
+      'Is the chicken hand-slaughtered or factory-slaughtered?',
+      'Is the beef you sell halal?',
+      'Is the lamb you sell halal?',
+      'Do you sell any pork or pork products?',
+      'Do you sell any products that contain animal gelatin?',
+      'Do you sell any alcohol or alcoholic beverages?',
+      'Are your meat suppliers certified by a recognized halal certification body?',
+      'Are all your ingredients sourced from halal-certified suppliers?',
+      'Do you ensure that no alcohol or non-halal food products are used in your cooking process?'
+    ];
+
     resInfo = {
       name: '', 
       location: '',
@@ -42,12 +60,13 @@ export class ListingFormComponent implements OnInit{
         saturday: { open: false, openingHours: { start: '', end: '' } },
         sunday: { open: false, openingHours: { start: '', end: '' } }
       
-      }
+      },
+      halalRating: 0,
     };
 
     selectedFile: File | null = null;
 
-    constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private ngZone: NgZone) {}
+    constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private ngZone: NgZone, private renderer: Renderer2) {}
 
     ngOnInit(): void {
       if (isPlatformBrowser(this.platformId)){
@@ -106,16 +125,27 @@ export class ListingFormComponent implements OnInit{
       }
   }
 
-    addMeal(): void{
-      //add another div to add another meal
+    addMeal() {
+      
     }
 
-    addDesert(): void{
+    addDesert() {
       //add another div to add another meal
     }
     
-    addDrink(): void{
+    addDrink() {
       //add another div to add another meal
+    }
+
+    updateHalalRating(event: any) {
+    if (event.target.checked){
+      this.resInfo.halalRating++;
+      
+
+    }else{
+      this.resInfo.halalRating--;
+    }
+    
     }
     
 }

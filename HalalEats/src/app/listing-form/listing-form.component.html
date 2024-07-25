@@ -1,4 +1,12 @@
-<div class="container">
+<div class="container1">
+    <h1>Halal Eligibility Checklist</h1>
+    <div *ngFor="let question of halalQuestions; let i = index">
+        <input type="checkbox" id="questions{{i}}" (change)="updateHalalRating($event)">
+        <label for="question{{i}}">{{ question }}</label>
+    </div>
+</div>
+
+<div class="container2">
     <h1>List Your Restaurant!</h1>
     <form #resForm="ngForm" (ngSubmit)="submitForm(resInfo)">
         <div class="form-group">
@@ -136,7 +144,7 @@
                     <input type="file" class="form-control" id="mealimg" name="mealimg" accept="image/*" required>
                 </div>
 
-                <button class="addMealbtn" id="addMeal" (click)="addMeal()">Add Meal</button>
+                <button class="addMealbtn" id="addMeal" #addMealBtn (click)="addMeal()">Add Meal</button>
 
             </div>
 
@@ -161,7 +169,7 @@
                     <label for="desertimg">Desert Image</label>
                     <input type="file" class="form-control" id="desertimg" name="desertimg" accept="image/*" required>
                 </div>
-                <button class="addDesertbtn" id="addDesert" (click)="addDesert()">Add Desert</button>
+                <button class="addDesertbtn" id="addDesert" #addDesertBtn (click)="addDesert()">Add Desert</button>
 
             </div>
 
@@ -187,7 +195,7 @@
                     <input type="file" class="form-control" id="drinkimg" name="drinkimg" accept="image/*" required>
                 </div>
 
-                <button class="addDrinkbtn" id="addDrink" (click)="addDrink()">Add Drink</button>
+                <button class="addDrinkbtn" id="addDrink" #addDrinkBtn (click)="addDrink()">Add Drink</button>
 
 
             </div>
