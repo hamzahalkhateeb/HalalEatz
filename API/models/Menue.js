@@ -26,7 +26,7 @@ Menue.belongsTo(User);
 module.exports = Menue;
 
 /* example:
-starters: [
+meals: [
         {
             name: "Garlic Bread",
             price: 5.99,
@@ -43,13 +43,37 @@ starters: [
             name: "Bruschetta",
             price: 7.99,
             description: "Toasted bread with diced tomatoes, basil, and olive oil."
-        }
+        },
+        etc....
     ],
-    mainCourse: [
-        {
-            name: "Spaghetti Bolognese",
-            price: 12.99,
-            description: "Spaghetti pasta with beef Bolognese sauce."
-        },.....etc
+drinks: [
+         {
+            name: "coke",
+            price: 2.99,
+            description: "classic coke",
+            vegan: true,
+            glutenFree: true,
+            vegetarian: true,
+            halalKosher: true,
+            timesBought: 0,
+            imageURL: "image url"
+
+        }, etc.....
+        ],
+deserts: [
+            {
+            name: "sweet",
+            price: 4.99,
+            description: "classic sweet",
+            vegan: true,
+            glutenFree: true,
+            vegetarian: true,
+            halalKosher: false,
+            timesBought: 0,
+            imageURL: "image url"
+
+        }, etc.....          
+]
+
 
 */

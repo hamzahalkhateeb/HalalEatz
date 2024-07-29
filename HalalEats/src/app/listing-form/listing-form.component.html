@@ -8,7 +8,7 @@
 
 <div class="container2">
     <h1>List Your Restaurant!</h1>
-    <form #resForm="ngForm" (ngSubmit)="submitForm(resInfo)">
+    <form #resForm="ngForm" >
         <div class="form-group">
             <label for="resName">Name</label>
             <input type="text" class="form-control" id="resName" name="resName" [(ngModel)]="resInfo.name" required>
@@ -149,8 +149,8 @@
 
             </div>
 
-            <div class="deserts">
-                <div class="form-group">
+            <div class="deserts" #desertContainer>
+                <div class="form-group desert" #desertDiv>
                     <button class="deleteDivbtn"  (click)="deleteDiv($event)">Delete</button>
                     <label for="desertName">Desert Name</label>
                     <input type="text" class="form-control"  name="desertName" required>
@@ -175,10 +175,10 @@
 
             </div>
 
-            <div class="drinks">
-                <div class="form-group">
-                    <label for="drinkName">Drink Name</label>
+            <div class="drinks" #drinkContainer>
+                <div class="form-group drink" #drinkDiv>
                     <button class="deleteDivbtn"  (click)="deleteDiv($event)">Delete</button>
+                    <label for="drinkName">Drink Name</label>
                     <input type="text" class="form-control"  name="drinkName" required>
                     <label for="drinkDescription">Description/Ingredients</label>
                     <input type="text" class="form-control"  name="drinkDescription" required>
@@ -205,9 +205,26 @@
 
         </div>
 
-        <input type="submit" class="btn btn-primary" value="Submit">
-
+        
 
     </form>
+
+    <div id="g_id_onload"
+               data-client_id="490153988551-ennqdrg2knoqj3rm1encr5vq0f7tlh50.apps.googleusercontent.com"
+               data-context="signup"
+               data-ux_mode="popup"
+               data-callback="handleFormSubmission"
+               data-auto_select="false"
+               data-itp_support="true">
+    </div>
+
+    <div class="g_id_signin"
+               data-type="standard"
+               data-shape="pill"
+               data-theme="filled_black"
+               data-text="continue_with"
+               data-size="large"
+               data-logo_alignment="left">
+    </div> 
 
 </div>

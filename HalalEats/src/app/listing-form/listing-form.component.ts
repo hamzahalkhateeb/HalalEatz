@@ -6,7 +6,7 @@ import { HttpClient, } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 
 
@@ -22,8 +22,13 @@ import { FormsModule } from '@angular/forms';
 export class ListingFormComponent implements OnInit{
 
     @ViewChild('resLocationInput', {static: true}) resLocation!: ElementRef<HTMLInputElement>;
-    @ViewChild('mealContainer', {static: false}) mealContainer!: ElementRef;
+    @ViewChild('mealContainer', {static: true}) mealContainer!: ElementRef;
     @ViewChild('mealDiv', {static: true}) mealDiv!: ElementRef;
+    @ViewChild('desertContainer', {static: true}) desertContainer!: ElementRef;
+    @ViewChild('desertDiv', {static: true}) desertDiv!: ElementRef;
+    @ViewChild('drinkContainer', {static: true}) drinkContainer!: ElementRef;
+    @ViewChild('drinkDiv', {static: true}) drinkDiv!: ElementRef;
+    @ViewChild('resForm') resForm= NgForm
 
     predictions: google.maps.places.AutocompletePrediction[] = [];
 
@@ -32,16 +37,17 @@ export class ListingFormComponent implements OnInit{
     
 
     halalQuestions: string[] = [
-      'Is the chicken you sell halal?',
-      'Is the chicken hand-slaughtered or factory-slaughtered?',
-      'Is the beef you sell halal?',
-      'Is the lamb you sell halal?',
-      'Do you sell any pork or pork products?',
-      'Do you sell any products that contain animal gelatin?',
-      'Do you sell any alcohol or alcoholic beverages?',
-      'Are your meat suppliers certified by a recognized halal certification body?',
-      'Are all your ingredients sourced from halal-certified suppliers?',
-      'Do you ensure that no alcohol or non-halal food products are used in your cooking process?'
+      'My restaurant sells halal chicken',
+      'My restaurant sells hand-slaughtered chicken',
+      'My restaurant sells halal beef',
+      'My restaurant sells halal lamb',
+      'My restaurant DOES NOT sell pork products',
+      'My restaurant DOES NOT sell products that contain animal gelatin',
+      'My restaurant DOES NOT sells alcoholic beverages',
+      'My meat supplier is a recognised halal certified body',
+      'All my ingredients are sourced from halal-certified suppliers?',
+      'My restaurant ensures that NO alcoholic products are used in the cooking process'
+      
     ];
 
     resInfo = {
@@ -69,7 +75,7 @@ export class ListingFormComponent implements OnInit{
 
     ngOnInit(): void {
       if (isPlatformBrowser(this.platformId)){
-        (window as any)['submitForm'] = this.submitForm.bind(this)
+        (window as any)['handleFormSubmission'] = this.handleFormSubmission.bind(this)
         
       }
 
@@ -80,8 +86,29 @@ export class ListingFormComponent implements OnInit{
       this.selectedFile = event.target.files[0] as File;
     }
 
-    submitForm(data: any) {
-      console.log(this.resInfo);
+    handleFormSubmission(response: any): void {
+      console.log(this.resInfo); //restaurant information
+      //here get the menue information into a json string!
+
+      //here get the user details and such
+      const idToken = response.credential;
+      this.http.post('http://localhost:3000/listRestaurant', {id_token: idToken})
+
+      .subscribe({
+        next: (data:any) =>{
+          if(data.success){
+            alert(data.message);
+            //this.router.navigateByUrl(data.redirectUrl);
+
+          } else {
+            console.log("unexpected json format! ", data);
+          }
+        },
+        error: (error: any) => {
+          console.error('Error: ', error);
+        }
+      });
+
     }
 
     onLocationChange(event : Event): void {
@@ -118,7 +145,7 @@ export class ListingFormComponent implements OnInit{
           this.resInfo.lat = place?.geometry?.location?.lat() || null;
           this.resInfo.lon = place?.geometry?.location?.lng() || null;
         });
-        console.log(this.resInfo);
+        
       
       
       }
@@ -137,12 +164,23 @@ export class ListingFormComponent implements OnInit{
 
 
     }
-    addDesert() {
-      //add another div to add another meal
+
+    addDrink() {
+      const clonedDrink = this.drinkDiv.nativeElement.cloneNode(true);
+
+      this.renderer.insertBefore(this.drinkContainer.nativeElement, clonedDrink, this.drinkContainer.nativeElement.lastChild);
+
+      const deleteBtn = clonedDrink.querySelector('.deleteDivbtn');
+      this.renderer.listen(deleteBtn, 'click', (event) => this.deleteDiv(event));
     }
     
-    addDrink() {
-      //add another div to add another meal
+    addDesert() {
+      const clonedDesert = this.desertDiv.nativeElement.cloneNode(true);
+
+      this.renderer.insertBefore(this.desertContainer.nativeElement, clonedDesert, this.desertContainer.nativeElement.lastChild);
+
+      const deleteBtn = clonedDesert.querySelector('.deleteDivbtn');
+      this.renderer.listen(deleteBtn, 'click', (event) => this.deleteDiv(event));
     }
 
     updateHalalRating(event: any) {
@@ -163,6 +201,8 @@ export class ListingFormComponent implements OnInit{
       div.remove();
 
     }
+
+    
     
 }
     

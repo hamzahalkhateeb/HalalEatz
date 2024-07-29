@@ -98,6 +98,10 @@ app.post('/logout', (req, res) =>{
     
 });
 
+app.post('/listRestaurant', (req, res) =>{
+    //do all this when you actually put menu into a json
+})
+
 
 
 
