@@ -22,9 +22,8 @@ import { FormsModule } from '@angular/forms';
 export class ListingFormComponent implements OnInit{
 
     @ViewChild('resLocationInput', {static: true}) resLocation!: ElementRef<HTMLInputElement>;
-    @ViewChild('addMealBtn', {static: false}) addMealBtn!: ElementRef;
-    @ViewChild('addDesertBtn', {static: false}) addDesertBtn!: ElementRef;
-    @ViewChild('addDrinkBtn', {static: false}) addDrinkBtn!: ElementRef;
+    @ViewChild('mealContainer', {static: false}) mealContainer!: ElementRef;
+    @ViewChild('mealDiv', {static: true}) mealDiv!: ElementRef;
 
     predictions: google.maps.places.AutocompletePrediction[] = [];
 
@@ -125,10 +124,19 @@ export class ListingFormComponent implements OnInit{
       }
   }
 
-    addMeal() {
-      
-    }
+    
 
+
+    addMeal(){
+      const clonedMeal = this.mealDiv.nativeElement.cloneNode(true);
+
+      this.renderer.insertBefore(this.mealContainer.nativeElement, clonedMeal, this.mealContainer.nativeElement.lastChild);
+
+      const deleteBtn = clonedMeal.querySelector('.deleteDivbtn');
+      this.renderer.listen(deleteBtn, 'click', (event) => this.deleteDiv(event));
+
+
+    }
     addDesert() {
       //add another div to add another meal
     }
@@ -146,6 +154,14 @@ export class ListingFormComponent implements OnInit{
       this.resInfo.halalRating--;
     }
     
+    }
+
+
+    deleteDiv(event: any) {
+      const btn = event.target as HTMLButtonElement;
+      const div = btn.parentElement as HTMLDivElement;
+      div.remove();
+
     }
     
 }
