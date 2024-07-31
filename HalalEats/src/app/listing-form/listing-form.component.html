@@ -142,7 +142,7 @@
     </form>
     <hr>
 
-
+    <form menueForm="ngForm">
         <div class="menu">
             <div class="meals" #mealContainer>
                 <div class="form-group meal" #mealDiv>
@@ -226,6 +226,10 @@
             </div>
 
         </div>
+
+        <button type="submit"  name="submitMenue" (click)="submitMenue($event)">Submit Menue</button>
+
+    </form>
 
         
 

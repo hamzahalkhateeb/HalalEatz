@@ -1,5 +1,5 @@
 /// <reference types="@types/google.maps" />
-import { Component , OnInit, Inject, Injectable,  PLATFORM_ID, NgZone, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component , OnInit, Inject, Injectable,  PLATFORM_ID, NgZone, ViewChild, ElementRef, Renderer2, QueryList, ViewChildren } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators'
 import { HttpClient, } from '@angular/common/http';
@@ -20,7 +20,7 @@ import { FormsModule, NgForm } from '@angular/forms';
   styleUrl: './listing-form.component.css'
 })
 export class ListingFormComponent implements OnInit{
-
+    //view children for listing the restaurant!
     @ViewChild('resLocationInput', {static: true}) resLocation!: ElementRef<HTMLInputElement>;
     @ViewChild('mealContainer', {static: true}) mealContainer!: ElementRef;
     @ViewChild('mealDiv', {static: true}) mealDiv!: ElementRef;
@@ -29,6 +29,11 @@ export class ListingFormComponent implements OnInit{
     @ViewChild('drinkContainer', {static: true}) drinkContainer!: ElementRef;
     @ViewChild('drinkDiv', {static: true}) drinkDiv!: ElementRef;
     @ViewChild('resForm') resForm= NgForm
+
+    //view children for adding the menue
+    @ViewChildren('mealDiv') mealDivs!: QueryList<ElementRef>;
+    @ViewChildren('desertDiv') desertDivs!: QueryList<ElementRef>;
+    @ViewChildren('drinkDiv') drinkDivs!: QueryList<ElementRef>;
 
     predictions: google.maps.places.AutocompletePrediction[] = [];
 
@@ -69,6 +74,10 @@ export class ListingFormComponent implements OnInit{
       halalRating: 0,
     };
 
+    meals: Array<any> = [];
+    deserts: Array<any> = [];
+    drinks: Array<any> = [];
+
     selectedFile: File | null = null;
 
     constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private ngZone: NgZone, private renderer: Renderer2) {}
@@ -99,7 +108,7 @@ export class ListingFormComponent implements OnInit{
           next: (data:any) =>{
             if(data.success){
               alert(data.message);
-              //this.router.navigateByUrl(data.redirectUrl);
+              //show the user the menu form!!!
 
             } else {
               console.log("unexpected json format! ", data.message);
@@ -141,7 +150,6 @@ export class ListingFormComponent implements OnInit{
     }
 
   
-
     selectPrediction(prediction: google.maps.places.AutocompletePrediction): void {
       const placeId = prediction.place_id;
       
@@ -159,8 +167,6 @@ export class ListingFormComponent implements OnInit{
   }
 
     
-
-
     addMeal(){
       const clonedMeal = this.mealDiv.nativeElement.cloneNode(true);
 
@@ -209,6 +215,43 @@ export class ListingFormComponent implements OnInit{
 
     }
 
+    //changes to make:
+    //make it so that added divs reflect at the query set!!!
+    populateArray(array: any[], divsList: QueryList<ElementRef>, word: string) {
+      array.length = 0;
+
+      divsList.forEach(DivRef => {
+        const itemDiv = DivRef.nativeElement;
+
+        const itemDiq = {
+          name: (itemDiv.querySelector(`input[name="${word}Name"]`) as HTMLInputElement).value,
+          description: (itemDiv.querySelector(`input[name="${word}Description"]`) as HTMLInputElement).value,
+          price: parseFloat((itemDiv.querySelector(`input[name="${word}Price"]`) as HTMLInputElement).value),
+          halal: (itemDiv.querySelector('input[name="halal"]') as HTMLInputElement).checked,
+          vegan: (itemDiv.querySelector('input[name="vegan"]') as HTMLInputElement).checked,
+          vegetarian: (itemDiv.querySelector('input[name="vegetarian"]') as HTMLInputElement).checked,
+          lactoseFree: (itemDiv.querySelector('input[name="lactoseFree"]') as HTMLInputElement).checked,
+          glutenFree: (itemDiv.querySelector('input[name="glutenFree"]') as HTMLInputElement).checked,
+          img: (itemDiv.querySelector(`input[name="${word}img"]`) as HTMLInputElement).value,
+        }
+
+        array.push(itemDiq);
+      });
+
+      //console.log(array);
+
+
+
+    }
+
+    submitMenue(event: any){
+      this.populateArray(this.meals, this.mealDivs, 'meal');
+      console.log(this.meals);
+      this.populateArray(this.drinks, this.drinkDivs, 'drink');
+      //console.log(this.deserts);
+      this.populateArray(this.deserts, this.desertDivs, 'desert');
+      //console.log(this.deserts);
+    }
     
     
 }
