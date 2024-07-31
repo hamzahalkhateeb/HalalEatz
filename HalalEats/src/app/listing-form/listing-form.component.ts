@@ -87,27 +87,34 @@ export class ListingFormComponent implements OnInit{
     }
 
     handleFormSubmission(response: any): void {
-      console.log(this.resInfo); //restaurant information
-      //here get the menue information into a json string!
+      
+      
+      if (this.resInfo.halalRating > 5){
+        const resInfoJSON = JSON.stringify(this.resInfo);
+        
+        const idToken = response.credential;
+        this.http.post('http://localhost:3000/listRestaurant', {id_token: idToken, resInfo: resInfoJSON})
 
-      //here get the user details and such
-      const idToken = response.credential;
-      this.http.post('http://localhost:3000/listRestaurant', {id_token: idToken})
+        .subscribe({
+          next: (data:any) =>{
+            if(data.success){
+              alert(data.message);
+              //this.router.navigateByUrl(data.redirectUrl);
 
-      .subscribe({
-        next: (data:any) =>{
-          if(data.success){
-            alert(data.message);
-            //this.router.navigateByUrl(data.redirectUrl);
-
-          } else {
-            console.log("unexpected json format! ", data);
+            } else {
+              console.log("unexpected json format! ", data.message);
+            }
+          },
+          error: (error: any) => {
+            console.error('Error: ', error);
           }
-        },
-        error: (error: any) => {
-          console.error('Error: ', error);
-        }
-      });
+        });
+
+      } else {
+        alert("Your halal rating is less than the minimum allowed! your restaurant is not eligible to be on this website!");
+        this.router.navigateByUrl("/login");
+      }
+      
 
     }
 

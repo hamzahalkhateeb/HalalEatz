@@ -1,7 +1,7 @@
 
 //import different apps and frameworks necessary for your application
 const express = require("express");
-const {Sequelize, User, Restaurant, Review, Role } = require("./models"); //import all data object models
+const {Sequelize, User, Restaurant, Review, Role, Menue } = require("./models"); //import all data object models
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
@@ -98,9 +98,65 @@ app.post('/logout', (req, res) =>{
     
 });
 
-app.post('/listRestaurant', (req, res) =>{
-    //do all this when you actually put menu into a json
-})
+app.post('/listRestaurant', async (req, res) =>{
+
+    //await User.destroy({ where: {} });
+    //await Restaurant.destroy({ where: {} });
+    
+
+    //extract received information
+    const token = req.body.id_token;
+    const resInfo = JSON.parse(req.body.resInfo);
+    
+
+    //verify google token, extract user details 
+    try{
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: CLIENT_ID
+        });
+
+        const payload = ticket.getPayload();
+        const {email, picture, given_name, family_name} = payload;
+        
+        let user = await User.findOne({where: {email : email}});
+
+        if (!user){
+            console.log("user doesn't exist, creating user now, of account type 2");
+
+
+            user = await User.create({
+                email, picture, firstName: given_name, lastName: family_name, accountType: 2,
+            });
+            req.session.userId = user.id;
+            req.session.isLoggedIn = true;
+
+            console.log("user created!");
+            console.log("creating restaurant now!");
+            
+            restaurant = await Restaurant.create({
+                
+                name: resInfo.name, location: resInfo.location, openingHours: resInfo.days, halalRating: resInfo.halalRating,
+            });
+
+            
+
+            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", user, redirectUrl: "/restaurantDashboard"});
+        } else {
+            res.status(200).json({success: false, message: "The email is already associated with another account, please use an email that is specifically for your restaurant!", user, redirectUrl: "/listing-form"});
+        }
+        
+
+
+
+    } catch {
+        console.log("lolololo, terrible request");
+        
+        res.status(400).json({error: 'invalid token', redirectUrl: "/error"});
+    }
+
+
+});
 
 
 
