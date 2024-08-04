@@ -30,10 +30,9 @@ export class ListingFormComponent implements OnInit{
     @ViewChild('drinkDiv', {static: true}) drinkDiv!: ElementRef;
     @ViewChild('resForm') resForm= NgForm
 
-    //view children for adding the menue
-    @ViewChildren('mealDiv') mealDivs!: QueryList<ElementRef>;
-    @ViewChildren('desertDiv') desertDivs!: QueryList<ElementRef>;
-    @ViewChildren('drinkDiv') drinkDivs!: QueryList<ElementRef>;
+    
+
+
 
     predictions: google.maps.places.AutocompletePrediction[] = [];
 
@@ -74,9 +73,16 @@ export class ListingFormComponent implements OnInit{
       halalRating: 0,
     };
 
+    menue = {
+      meals: {},
+      deserts: {},
+      drinks: {},
+    }
+
     meals: Array<any> = [];
     deserts: Array<any> = [];
     drinks: Array<any> = [];
+    
 
     selectedFile: File | null = null;
 
@@ -215,13 +221,14 @@ export class ListingFormComponent implements OnInit{
 
     }
 
-    //changes to make:
-    //make it so that added divs reflect at the query set!!!
-    populateArray(array: any[], divsList: QueryList<ElementRef>, word: string) {
+    
+    populateArray(array: any[], divsList: HTMLElement[], word: string) {
+      
+      
       array.length = 0;
 
-      divsList.forEach(DivRef => {
-        const itemDiv = DivRef.nativeElement;
+      divsList.forEach(itemDiv => {
+        
 
         const itemDiq = {
           name: (itemDiv.querySelector(`input[name="${word}Name"]`) as HTMLInputElement).value,
@@ -233,24 +240,53 @@ export class ListingFormComponent implements OnInit{
           lactoseFree: (itemDiv.querySelector('input[name="lactoseFree"]') as HTMLInputElement).checked,
           glutenFree: (itemDiv.querySelector('input[name="glutenFree"]') as HTMLInputElement).checked,
           img: (itemDiv.querySelector(`input[name="${word}img"]`) as HTMLInputElement).value,
+          timesBought: 0,
         }
 
         array.push(itemDiq);
       });
 
-      //console.log(array);
+      
+
+      
 
 
 
     }
 
     submitMenue(event: any){
-      this.populateArray(this.meals, this.mealDivs, 'meal');
-      console.log(this.meals);
-      this.populateArray(this.drinks, this.drinkDivs, 'drink');
-      //console.log(this.deserts);
-      this.populateArray(this.deserts, this.desertDivs, 'desert');
-      //console.log(this.deserts);
+      const mealDivs = Array.from(this.mealContainer.nativeElement.querySelectorAll('.meal')) as HTMLElement [];
+      this.populateArray(this.meals, mealDivs, 'meal');
+      this.menue.meals = this.meals;
+
+      const drinkDivs = Array.from(this.drinkContainer.nativeElement.querySelectorAll('.drink')) as HTMLElement [];
+      this.populateArray(this.drinks, drinkDivs, 'drink');
+      this.menue.deserts = this.deserts;
+
+      const desertDivs = Array.from(this.desertContainer.nativeElement.querySelectorAll('.desert')) as HTMLElement [];
+      this.populateArray(this.deserts, desertDivs, 'desert');
+      this.menue.drinks = this.drinks;
+      
+      
+      
+      
+      const menue = JSON.stringify(this.menue);
+
+      this.http.post('http://localhost:3000/submitMenue', {menue: menue, resName: this.resInfo.name, resLocation: this.resInfo.location})
+        .subscribe({
+          next: (data: any) => {
+            if (data.success){
+              alert(data.message);
+              this.router.navigateByUrl(data.redirectUrl);
+            } else {
+              console.log("unexpected error: ", data);
+            }
+          },
+          error: (error: any) => {
+            console.error('Error: ', error);
+          }
+        });
+
     }
     
     

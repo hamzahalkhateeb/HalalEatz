@@ -100,10 +100,9 @@ app.post('/logout', (req, res) =>{
 
 app.post('/listRestaurant', async (req, res) =>{
 
-    //await User.destroy({ where: {} });
-    //await Restaurant.destroy({ where: {} });
+    await User.destroy({ where: {} });
+    await Restaurant.destroy({ where: {} });
     
-
     //extract received information
     const token = req.body.id_token;
     const resInfo = JSON.parse(req.body.resInfo);
@@ -126,7 +125,7 @@ app.post('/listRestaurant', async (req, res) =>{
 
 
             user = await User.create({
-                email, picture, firstName: given_name, lastName: family_name, accountType: 2,
+                email, picture, firstName: given_name, lastName: family_name, accountType: 2, 
             });
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
@@ -136,7 +135,7 @@ app.post('/listRestaurant', async (req, res) =>{
             
             restaurant = await Restaurant.create({
                 
-                name: resInfo.name, location: resInfo.location, openingHours: resInfo.days, halalRating: resInfo.halalRating,
+                name: resInfo.name, location: resInfo.location, openingHours: resInfo.days, halalRating: resInfo.halalRating, userId: user.id,
             });
 
             
@@ -154,6 +153,42 @@ app.post('/listRestaurant', async (req, res) =>{
         
         res.status(400).json({error: 'invalid token', redirectUrl: "/error"});
     }
+
+
+});
+
+
+app.post('/submitMenue', async (req, res) => {
+    //extract information
+    const menue = JSON.parse(req.body.menue);
+    console.log(`menue received in the back end: ${menue}`);
+
+    const resName = req.body.resName;
+    console.log(`resName: ${resName}`);
+
+    const resLocation = req.body.resLocation;
+    console.log(`resLocation: ${resLocation}`);
+
+    //find a restaurant with the provided information!
+    let relres = await Restaurant.findOne({where: {name: resName, location: resLocation }});
+    try{
+        if(relres) {
+            newMenueObject = await Menue.create({
+                meals: menue.meals, 
+                deserts: menue.deserts, 
+                drinks: menue.deserts,
+                restaurantId: relres.id,
+            });
+    
+            res.status(200).json({success: true, message: "Your restaurant menue has been added successfully", redirectUrl: '/restaurantDashboard'});
+        } else {
+            res.status(200).json({success: false, message: "The restaurant you tried to add your menue to does not exist, please submit your restaurant details first!!!", redirectUrl: '/listing-form'});
+        }
+    } catch {
+        res.status(400).json({error: 'Menue could not be added!', redirectUrl: "/listing-form"});
+    }
+    
+
 
 
 });
