@@ -101,14 +101,22 @@ export class ListingFormComponent implements OnInit{
       this.selectedFile = event.target.files[0] as File;
     }
 
+
+    ////////////////////////////////////////////////////
+    //This is all good, go and change the backend!!
     handleFormSubmission(response: any): void {
       
       
       if (this.resInfo.halalRating > 5){
         const resInfoJSON = JSON.stringify(this.resInfo);
-        
         const idToken = response.credential;
-        this.http.post('http://localhost:3000/listRestaurant', {id_token: idToken, resInfo: resInfoJSON})
+
+        const formData = new FormData();
+        formData.append('id_token', idToken);
+        formData.append('resInfo', resInfoJSON);
+        formData.append('image', this.selectedFile!, this.selectedFile!.name);
+
+        this.http.post('http://localhost:3000/listRestaurant', formData)
 
         .subscribe({
           next: (data:any) =>{

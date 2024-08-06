@@ -9,7 +9,7 @@ const { OAuth2Client } = require('google-auth-library');
 const CLIENT_ID = '490153988551-ennqdrg2knoqj3rm1encr5vq0f7tlh50.apps.googleusercontent.com';
 const client = new OAuth2Client(CLIENT_ID);
 const session = require('express-session');
-
+const path = require('path'); 
 
 
 
@@ -35,8 +35,14 @@ app.use(session({
 
 
 //set up multer images uploads, might also delete later
-
-const storage = multer.memoryStorage(); //change this to disk storage later
+const storage = multer.diskStorage({
+    destination: (req, file, cb) =>{
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+}) //change this to disk storage later
 const upload = multer({ storage: storage });
 
 
