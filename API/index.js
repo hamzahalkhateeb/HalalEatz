@@ -25,6 +25,7 @@ app.set('view engine', 'ejs');
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(express.urlencoded({extended: true}));
 app.use(session({
     secret: "secretfornow",
     resave: false,
@@ -34,16 +35,34 @@ app.use(session({
 
 
 
-//set up multer images uploads, might also delete later
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) =>{
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        const {restaurantName, type, relItem } = req.body;
+        const ogName = file.originalname;
+        const newName = generateImgName(restaurantName, type, ogName, relItem);
+        cb(null, newName);
     }
-}) //change this to disk storage later
+}); 
 const upload = multer({ storage: storage });
+
+
+const generateImgName = (restaurantName, type, originalname, relItem ) => {
+    const sanitizedName = restaurantName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+    if(type == "mainImg"){
+        let imgName = `${sanitizedName}_${type}_${Date.now()}${path.extname(originalname)}`;
+        return imgName;
+    } else if (type == "menueImg" ){
+        let imgName = `${sanitizedName}_${type}_${relItem}_${Date.now()}${path.extname(originalname)}`;
+        return imgName;
+    }
+    
+}
+
 
 
 
@@ -104,7 +123,7 @@ app.post('/logout', (req, res) =>{
     
 });
 
-app.post('/listRestaurant', async (req, res) =>{
+app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
     await User.destroy({ where: {} });
     await Restaurant.destroy({ where: {} });
@@ -141,7 +160,7 @@ app.post('/listRestaurant', async (req, res) =>{
             
             restaurant = await Restaurant.create({
                 
-                name: resInfo.name, location: resInfo.location, openingHours: resInfo.days, halalRating: resInfo.halalRating, userId: user.id,
+                name: resInfo.name, location: resInfo.location, openingHours: resInfo.days, halalRating: resInfo.halalRating, userId: user.id, coverImg: req.file ? req.file.filename: null
             });
 
             

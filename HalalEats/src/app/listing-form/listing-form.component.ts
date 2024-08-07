@@ -115,6 +115,8 @@ export class ListingFormComponent implements OnInit{
         formData.append('id_token', idToken);
         formData.append('resInfo', resInfoJSON);
         formData.append('image', this.selectedFile!, this.selectedFile!.name);
+        formData.append('type', 'main');
+        formData.append('relItem', '');
 
         this.http.post('http://localhost:3000/listRestaurant', formData)
 
