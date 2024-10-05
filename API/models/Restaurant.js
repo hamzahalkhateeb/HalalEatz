@@ -9,8 +9,9 @@ const Restaurant = sequelize.define('Restaurant', {
 
     },
     location: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: DataTypes.JSON,
+        allowNull: false,
+
     },
     openingHours: {
         type: DataTypes.JSON,
@@ -26,7 +27,7 @@ const Restaurant = sequelize.define('Restaurant', {
         
     }},
     images:{
-        type: DataTypes.JSON,
+        type: DataTypes.STRING,
         allowNull: true,
     },
 

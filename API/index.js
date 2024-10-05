@@ -155,12 +155,9 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     fs.rename(oldPath, newPath, (err) => {
         if (err) {
             console.error('Error renaming file:', err);
-            return res.status(500).json({ success: false, message: 'Failed to rename file.' });
+            
         }
-        
-        // If the renaming is successful, respond to the client
-
-        res.status(201).json({ success: true, message: 'File uploaded and renamed successfully!', newImageName });
+    
     });
     
     
@@ -192,20 +189,22 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
             
 
 
-            console.log(resInfo.location);
-            console.log(resInfo.days);
-            console.log(path.join(__dirname, 'uploads', req.file.filename));
-
             
-            /*restaurant = await Restaurant.create({
+            const addy = {
+                address : resInfo.location,
+                lon : resInfo.lon,
+                lat : resInfo.lat,
+            }
+            
+            restaurant = await Restaurant.create({
                 
                 name: resInfo.name,
-                location: resInfo.location, 
+                location: addy, 
                 openingHours: JSON.stringify(resInfo.days), 
                 halalRating: resInfo.halalRating, 
                 userId: user.id, 
-                coverImg: path.join(__dirname, 'uploads', req.file.filename) ? req.file.filename: null
-            });*/
+                coverImg: path.join(__dirname, 'uploads', newImageName) ? newImageName: null
+            });
 
 
             let restaurant2 = await Restaurant.findOne({where : {name : resInfo.name }})
