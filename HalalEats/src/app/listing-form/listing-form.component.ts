@@ -118,6 +118,9 @@ export class ListingFormComponent implements OnInit{
         formData.append('type', 'main');
         formData.append('relItem', '');
 
+
+
+
         this.http.post('http://localhost:3000/listRestaurant', formData)
 
         .subscribe({

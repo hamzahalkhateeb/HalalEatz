@@ -10,6 +10,8 @@ const CLIENT_ID = '490153988551-ennqdrg2knoqj3rm1encr5vq0f7tlh50.apps.googleuser
 const client = new OAuth2Client(CLIENT_ID);
 const session = require('express-session');
 const path = require('path'); 
+const fs = require('fs');
+
 
 
 
@@ -41,22 +43,24 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        const {restaurantName, type, relItem } = req.body;
+        
         const ogName = file.originalname;
-        const newName = generateImgName(restaurantName, type, ogName, relItem);
-        cb(null, newName);
+        cb(null, ogName);
+        console.log("image uploaded successfully!")
     }
 }); 
+
 const upload = multer({ storage: storage });
 
 
 const generateImgName = (restaurantName, type, originalname, relItem ) => {
+    
     const sanitizedName = restaurantName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
-    if(type == "mainImg"){
+    if(type == "main"){
         let imgName = `${sanitizedName}_${type}_${Date.now()}${path.extname(originalname)}`;
         return imgName;
-    } else if (type == "menueImg" ){
+    } else if (type == "menue" ){
         let imgName = `${sanitizedName}_${type}_${relItem}_${Date.now()}${path.extname(originalname)}`;
         return imgName;
     }
@@ -125,12 +129,40 @@ app.post('/logout', (req, res) =>{
 
 app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
+    
     await User.destroy({ where: {} });
     await Restaurant.destroy({ where: {} });
+    
+    console.log(`user destroyed to allow for a new restaurant submission`);
     
     //extract received information
     const token = req.body.id_token;
     const resInfo = JSON.parse(req.body.resInfo);
+    const uploadedImg = req.file;
+    const type = req.body.type;
+    const relItem = req.body.relItem
+    console.log(uploadedImg.filename);
+
+
+    //change image name
+    const newImageName = generateImgName(resInfo.name, type, uploadedImg.originalname, relItem)
+    console.log(newImageName);
+
+    // declaring paths and renaming the newly stored image!
+    const oldPath = path.join(__dirname, 'uploads', uploadedImg.filename);
+    const newPath = path.join(__dirname, 'uploads', newImageName);
+
+    fs.rename(oldPath, newPath, (err) => {
+        if (err) {
+            console.error('Error renaming file:', err);
+            return res.status(500).json({ success: false, message: 'Failed to rename file.' });
+        }
+        
+        // If the renaming is successful, respond to the client
+
+        res.status(201).json({ success: true, message: 'File uploaded and renamed successfully!', newImageName });
+    });
+    
     
 
     //verify google token, extract user details 
@@ -158,10 +190,26 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
             console.log("user created!");
             console.log("creating restaurant now!");
             
-            restaurant = await Restaurant.create({
+
+
+            console.log(resInfo.location);
+            console.log(resInfo.days);
+            console.log(path.join(__dirname, 'uploads', req.file.filename));
+
+            
+            /*restaurant = await Restaurant.create({
                 
-                name: resInfo.name, location: resInfo.location, openingHours: resInfo.days, halalRating: resInfo.halalRating, userId: user.id, coverImg: req.file ? req.file.filename: null
-            });
+                name: resInfo.name,
+                location: resInfo.location, 
+                openingHours: JSON.stringify(resInfo.days), 
+                halalRating: resInfo.halalRating, 
+                userId: user.id, 
+                coverImg: path.join(__dirname, 'uploads', req.file.filename) ? req.file.filename: null
+            });*/
+
+
+            let restaurant2 = await Restaurant.findOne({where : {name : resInfo.name }})
+            console.log(`**************************** ${restaurant2}`);
 
             
 
