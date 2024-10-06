@@ -8,10 +8,17 @@ const Restaurant = sequelize.define('Restaurant', {
         allowNull: false,
 
     },
-    location: {
-        type: DataTypes.JSON,
+    location: {  
+        type: DataTypes.STRING, 
         allowNull: false,
-
+    },
+    lat: {  
+        type: DataTypes.FLOAT,  
+        allowNull: true,  
+    },
+    lon: {  
+        type: DataTypes.FLOAT, 
+        allowNull: true,  
     },
     openingHours: {
         type: DataTypes.JSON,

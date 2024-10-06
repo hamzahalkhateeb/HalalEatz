@@ -11,6 +11,7 @@ const client = new OAuth2Client(CLIENT_ID);
 const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
+const { Op } = require("sequelize");
 
 
 
@@ -190,16 +191,14 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
 
             
-            const addy = {
-                address : resInfo.location,
-                lon : resInfo.lon,
-                lat : resInfo.lat,
-            }
+            
             
             restaurant = await Restaurant.create({
                 
                 name: resInfo.name,
-                location: addy, 
+                location: resInfo.location,
+                lat: resInfo.lat,
+                lon: resInfo.lon,
                 openingHours: JSON.stringify(resInfo.days), 
                 halalRating: resInfo.halalRating, 
                 userId: user.id, 
@@ -242,7 +241,7 @@ app.post('/submitMenue', async (req, res) => {
     console.log(`resLocation: ${resLocation}`);
 
     //find a restaurant with the provided information!
-    let relres = await Restaurant.findOne({where: {name: resName, location: resLocation }});
+    let relres = await Restaurant.findOne({where: {name: resName,  location: resLocation }});
     try{
         if(relres) {
             newMenueObject = await Menue.create({
