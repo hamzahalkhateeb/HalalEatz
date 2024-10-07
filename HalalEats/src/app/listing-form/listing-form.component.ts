@@ -23,7 +23,6 @@ export class ListingFormComponent implements OnInit{
     //view children for listing the restaurant!
     @ViewChild('resLocationInput', {static: true}) resLocation!: ElementRef<HTMLInputElement>;
     @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
-    
     @ViewChild('resForm') resForm= NgForm
 
     
@@ -69,8 +68,8 @@ export class ListingFormComponent implements OnInit{
       halalRating: 0,
     };
 
-    
-    menuItem = {
+
+    menueItem = {
       type: '',
       name: '',
       description: '',
@@ -82,7 +81,7 @@ export class ListingFormComponent implements OnInit{
       lactoseFree: false,
     };
     
-
+    
     selectedFile: File | null = null;
 
     constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private ngZone: NgZone, private renderer: Renderer2) {}
@@ -101,8 +100,7 @@ export class ListingFormComponent implements OnInit{
     }
 
 
-    ////////////////////////////////////////////////////
-    //This is all good, go and change the backend!!
+    
     handleFormSubmission(response: any): void {
       
       
@@ -234,29 +232,19 @@ export class ListingFormComponent implements OnInit{
     }*/
 
     
-    populateArray(array: any[], divsList: HTMLElement[], word: string) {
+    populateArray(itemDiv: HTMLDivElement) {
       
-      
-      array.length = 0;
-
-      divsList.forEach(itemDiv => {
-        
-
-        const itemDiq = {
-          name: (itemDiv.querySelector(`input[name="${word}Name"]`) as HTMLInputElement).value,
-          description: (itemDiv.querySelector(`input[name="${word}Description"]`) as HTMLInputElement).value,
-          price: parseFloat((itemDiv.querySelector(`input[name="${word}Price"]`) as HTMLInputElement).value),
-          halal: (itemDiv.querySelector('input[name="halal"]') as HTMLInputElement).checked,
-          vegan: (itemDiv.querySelector('input[name="vegan"]') as HTMLInputElement).checked,
-          vegetarian: (itemDiv.querySelector('input[name="vegetarian"]') as HTMLInputElement).checked,
-          lactoseFree: (itemDiv.querySelector('input[name="lactoseFree"]') as HTMLInputElement).checked,
-          glutenFree: (itemDiv.querySelector('input[name="glutenFree"]') as HTMLInputElement).checked,
-          img: (itemDiv.querySelector(`input[name="${word}img"]`) as HTMLInputElement).value,
-          timesBought: 0,
-        }
-
-        array.push(itemDiq);
-      });
+        this.menueItem.type= (itemDiv.querySelector(`[name='itemType']`) as HTMLInputElement).value;
+        this.menueItem.name= (itemDiv.querySelector(`[name='itemName']`) as HTMLInputElement).value;
+        this.menueItem.price= parseFloat((itemDiv.querySelector(`[name='itemPrice']`) as HTMLInputElement).value);
+        this.menueItem.halal= (itemDiv.querySelector(`[name='halal']`) as HTMLInputElement).checked;
+        this.menueItem.vegan= (itemDiv.querySelector(`[name='vegan']`) as HTMLInputElement).checked;
+        this.menueItem.vegetarian= (itemDiv.querySelector(`[name='vegetarian']`) as HTMLInputElement).checked;
+        this.menueItem.glutenFree= (itemDiv.querySelector(`[name='glutenFree']`) as HTMLInputElement).checked;
+        this.menueItem.lactoseFree= (itemDiv.querySelector(`[name='lactoseFree']`) as HTMLInputElement).checked;
+        this.menueItem.description= (itemDiv.querySelector(`[name='itemDescription']`) as HTMLInputElement).value;
+   
+      };
 
       
 
@@ -358,10 +346,26 @@ export class ListingFormComponent implements OnInit{
 
     }*/
 
-    submitMenueItem(event: any){
-      return
+    submitMenueItem(response: any): void{
+      
+      const itemDiv = this.itemContainer.nativeElement;
+
+      this.menueItem.type= (itemDiv.querySelector(`[name='itemType']`) as HTMLInputElement).value;
+      this.menueItem.name= (itemDiv.querySelector(`[name='itemName']`) as HTMLInputElement).value;
+      this.menueItem.price= parseFloat((itemDiv.querySelector(`[name='itemPrice']`) as HTMLInputElement).value);
+      this.menueItem.halal= (itemDiv.querySelector(`[name='halal']`) as HTMLInputElement).checked;
+      this.menueItem.vegan= (itemDiv.querySelector(`[name='vegan']`) as HTMLInputElement).checked;
+      this.menueItem.vegetarian= (itemDiv.querySelector(`[name='vegetarian']`) as HTMLInputElement).checked;
+      this.menueItem.glutenFree= (itemDiv.querySelector(`[name='glutenFree']`) as HTMLInputElement).checked;
+      this.menueItem.lactoseFree= (itemDiv.querySelector(`[name='lactoseFree']`) as HTMLInputElement).checked;
+      this.menueItem.description= (itemDiv.querySelector(`[name='itemDescription']`) as HTMLInputElement).value;
+   
+
+      
+
+      return 
     }
     
     
-}
+  }
     

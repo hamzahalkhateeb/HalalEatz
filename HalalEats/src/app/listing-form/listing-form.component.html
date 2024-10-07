@@ -169,7 +169,7 @@
                     <label for="lactoseFree">Lactose Free</label>
                     <input type="checkbox" class="form-control"  name="lactoseFree" required>
                     <label for="itemimg">Item Image</label>
-                    <input type="file" class="form-control"  name="itemimg" accept="image/*" required>
+                    <input type="file" class="form-control"  name="itemimg" (change)="onFileSelected($event)" accept="image/*" required>
                 </div>
             </div>
         </div>
