@@ -10,8 +10,6 @@ import { FormsModule, NgForm } from '@angular/forms';
 
 
 
-
-
 @Component({
   selector: 'app-listing-form',
   standalone: true,
@@ -19,6 +17,8 @@ import { FormsModule, NgForm } from '@angular/forms';
   templateUrl: './listing-form.component.html',
   styleUrl: './listing-form.component.css'
 })
+
+
 export class ListingFormComponent implements OnInit{
     //view children for listing the restaurant!
     @ViewChild('resLocationInput', {static: true}) resLocation!: ElementRef<HTMLInputElement>;
@@ -26,9 +26,6 @@ export class ListingFormComponent implements OnInit{
     @ViewChild('resForm') resForm= NgForm
 
     
-
-
-
     predictions: google.maps.places.AutocompletePrediction[] = [];
 
     apikey = 'AIzaSyDbzLtJqttwnCZpCkzS7iaxLRN2kjcr8n8';
@@ -182,35 +179,7 @@ export class ListingFormComponent implements OnInit{
       }
   }
 
-    //the following commented out stuff might be deleted later!
-    /*addMeal(){
-      const clonedMeal = this.mealDiv.nativeElement.cloneNode(true);
-
-      this.renderer.insertBefore(this.mealContainer.nativeElement, clonedMeal, this.mealContainer.nativeElement.lastChild);
-
-      const deleteBtn = clonedMeal.querySelector('.deleteDivbtn');
-      this.renderer.listen(deleteBtn, 'click', (event) => this.deleteDiv(event));
-
-
-    }
-
-    addDrink() {
-      const clonedDrink = this.drinkDiv.nativeElement.cloneNode(true);
-
-      this.renderer.insertBefore(this.drinkContainer.nativeElement, clonedDrink, this.drinkContainer.nativeElement.lastChild);
-
-      const deleteBtn = clonedDrink.querySelector('.deleteDivbtn');
-      this.renderer.listen(deleteBtn, 'click', (event) => this.deleteDiv(event));
-    }
     
-    addDesert() {
-      const clonedDesert = this.desertDiv.nativeElement.cloneNode(true);
-
-      this.renderer.insertBefore(this.desertContainer.nativeElement, clonedDesert, this.desertContainer.nativeElement.lastChild);
-
-      const deleteBtn = clonedDesert.querySelector('.deleteDivbtn');
-      this.renderer.listen(deleteBtn, 'click', (event) => this.deleteDiv(event));
-    }*/
 
     updateHalalRating(event: any) {
     if (event.target.checked){
@@ -223,112 +192,9 @@ export class ListingFormComponent implements OnInit{
     
     }
 
-    /*might delete later!
-    deleteDiv(event: any) {
-      const btn = event.target as HTMLButtonElement;
-      const div = btn.parentElement as HTMLDivElement;
-      div.remove();
-
-    }*/
-
     
-    populateArray(itemDiv: HTMLDivElement) {
-      
-        this.menueItem.type= (itemDiv.querySelector(`[name='itemType']`) as HTMLInputElement).value;
-        this.menueItem.name= (itemDiv.querySelector(`[name='itemName']`) as HTMLInputElement).value;
-        this.menueItem.price= parseFloat((itemDiv.querySelector(`[name='itemPrice']`) as HTMLInputElement).value);
-        this.menueItem.halal= (itemDiv.querySelector(`[name='halal']`) as HTMLInputElement).checked;
-        this.menueItem.vegan= (itemDiv.querySelector(`[name='vegan']`) as HTMLInputElement).checked;
-        this.menueItem.vegetarian= (itemDiv.querySelector(`[name='vegetarian']`) as HTMLInputElement).checked;
-        this.menueItem.glutenFree= (itemDiv.querySelector(`[name='glutenFree']`) as HTMLInputElement).checked;
-        this.menueItem.lactoseFree= (itemDiv.querySelector(`[name='lactoseFree']`) as HTMLInputElement).checked;
-        this.menueItem.description= (itemDiv.querySelector(`[name='itemDescription']`) as HTMLInputElement).value;
-   
-      };
 
-      
-
-      
-
-
-
-    }
-
-
-    /*revise this whole funtion
-    submitMenue(event: any){
-      //declare a new fromdata variable to store everything in it
-      const newFormData = new FormData();
-
-      //put user input into 3 arrays
-      const mealDivs = Array.from(this.mealContainer.nativeElement.querySelectorAll('.meal')) as HTMLElement [];
-      this.populateArray(this.meals, mealDivs, 'meal');
-      this.menue.meals = this.meals;
-      
-      const drinkDivs = Array.from(this.drinkContainer.nativeElement.querySelectorAll('.drink')) as HTMLElement [];
-      this.populateArray(this.drinks, drinkDivs, 'drink');
-      this.menue.deserts = this.deserts;
-
-      const desertDivs = Array.from(this.desertContainer.nativeElement.querySelectorAll('.desert')) as HTMLElement [];
-      this.populateArray(this.deserts, desertDivs, 'desert');
-      this.menue.drinks = this.drinks;
-      const menue = JSON.stringify(this.menue);
-      
-
-      //loop through each array and append its contents to the formdata
-      this.meals.forEach((meal, index) => {
-        newFormData.append(`meals[${index}][name]`, meal.name);
-        newFormData.append(`meals[${index}][price]`, meal.price);
-        newFormData.append(`meals[${index}][name]`, meal.halal);
-        newFormData.append(`meals[${index}][name]`, meal.vegan);
-        newFormData.append(`meals[${index}][name]`, meal.vegetarian);
-        newFormData.append(`meals[${index}][name]`, meal.glutenFree);
-        newFormData.append(`meals[${index}][name]`, meal.lactoseFree);
-
-        if(meal.mealimg){
-          newFormData.append(`meals[${index}][image]`, meal.mealimg)
-        }
-
-      });
-
-
-      this.drinks.forEach((drink, index) => {
-        newFormData.append(`drinks[${index}][name]`, drink.name);
-        newFormData.append(`drinks[${index}][price]`, drink.price.toString());
-        newFormData.append(`drinks[${index}][halal]`, drink.halal.toString());
-        newFormData.append(`drinks[${index}][vegan]`, drink.vegan.toString());
-        newFormData.append(`drinks[${index}][vegetarian]`, drink.vegetarian.toString());
-        newFormData.append(`drinks[${index}][lactoseFree]`, drink.lactoseFree.toString());
-        newFormData.append(`drinks[${index}][glutenFree]`, drink.glutenFree.toString());
-      
-        // Append the image file for each drink if it exists
-        if (drink.drinkimg) {
-          newFormData.append(`drinks[${index}][image]`, drink.drinkimg);
-        }
-      });
-      
-      // 3. Add desserts array to newFormData
-      this.deserts.forEach((dessert, index) => {
-        newFormData.append(`deserts[${index}][name]`, dessert.name);
-        newFormData.append(`deserts[${index}][price]`, dessert.price.toString());
-        newFormData.append(`deserts[${index}][halal]`, dessert.halal.toString());
-        newFormData.append(`deserts[${index}][vegan]`, dessert.vegan.toString());
-        newFormData.append(`deserts[${index}][vegetarian]`, dessert.vegetarian.toString());
-        newFormData.append(`deserts[${index}][lactoseFree]`, dessert.lactoseFree.toString());
-        newFormData.append(`deserts[${index}][glutenFree]`, dessert.glutenFree.toString());
-      
-        // Append the image file for each dessert if it exists
-        if (dessert.desertimg) {
-          newFormData.append(`deserts[${index}][image]`, dessert.desertimg);
-        }
-      });
-
-
-      console.log(newFormData);
-
-
-
-
+    /*
       this.http.post('http://localhost:3000/submitMenue', {menue: menue, resName: this.resInfo.name, resLocation: this.resInfo.location})
         .subscribe({
           next: (data: any) => {
@@ -348,8 +214,10 @@ export class ListingFormComponent implements OnInit{
 
     submitMenueItem(response: any): void{
       
+      //get a reference for the div that has all the input fields needed
       const itemDiv = this.itemContainer.nativeElement;
 
+      //assign the values in html input fields into menuitem object fields
       this.menueItem.type= (itemDiv.querySelector(`[name='itemType']`) as HTMLInputElement).value;
       this.menueItem.name= (itemDiv.querySelector(`[name='itemName']`) as HTMLInputElement).value;
       this.menueItem.price= parseFloat((itemDiv.querySelector(`[name='itemPrice']`) as HTMLInputElement).value);
@@ -360,10 +228,33 @@ export class ListingFormComponent implements OnInit{
       this.menueItem.lactoseFree= (itemDiv.querySelector(`[name='lactoseFree']`) as HTMLInputElement).checked;
       this.menueItem.description= (itemDiv.querySelector(`[name='itemDescription']`) as HTMLInputElement).value;
    
+      
+      //declare an empty formdata variable
+      const menueitemFormData = new FormData();
+
+      //append all the needed data to said variable
+      menueitemFormData.append("menueItem", JSON.stringify(this.menueItem));
+      menueitemFormData.append("image", this.selectedFile!, this.selectedFile!.name);
+      menueitemFormData.append("resName", this.resInfo.name);
+      menueitemFormData.append("resLocation", this.resInfo.location);
+
+
+      this.http.post('http://localhost:3000/submitMenue', menueitemFormData)
+        .subscribe({
+          next: (data: any) => {
+            if (data.success){
+              alert(data.message);
+              this.router.navigateByUrl(data.redirectUrl);
+            } else {
+              console.log("unexpected error: ", data);
+            }
+          },
+          error: (error: any) => {
+            console.error('Error: ', error);
+          }
+        });
 
       
-
-      return 
     }
     
     
