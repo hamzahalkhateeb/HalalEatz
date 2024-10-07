@@ -142,17 +142,22 @@
     </form>
     <hr>
 
-    <form menueForm="ngForm">
+    <form #menueForm="ngForm" (ngSubmit)="submitMenueItem(menueForm)">
         <div class="menu">
-            <div class="meals" #mealContainer>
-                <div class="form-group meal" #mealDiv>
-                    <button class="deleteDivbtn"  (click)="deleteDiv($event)">Delete</button>
-                    <label for="mealName">Meal Name</label>
-                    <input type="text" class="form-control"  name="mealName" required>
-                    <label for="mealDescription">Description/Ingredients</label>
-                    <input type="text" class="form-control"  name="mealDescription" required>
-                    <label for="mealPrice">Price</label>
-                    <input type="number" class="form-control"  name="mealPrice" required>
+            <div class="item" #itemContainer>
+                <div class="form-group item" #itemDiv>
+                    <label for="itemType">Item Type</label>
+                    <select id="itemType" name="itemType">
+                        <option value="meal">Meal</option>
+                        <option value="drink">drink</option>
+                        <option value="desert">desert</option>
+                    </select>
+                    <label for="itemName">Item Name</label>
+                    <input type="text" class="form-control"  name="itemName" required>
+                    <label for="itemDescription">Description/Ingredients</label>
+                    <input type="text" class="form-control"  name="itemDescription" required>
+                    <label for="itemPrice">Price</label>
+                    <input type="number" class="form-control"  name="itemPrice" required>
                     <label for="halal">Halal</label>
                     <input type="checkbox" class="form-control"  name="halal" required>
                     <label for="vegan">Vegan</label>
@@ -163,71 +168,15 @@
                     <input type="checkbox" class="form-control"  name="glutenFree" required>
                     <label for="lactoseFree">Lactose Free</label>
                     <input type="checkbox" class="form-control"  name="lactoseFree" required>
-                    <label for="mealimg">Meal Image</label>
-                    <input type="file" class="form-control"  name="mealimg" accept="image/*" required>
+                    <label for="itemimg">Item Image</label>
+                    <input type="file" class="form-control"  name="itemimg" accept="image/*" required>
                 </div>
-
-                <button class="addMealbtn" id="addMeal" #addMealBtn (click)="addMeal()">Add Meal</button>
-
             </div>
-
-            <div class="deserts" #desertContainer>
-                <div class="form-group desert" #desertDiv>
-                    <button class="deleteDivbtn"  (click)="deleteDiv($event)">Delete</button>
-                    <label for="desertName">Desert Name</label>
-                    <input type="text" class="form-control"  name="desertName" required>
-                    <label for="desertDescription">Description/Ingredients</label>
-                    <input type="text" class="form-control"  name="desertDescription" required>
-                    <label for="desertPrice">Price</label>
-                    <input type="number" class="form-control"  name="desertPrice" required>
-                    <label for="halal">Halal</label>
-                    <input type="checkbox" class="form-control"  name="halal" required>
-                    <label for="vegan">Vegan</label>
-                    <input type="checkbox" class="form-control"  name="vegan" required>
-                    <label for="vegetarian">Vegetarian</label>
-                    <input type="checkbox" class="form-control"  name="vegetarian" required>
-                    <label for="glutenFree">Gluten Free</label>
-                    <input type="checkbox" class="form-control"  name="glutenFree" required>
-                    <label for="lactoseFree">Lactose Free</label>
-                    <input type="checkbox" class="form-control"  name="lactoseFree" required>
-                    <label for="desertimg">Desert Image</label>
-                    <input type="file" class="form-control"  name="desertimg" accept="image/*" required>
-                </div>
-                <button class="addDesertbtn" id="addDesert" #addDesertBtn (click)="addDesert()">Add Desert</button>
-
-            </div>
-
-            <div class="drinks" #drinkContainer>
-                <div class="form-group drink" #drinkDiv>
-                    <button class="deleteDivbtn"  (click)="deleteDiv($event)">Delete</button>
-                    <label for="drinkName">Drink Name</label>
-                    <input type="text" class="form-control"  name="drinkName" required>
-                    <label for="drinkDescription">Description/Ingredients</label>
-                    <input type="text" class="form-control"  name="drinkDescription" required>
-                    <label for="drinkPrice">Price</label>
-                    <input type="number" class="form-control"  name="drinkPrice" required>
-                    <label for="halal">Halal</label>
-                    <input type="checkbox" class="form-control"  name="halal" required>
-                    <label for="vegan">Vegan</label>
-                    <input type="checkbox" class="form-control"  name="vegan" required>
-                    <label for="vegetarian">Vegetarian</label>
-                    <input type="checkbox" class="form-control"  name="vegetarian" required>
-                    <label for="glutenFree">Gluten Free</label>
-                    <input type="checkbox" class="form-control"  name="glutenFree" required>
-                    <label for="lactoseFree">Lactose Free</label>
-                    <input type="checkbox" class="form-control"  name="lactoseFree" required>
-                    <label for="drinkimg">Drink Image</label>
-                    <input type="file" class="form-control"  name="drinkimg" accept="image/*" required>
-                </div>
-
-                <button class="addDrinkbtn" id="addDrink" #addDrinkBtn (click)="addDrink()">Add Drink</button>
-
-
-            </div>
-
         </div>
 
-        <button type="submit"  name="submitMenue" (click)="submitMenue($event)">Submit Menue</button>
+        <button type="submit">Submit menue Item</button>
+
+                
 
     </form>
 

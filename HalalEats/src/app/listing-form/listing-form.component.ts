@@ -22,12 +22,8 @@ import { FormsModule, NgForm } from '@angular/forms';
 export class ListingFormComponent implements OnInit{
     //view children for listing the restaurant!
     @ViewChild('resLocationInput', {static: true}) resLocation!: ElementRef<HTMLInputElement>;
-    @ViewChild('mealContainer', {static: true}) mealContainer!: ElementRef;
-    @ViewChild('mealDiv', {static: true}) mealDiv!: ElementRef;
-    @ViewChild('desertContainer', {static: true}) desertContainer!: ElementRef;
-    @ViewChild('desertDiv', {static: true}) desertDiv!: ElementRef;
-    @ViewChild('drinkContainer', {static: true}) drinkContainer!: ElementRef;
-    @ViewChild('drinkDiv', {static: true}) drinkDiv!: ElementRef;
+    @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
+    
     @ViewChild('resForm') resForm= NgForm
 
     
@@ -73,15 +69,18 @@ export class ListingFormComponent implements OnInit{
       halalRating: 0,
     };
 
-    menue = {
-      meals: {},
-      deserts: {},
-      drinks: {},
-    }
-
-    meals: Array<any> = [];
-    deserts: Array<any> = [];
-    drinks: Array<any> = [];
+    
+    menuItem = {
+      type: '',
+      name: '',
+      description: '',
+      price: 0,
+      halal: false,
+      vegan: false,
+      vegetarian: false,
+      glutenFree: false,
+      lactoseFree: false,
+    };
     
 
     selectedFile: File | null = null;
@@ -185,8 +184,8 @@ export class ListingFormComponent implements OnInit{
       }
   }
 
-    
-    addMeal(){
+    //the following commented out stuff might be deleted later!
+    /*addMeal(){
       const clonedMeal = this.mealDiv.nativeElement.cloneNode(true);
 
       this.renderer.insertBefore(this.mealContainer.nativeElement, clonedMeal, this.mealContainer.nativeElement.lastChild);
@@ -213,7 +212,7 @@ export class ListingFormComponent implements OnInit{
 
       const deleteBtn = clonedDesert.querySelector('.deleteDivbtn');
       this.renderer.listen(deleteBtn, 'click', (event) => this.deleteDiv(event));
-    }
+    }*/
 
     updateHalalRating(event: any) {
     if (event.target.checked){
@@ -226,13 +225,13 @@ export class ListingFormComponent implements OnInit{
     
     }
 
-
+    /*might delete later!
     deleteDiv(event: any) {
       const btn = event.target as HTMLButtonElement;
       const div = btn.parentElement as HTMLDivElement;
       div.remove();
 
-    }
+    }*/
 
     
     populateArray(array: any[], divsList: HTMLElement[], word: string) {
@@ -267,11 +266,17 @@ export class ListingFormComponent implements OnInit{
 
     }
 
+
+    /*revise this whole funtion
     submitMenue(event: any){
+      //declare a new fromdata variable to store everything in it
+      const newFormData = new FormData();
+
+      //put user input into 3 arrays
       const mealDivs = Array.from(this.mealContainer.nativeElement.querySelectorAll('.meal')) as HTMLElement [];
       this.populateArray(this.meals, mealDivs, 'meal');
       this.menue.meals = this.meals;
-
+      
       const drinkDivs = Array.from(this.drinkContainer.nativeElement.querySelectorAll('.drink')) as HTMLElement [];
       this.populateArray(this.drinks, drinkDivs, 'drink');
       this.menue.deserts = this.deserts;
@@ -279,11 +284,62 @@ export class ListingFormComponent implements OnInit{
       const desertDivs = Array.from(this.desertContainer.nativeElement.querySelectorAll('.desert')) as HTMLElement [];
       this.populateArray(this.deserts, desertDivs, 'desert');
       this.menue.drinks = this.drinks;
-      
-      
-      
-      
       const menue = JSON.stringify(this.menue);
+      
+
+      //loop through each array and append its contents to the formdata
+      this.meals.forEach((meal, index) => {
+        newFormData.append(`meals[${index}][name]`, meal.name);
+        newFormData.append(`meals[${index}][price]`, meal.price);
+        newFormData.append(`meals[${index}][name]`, meal.halal);
+        newFormData.append(`meals[${index}][name]`, meal.vegan);
+        newFormData.append(`meals[${index}][name]`, meal.vegetarian);
+        newFormData.append(`meals[${index}][name]`, meal.glutenFree);
+        newFormData.append(`meals[${index}][name]`, meal.lactoseFree);
+
+        if(meal.mealimg){
+          newFormData.append(`meals[${index}][image]`, meal.mealimg)
+        }
+
+      });
+
+
+      this.drinks.forEach((drink, index) => {
+        newFormData.append(`drinks[${index}][name]`, drink.name);
+        newFormData.append(`drinks[${index}][price]`, drink.price.toString());
+        newFormData.append(`drinks[${index}][halal]`, drink.halal.toString());
+        newFormData.append(`drinks[${index}][vegan]`, drink.vegan.toString());
+        newFormData.append(`drinks[${index}][vegetarian]`, drink.vegetarian.toString());
+        newFormData.append(`drinks[${index}][lactoseFree]`, drink.lactoseFree.toString());
+        newFormData.append(`drinks[${index}][glutenFree]`, drink.glutenFree.toString());
+      
+        // Append the image file for each drink if it exists
+        if (drink.drinkimg) {
+          newFormData.append(`drinks[${index}][image]`, drink.drinkimg);
+        }
+      });
+      
+      // 3. Add desserts array to newFormData
+      this.deserts.forEach((dessert, index) => {
+        newFormData.append(`deserts[${index}][name]`, dessert.name);
+        newFormData.append(`deserts[${index}][price]`, dessert.price.toString());
+        newFormData.append(`deserts[${index}][halal]`, dessert.halal.toString());
+        newFormData.append(`deserts[${index}][vegan]`, dessert.vegan.toString());
+        newFormData.append(`deserts[${index}][vegetarian]`, dessert.vegetarian.toString());
+        newFormData.append(`deserts[${index}][lactoseFree]`, dessert.lactoseFree.toString());
+        newFormData.append(`deserts[${index}][glutenFree]`, dessert.glutenFree.toString());
+      
+        // Append the image file for each dessert if it exists
+        if (dessert.desertimg) {
+          newFormData.append(`deserts[${index}][image]`, dessert.desertimg);
+        }
+      });
+
+
+      console.log(newFormData);
+
+
+
 
       this.http.post('http://localhost:3000/submitMenue', {menue: menue, resName: this.resInfo.name, resLocation: this.resInfo.location})
         .subscribe({
@@ -300,6 +356,10 @@ export class ListingFormComponent implements OnInit{
           }
         });
 
+    }*/
+
+    submitMenueItem(event: any){
+      return
     }
     
     
