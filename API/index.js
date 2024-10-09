@@ -134,7 +134,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     await User.destroy({ where: {} });
     await Restaurant.destroy({ where: {} });
     
-    console.log(`user destroyed to allow for a new restaurant submission`);
+
     
     //extract received information
     const token = req.body.id_token;
@@ -142,12 +142,12 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     const uploadedImg = req.file;
     const type = req.body.type;
     const relItem = req.body.relItem
-    console.log(uploadedImg.filename);
+    
 
 
     //change image name
     const newImageName = generateImgName(resInfo.name, type, uploadedImg.originalname, relItem)
-    console.log(newImageName);
+    
 
     // declaring paths and renaming the newly stored image!
     const oldPath = path.join(__dirname, 'uploads', uploadedImg.filename);
@@ -176,22 +176,13 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
         let user = await User.findOne({where: {email : email}});
 
         if (!user){
-            console.log("user doesn't exist, creating user now, of account type 2");
-
-
+            
             user = await User.create({
                 email, picture, firstName: given_name, lastName: family_name, accountType: 2, 
             });
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
 
-            console.log("user created!");
-            console.log("creating restaurant now!");
-            
-
-
-            
-            
             
             restaurant = await Restaurant.create({
                 
@@ -201,16 +192,13 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
                 lon: resInfo.lon,
                 openingHours: JSON.stringify(resInfo.days), 
                 halalRating: resInfo.halalRating, 
-                userId: user.id, 
+                UserId: user.id, 
                 coverImg: path.join(__dirname, 'uploads', newImageName) ? newImageName: null
             });
 
 
-            let restaurant2 = await Restaurant.findOne({where : {name : resInfo.name }})
-            console.log(`**************************** ${restaurant2}`);
-
+        
             
-
             res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", user, redirectUrl: "/restaurantDashboard"});
         } else {
             res.status(200).json({success: false, message: "The email is already associated with another account, please use an email that is specifically for your restaurant!", user, redirectUrl: "/listing-form"});
@@ -232,32 +220,31 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 app.post('/submitMenue', upload.single('image'), async (req, res) => {
     //destroy all menu object
 
-    console.log(`******************************************************************************************************************* `);
+    
     await Menue.destroy ({where: {} });
 
-    console.log(`Destroyed all previous menues! `);
+    
 
     try{
         //extract all the information
         const menueItemString = req.body.menueItem;
-        console.log(`1-menue item JSON string: ${menueItemString}`);
+        
         const image = req.file;
         const resName = req.body.resName;
-        console.log(`1-restaurant name: ${resName} `);
+        
         const resLocation = req.body.resLocation;
-        console.log(`1-restaurant location: ${resLocation} `);
+        
         const itemType = (JSON.parse(req.body.menueItem)).type;
-        console.log(`1-item type: ${itemType}`);
+       
         const relItem = (JSON.parse(req.body.menueItem)).name;
-        console.log(`1-item name: ${relItem}`);
+        
         
         
         
         
         //change uploaded image name
         const itemImageName = generateImgName(resName, itemType, image.originalname, relItem);
-        console.log(`2-new item image name: ${itemImageName}`);
-
+    
         const oldPath = path.join(__dirname, 'uploads', image.filename);
         const newPath = path.join(__dirname, 'uploads', itemImageName);
 
@@ -271,38 +258,38 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
 
     
         //find the related restaurant
-        let restaurant = await Restaurant.findOne({where : {name : resName, location : resLocation}, include: User});
+        let restaurant = await Restaurant.findOne({where : {name : resName, location : resLocation}});
+       
         
-        
-        if (!restaurant || !restaurant.User) {
-            console.log(`3- could not find restaurant and user`)
+        if (!restaurant) {
+            
             return res.status(404).json({ success: false, message: "Restaurant or User not found" });
-        } else {
-            let restaurantID = restaurant.id;
-            let userID = restaurant.User.userId;
-            console.log(`3- related restaurant id: ${restaurantID}`);
-            console.log(`3- related user id: ${userID}`);
-
         }
+        
 
         
         
-
-        let menue = await Menue.findOne({where : {restaurantId: restaurantID, userid: userID}});
+        
+        let menue = await Menue.findOne({where : {RestaurantId: restaurant.id, UserId: restaurant.UserId}});
+        
 
         if (!menue){
+
+    
             menue = await Menue.create({
                 meals: [],
                 drinks:[],
                 deserts:[],
-                restaurantId: restaurantID,
-                userId: userID
+                RestaurantId: restaurant.id,
+                UserId: restaurant.UserId
 
             });
-            console.log(`4- created a new menue object: ${menue}`);
+           
             
             if (itemType === 'meal'){
                 menue.meals.push(menueItemString);
+                menue.meals.push(menueItemString);
+                
             } else if (itemType === 'drink'){
                 menue.drinks.push(menueItemString);
             } else if (itemType === 'desert'){
@@ -310,7 +297,7 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
             } else {
                 return res.status(400).json({ success: false, message: "Invalid item type" });
             }
-            console.log(`4- created a new menue which the following string was pushed onto : ${menueItemString}`);
+            
             await menue.save();
         } else {
             if (itemType === 'meal'){
@@ -319,11 +306,12 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
                 menue.drinks.push(menueItemString);
             } else if (itemType === 'desert'){
                 menue.deserts.push(menueItemString);
+                
             } else {
                 return res.status(400).json({ success: false, message: "Invalid item type" });
         
             }
-            console.log(`4- there was already a menue which the following string was pushed onto : ${menueItemString}`);
+           
             await menue.save();
         }
 
@@ -364,34 +352,7 @@ app.listen(PORT, () => {
 
 
 
-/*//extract information
-    const menueItem = req.body.menue;
-    console.log(`menue received in the back end: ${menue}`);
 
-    const resName = req.body.resName;
-    console.log(`resName: ${resName}`);
-
-    const resLocation = req.body.resLocation;
-    console.log(`resLocation: ${resLocation}`);
-
-    //find a restaurant with the provided information!
-    let relres = await Restaurant.findOne({where: {name: resName,  location: resLocation }});
-    try{
-        if(relres) {
-            newMenueObject = await Menue.create({
-                meals: menue.meals, 
-                deserts: menue.deserts, 
-                drinks: menue.deserts,
-                restaurantId: relres.id,
-            });
-    
-            res.status(200).json({success: true, message: "Your restaurant menue has been added successfully", redirectUrl: '/restaurantDashboard'});
-        } else {
-            res.status(200).json({success: false, message: "The restaurant you tried to add your menue to does not exist, please submit your restaurant details first!!!", redirectUrl: '/listing-form'});
-        }
-    } catch {
-        res.status(400).json({error: 'Menue could not be added!', redirectUrl: "/listing-form"});
-    }*/
 
 
 
