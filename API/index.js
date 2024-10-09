@@ -61,7 +61,7 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
     if(type == "main"){
         let imgName = `${sanitizedName}_${type}_${Date.now()}${path.extname(originalname)}`;
         return imgName;
-    } else if (type == "menue" ){
+    } else {
         let imgName = `${sanitizedName}_${type}_${relItem}_${Date.now()}${path.extname(originalname)}`;
         return imgName;
     }
@@ -229,9 +229,143 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 });
 
 
-app.post('/submitMenue', async (req, res) => {
-    //extract information
-    const menue = JSON.parse(req.body.menue);
+app.post('/submitMenue', upload.single('image'), async (req, res) => {
+    //destroy all menu object
+
+    console.log(`******************************************************************************************************************* `);
+    await Menue.destroy ({where: {} });
+
+    console.log(`Destroyed all previous menues! `);
+
+    try{
+        //extract all the information
+        const menueItemString = req.body.menueItem;
+        console.log(`1-menue item JSON string: ${menueItemString}`);
+        const image = req.file;
+        const resName = req.body.resName;
+        console.log(`1-restaurant name: ${resName} `);
+        const resLocation = req.body.resLocation;
+        console.log(`1-restaurant location: ${resLocation} `);
+        const itemType = (JSON.parse(req.body.menueItem)).type;
+        console.log(`1-item type: ${itemType}`);
+        const relItem = (JSON.parse(req.body.menueItem)).name;
+        console.log(`1-item name: ${relItem}`);
+        
+        
+        
+        
+        //change uploaded image name
+        const itemImageName = generateImgName(resName, itemType, image.originalname, relItem);
+        console.log(`2-new item image name: ${itemImageName}`);
+
+        const oldPath = path.join(__dirname, 'uploads', image.filename);
+        const newPath = path.join(__dirname, 'uploads', itemImageName);
+
+        fs.rename(oldPath, newPath, (err) => {
+            if (err) {
+                console.error('Error renaming file:', err);
+                
+            }
+        
+        });
+
+    
+        //find the related restaurant
+        let restaurant = await Restaurant.findOne({where : {name : resName, location : resLocation}, include: User});
+        
+        
+        if (!restaurant || !restaurant.User) {
+            console.log(`3- could not find restaurant and user`)
+            return res.status(404).json({ success: false, message: "Restaurant or User not found" });
+        } else {
+            let restaurantID = restaurant.id;
+            let userID = restaurant.User.userId;
+            console.log(`3- related restaurant id: ${restaurantID}`);
+            console.log(`3- related user id: ${userID}`);
+
+        }
+
+        
+        
+
+        let menue = await Menue.findOne({where : {restaurantId: restaurantID, userid: userID}});
+
+        if (!menue){
+            menue = await Menue.create({
+                meals: [],
+                drinks:[],
+                deserts:[],
+                restaurantId: restaurantID,
+                userId: userID
+
+            });
+            console.log(`4- created a new menue object: ${menue}`);
+            
+            if (itemType === 'meal'){
+                menue.meals.push(menueItemString);
+            } else if (itemType === 'drink'){
+                menue.drinks.push(menueItemString);
+            } else if (itemType === 'desert'){
+                menue.deserts.push(menueItemString);
+            } else {
+                return res.status(400).json({ success: false, message: "Invalid item type" });
+            }
+            console.log(`4- created a new menue which the following string was pushed onto : ${menueItemString}`);
+            await menue.save();
+        } else {
+            if (itemType === 'meal'){
+                menue.meals.push(menueItemString);
+            } else if (itemType === 'drink'){
+                menue.drinks.push(menueItemString);
+            } else if (itemType === 'desert'){
+                menue.deserts.push(menueItemString);
+            } else {
+                return res.status(400).json({ success: false, message: "Invalid item type" });
+        
+            }
+            console.log(`4- there was already a menue which the following string was pushed onto : ${menueItemString}`);
+            await menue.save();
+        }
+
+
+        
+
+        
+
+        res.status(201).json({success: true, message: "You have added an item to the menu successfully!"});
+
+
+    } catch {
+        res.status(500).json({success: false, message: "Error adding an item your menue"});
+    }
+
+    
+        
+    
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT} !`);
+});
+
+
+
+/*//extract information
+    const menueItem = req.body.menue;
     console.log(`menue received in the back end: ${menue}`);
 
     const resName = req.body.resName;
@@ -257,27 +391,7 @@ app.post('/submitMenue', async (req, res) => {
         }
     } catch {
         res.status(400).json({error: 'Menue could not be added!', redirectUrl: "/listing-form"});
-    }
-    
-
-
-
-});
-
-
-
-
-
-
-
-
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT} !`);
-});
-
-
+    }*/
 
 
 

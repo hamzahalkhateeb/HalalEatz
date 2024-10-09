@@ -7,15 +7,15 @@ const Restaurant = require('./Restaurant');
 const Menue = sequelize.define('Menue', {
     meals: {
         type: DataTypes.JSON,
-        allowNull: false,
+        allowNull: true,
     },
     deserts: {
         type: DataTypes.JSON,
-        allowNull: false,
+        allowNull: true,
     },
     drinks: {
         type: DataTypes.JSON,
-        allowNull: false,
+        allowNull: true,
     },
      
 
