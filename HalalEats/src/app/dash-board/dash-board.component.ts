@@ -13,13 +13,31 @@ import { ListingFormComponent } from '../listing-form/listing-form.component';
 })
 export class DashBoardComponent implements OnInit {
 
+  longitude = 0;
+  latitude = 0;
+
+  restaurantPackage = {};
+
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     if(isPlatformBrowser(this.platformId)){
       (window as any)['logout'] = this.logout.bind(this);
       
+      if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+             this.latitude = position.coords.latitude;
+             this.longitude = position.coords.longitude;
+            console.log(`lat: ${this.latitude}, long: ${this.longitude}`);
+            this.getCloseRestaurants();
+          }
+        )
 
+
+
+      }
 
     }
   }
@@ -39,8 +57,27 @@ export class DashBoardComponent implements OnInit {
         },
         error: (error: any) => {
           console.error('Error: ', error);
-  }});}
+        }
+});}
 
+
+  getCloseRestaurants(): void{
+    console.log(`get close restauratns function called, it sent the following data: lat: ${this.latitude}, long: ${this.longitude} `);
+    this.http.post('http://localhost:3000/getCloseRestaurants', { long: this.longitude, lat: this.latitude })
+    .subscribe({
+      next: (data: any) => {
+        if(data.success){
+          alert(data.message);
+          this.restaurantPackage = data.restaurantPackage;
+        } else {
+          alert(data.message);
+        }
+      },
+      error: (error: any) => {
+        
+        console.error('Error: ', error);
+      }
+    });}
   
-
-}
+  
+  }

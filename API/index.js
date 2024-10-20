@@ -131,11 +131,7 @@ app.post('/logout', (req, res) =>{
 app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
     
-    await User.destroy({ where: {} });
-    await Restaurant.destroy({ where: {} });
-    
 
-    
     //extract received information
     const token = req.body.id_token;
     const resInfo = JSON.parse(req.body.resInfo);
@@ -218,13 +214,9 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
 
 app.post('/submitMenue', upload.single('image'), async (req, res) => {
-    //destroy all menu object
-
-    
-    await Menue.destroy ({where: {} });
-
     
 
+    
     try{
         //extract all the information
         const menueItemString = req.body.menueItem;
@@ -339,7 +331,50 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
 
 
 
+app.post('/getCloseRestaurants', async (req, res) => {
+    const Ulong = parseFloat(req.body.long);
+    const Ulat = parseFloat(req.body.lat);
+    //lat: -34.782893, long: 138.628749
+    console.log(`lat: ${req.body.lat}, long: ${req.body.long}`);
 
+
+    const query = `
+        SELECT
+            id, name, location, lat, lon,
+            (
+                6371 * ACOS(
+                COS(RADIANS(:Ulat)) * COS(RADIANS(lat)) * 
+                COS(RADIANS(lon) - RADIANS(:Ulong)) + 
+                SIN(RADIANS(:Ulat)) * SIN(RADIANS(lat))
+                )
+            ) AS DISTANCE
+        FROM
+            Restaurants
+        ORDER BY
+            DISTANCE ASC
+        LIMIT 3;
+    `;
+
+    try {
+        console.log("about to execute sql query!");
+        const closestRestaurants = await Sequelize.query(query, {
+            replacements: {Ulat, Ulong},
+            type: QueryTypes.SELECT
+        });
+        console.log("Executed successfully");
+        console.log(closestRestaurants);
+
+        if (closestRestaurants.length === 0){
+            return res.json({success: false, message: "no restaurants available to display!"});
+        }
+
+        res.json({success: true, restaurantPackage: closestRestaurants});
+    } catch (error){
+        res.status(500).json({success: false, message: 'something went wrong'});
+    }
+
+
+});
 
 
 

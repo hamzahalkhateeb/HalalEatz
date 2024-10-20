@@ -194,24 +194,6 @@ export class ListingFormComponent implements OnInit{
 
     
 
-    /*
-      this.http.post('http://localhost:3000/submitMenue', {menue: menue, resName: this.resInfo.name, resLocation: this.resInfo.location})
-        .subscribe({
-          next: (data: any) => {
-            if (data.success){
-              alert(data.message);
-              this.router.navigateByUrl(data.redirectUrl);
-            } else {
-              console.log("unexpected error: ", data);
-            }
-          },
-          error: (error: any) => {
-            console.error('Error: ', error);
-          }
-        });
-
-    }*/
-
     submitMenueItem(response: any): void{
       
       //get a reference for the div that has all the input fields needed
