@@ -1,7 +1,7 @@
 
 //import different apps and frameworks necessary for your application
 const express = require("express");
-const {Sequelize, User, Restaurant, Review, Role, Menue } = require("./models"); //import all data object models
+const {sequelize, User, Restaurant, Review, Role, Menue } = require("./models"); //import all data object models
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
@@ -11,7 +11,8 @@ const client = new OAuth2Client(CLIENT_ID);
 const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
-const { Op } = require("sequelize");
+const { Op, QueryTypes, Sequelize } = require("sequelize");
+
 
 
 
@@ -340,7 +341,7 @@ app.post('/getCloseRestaurants', async (req, res) => {
 
     const query = `
         SELECT
-            id, name, location, lat, lon,
+            id, name, location, openingHours, halalRating, images,
             (
                 6371 * ACOS(
                 COS(RADIANS(:Ulat)) * COS(RADIANS(lat)) * 
@@ -357,7 +358,7 @@ app.post('/getCloseRestaurants', async (req, res) => {
 
     try {
         console.log("about to execute sql query!");
-        const closestRestaurants = await Sequelize.query(query, {
+        const closestRestaurants = await sequelize.query(query, {
             replacements: {Ulat, Ulong},
             type: QueryTypes.SELECT
         });
