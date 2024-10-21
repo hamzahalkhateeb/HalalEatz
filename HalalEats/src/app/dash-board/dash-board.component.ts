@@ -67,7 +67,8 @@ export class DashBoardComponent implements OnInit {
     .subscribe({
       next: (data: any) => {
         if(data.success){
-          alert(data.message);
+          alert(data.restaurantPackage);
+
           this.restaurantPackage = data.restaurantPackage;
         } else {
           alert(data.message);

@@ -192,7 +192,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
                 openingHours: JSON.stringify(resInfo.days), 
                 halalRating: resInfo.halalRating, 
                 UserId: user.id, 
-                coverImg: newPath,
+                images: newPath,
             });
 
 
@@ -377,7 +377,7 @@ app.post('/getCloseRestaurants', async (req, res) => {
             return res.json({success: false, message: "no restaurants available to display!"});
         }
 
-        res.json({success: true, restaurantPackage: closestRestaurants});
+        res.json({success: true, restaurantPackage: JSON.stringify(closestRestaurants)});
     } catch (error){
         res.status(500).json({success: false, message: 'something went wrong'});
     }
