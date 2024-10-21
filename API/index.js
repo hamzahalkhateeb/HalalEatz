@@ -131,7 +131,8 @@ app.post('/logout', (req, res) =>{
 
 app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
-    
+    Restaurant.destroy({ where: {} });
+    User.destroy({ where: {} });
 
     //extract received information
     const token = req.body.id_token;
@@ -149,6 +150,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     // declaring paths and renaming the newly stored image!
     const oldPath = path.join(__dirname, 'uploads', uploadedImg.filename);
     const newPath = path.join(__dirname, 'uploads', newImageName);
+    console.log(newPath);
 
     fs.rename(oldPath, newPath, (err) => {
         if (err) {
@@ -190,7 +192,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
                 openingHours: JSON.stringify(resInfo.days), 
                 halalRating: resInfo.halalRating, 
                 UserId: user.id, 
-                coverImg: path.join(__dirname, 'uploads', newImageName) ? newImageName: null
+                coverImg: newPath,
             });
 
 
@@ -215,21 +217,23 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
 
 app.post('/submitMenue', upload.single('image'), async (req, res) => {
-    
+    Menue.destroy({ where: {} });
 
     
     try{
         //extract all the information
-        const menueItemString = req.body.menueItem;
+        
+        const menueItemObject = JSON.parse(req.body.menueItem);
+        
         
         const image = req.file;
         const resName = req.body.resName;
         
         const resLocation = req.body.resLocation;
         
-        const itemType = (JSON.parse(req.body.menueItem)).type;
+        const itemType = menueItemObject.type;
        
-        const relItem = (JSON.parse(req.body.menueItem)).name;
+        const relItem = menueItemObject.name;
         
         
         
@@ -249,6 +253,10 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
         
         });
 
+        //store image path
+        menueItemObject.imgPath = newPath;
+        const menueItemString = JSON.stringify(menueItemObject);
+        
     
         //find the related restaurant
         let restaurant = await Restaurant.findOne({where : {name : resName, location : resLocation}});

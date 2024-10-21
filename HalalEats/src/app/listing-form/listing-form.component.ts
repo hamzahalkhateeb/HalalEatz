@@ -76,6 +76,7 @@ export class ListingFormComponent implements OnInit{
       vegetarian: false,
       glutenFree: false,
       lactoseFree: false,
+      imgPath: "",
     };
     
     
