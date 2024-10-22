@@ -10,6 +10,27 @@
     <a class-="cta" href="#"><button (click)="logout('logout requested!')">Logout</button></a>
     
 </header>
+<body>
+    <div class="restaurantContainer" *ngIf="restaurantPackage">
+        <div class="represdiv" *ngIf="restaurantPackage">
+            <div class="coverImgDiv">
+                <img [src]="restaurantPackage[0].images" alt="Description of image" />
+            </div>
+            <div class="resName">
+                <h1>{{restaurantPackage[0].name}}</h1>
+            </div>
+            <div class="disrating">
+                <div class="dis">
+                    <h6>{{restaurantPackage[0].distance}}</h6>
+                </div>
+                <div class="rating">
+                    <h6>{{restaurantPackage[0].halalRating}}</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
 
 
 
