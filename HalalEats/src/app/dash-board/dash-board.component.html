@@ -12,22 +12,24 @@
 </header>
 <body>
     <div class="restaurantContainer" *ngIf="restaurantPackage">
-        <div class="represdiv" *ngIf="restaurantPackage">
+
+        <div class="restaurant" *ngFor="let restaurant of restaurantPackage">
             <div class="coverImgDiv">
-                <img [src]="restaurantPackage[0].images" alt="Description of image" />
+                <img [src]="restaurant.images" alt="Description of image"/>
             </div>
             <div class="resName">
-                <h1>{{restaurantPackage[0].name}}</h1>
+                <h1>{{restaurant.name}}</h1>
             </div>
             <div class="disrating">
                 <div class="dis">
-                    <h6>{{restaurantPackage[0].distance}}</h6>
+                    <h6>{{restaurant.distance}}</h6>
                 </div>
                 <div class="rating">
-                    <h6>{{restaurantPackage[0].halalRating}}</h6>
+                    <h6>{{restaurant.halalRating}}</h6>
                 </div>
             </div>
         </div>
+       
     </div>
 
 </body>

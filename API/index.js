@@ -131,8 +131,7 @@ app.post('/logout', (req, res) =>{
 
 app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
-    Restaurant.destroy({ where: {} });
-    User.destroy({ where: {} });
+    
 
     //extract received information
     const token = req.body.id_token;
