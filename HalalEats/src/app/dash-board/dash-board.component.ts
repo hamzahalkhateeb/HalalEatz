@@ -7,7 +7,7 @@ import { ListingFormComponent } from '../listing-form/listing-form.component';
 @Component({
   selector: 'app-dash-board',
   standalone: true,
-  imports: [ListingFormComponent, CommonModule],
+  imports: [ CommonModule],
   templateUrl: './dash-board.component.html',
   styleUrl: './dash-board.component.css'
 })
@@ -108,6 +108,14 @@ export class DashBoardComponent implements OnInit {
         console.error('Error: ', error);
       }
     });}
+
+    restaurantPage(restaurantId: number): void {
+
+      console.log("restaurantPage is being clicked___________________________________");
+      this.router.navigate(['/restaurantPage', restaurantId], {
+        queryParams: { restaurantId: restaurantId}
+      });
+    }
   
   
   }

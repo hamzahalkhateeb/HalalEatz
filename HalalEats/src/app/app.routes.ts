@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { DashBoardComponent } from './dash-board/dash-board.component';
 import { ListingFormComponent } from './listing-form/listing-form.component';
 import { RestaurantAdminComponent } from './restaurant-admin/restaurant-admin.component';
+import { RestaurantPageComponent } from './restaurant-page/restaurant-page.component';
 
 
 export const routes: Routes = [
@@ -14,7 +15,8 @@ export const routes: Routes = [
     {path: 'listing-form', component: ListingFormComponent},
     {path: 'error', component: ErrorComponent},
     {path: 'restaurantAdmin', component: RestaurantAdminComponent},
-    
+    {path: 'restaurantPage/:id', component: RestaurantPageComponent},
+
     
 ];
 
