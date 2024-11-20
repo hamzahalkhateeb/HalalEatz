@@ -25,6 +25,10 @@ const app= express();
 app.set('view engine', 'ejs');
 
 
+//make the uploads file accesible via url routes so the images can be served
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
 //calling the use function to use cors and json data
 app.use(cors());
 app.use(express.json());
@@ -130,7 +134,9 @@ app.post('/logout', (req, res) =>{
 });
 
 app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
-
+    //Restaurant.destroy({ where: {} });
+    //Menue.destroy({ where: {} });
+    //User.destroy({ where: {} });
     
 
     //extract received information
@@ -148,7 +154,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
     // declaring paths and renaming the newly stored image!
     const oldPath = path.join(__dirname, 'uploads', uploadedImg.filename);
-    const newPath = path.join(__dirname, 'uploads', newImageName);
+    const newPath = path.join('uploads', newImageName);
     console.log(newPath);
 
     fs.rename(oldPath, newPath, (err) => {
