@@ -123,6 +123,7 @@ export class ListingFormComponent implements OnInit{
             if(data.success){
               alert(data.message);
               //show the user the menu form!!!
+              this.router.navigateByUrl(data.redirectUrl);
 
             } else {
               console.log("unexpected json format! ", data.message);
@@ -193,9 +194,9 @@ export class ListingFormComponent implements OnInit{
     
     }
 
-    
+    //////////////////////////// to be added to restaurant admin later
 
-    submitMenueItem(response: any): void{
+    /* submitMenueItem(response: any): void{
       
       //get a reference for the div that has all the input fields needed
       const itemDiv = this.itemContainer.nativeElement;
@@ -238,7 +239,7 @@ export class ListingFormComponent implements OnInit{
         });
 
       
-    }
+    } */
     
     
   }

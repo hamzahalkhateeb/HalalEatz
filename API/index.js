@@ -101,6 +101,7 @@ app.post('/login', async (req, res) => {
                 picture,
                 firstName: given_name,
                 lastName: family_name,
+                accountType: 1
             });
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
@@ -109,7 +110,12 @@ app.post('/login', async (req, res) => {
             console.log("user found, logging in...");
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
-            res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard'});
+            if (user.accountType == 1){
+                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard'});
+            } else {
+                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/restaurantAdmin'});
+            }
+            
         }
     } catch(err){
         console.error(err);
@@ -199,11 +205,12 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
                 UserId: user.id, 
                 images: newPath,
             });
-
-
-        
             
-            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", user, redirectUrl: "/restaurantDashboard"});
+
+
+            
+            
+            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", user, redirectUrl: "/restaurantAdmin"});
         } else {
             res.status(200).json({success: false, message: "The email is already associated with another account, please use an email that is specifically for your restaurant!", user, redirectUrl: "/listing-form"});
         }
@@ -301,7 +308,7 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
             } else if (itemType === 'desert'){
                 menue.deserts.push(menueItemString);
             } else {
-                return res.status(400).json({ success: false, message: "Invalid item type" });
+                return res.status(400).json({ success: false, message: "Invalid item type", redirectUrl:"restaurantAdmin" });
             }
             
             await menue.save();
