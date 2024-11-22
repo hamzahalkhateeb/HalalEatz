@@ -37,6 +37,11 @@ const Restaurant = sequelize.define('Restaurant', {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    open:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    }
 
     
 
@@ -47,4 +52,5 @@ const Restaurant = sequelize.define('Restaurant', {
 });
 
 Restaurant.belongsTo(User);
+Restaurant.hasMany(Order, { foreignKey: 'restaurantId' });
 module.exports = Restaurant;
