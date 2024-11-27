@@ -39,7 +39,44 @@
 
                 </div>
                 <div class="additemContent">
-                    
+                    <form #menueForm="ngForm" (ngSubmit)="submitMenueItem(menueForm)">
+                        <div class="menu">
+                            <div class="item" #itemContainer>
+                                <div class="form-group item" #itemDiv>
+                                    <label for="itemType">Item Type</label>
+                                    <select id="itemType" name="itemType">
+                                        <option value="meal">Meal</option>
+                                        <option value="drink">drink</option>
+                                        <option value="desert">desert</option>
+                                    </select>
+                                    <label for="itemName">Item Name</label>
+                                    <input type="text" class="form-control"  name="itemName" required>
+                                    <label for="itemDescription">Description/Ingredients</label>
+                                    <input type="text" class="form-control"  name="itemDescription" required>
+                                    <label for="itemPrice">Price</label>
+                                    <input type="number" class="form-control"  name="itemPrice" required>
+                                    <label for="halal">Halal</label>
+                                    <input type="checkbox" class="form-control"  name="halal" required>
+                                    <label for="vegan">Vegan</label>
+                                    <input type="checkbox" class="form-control"  name="vegan" required>
+                                    <label for="vegetarian">Vegetarian</label>
+                                    <input type="checkbox" class="form-control"  name="vegetarian" required>
+                                    <label for="glutenFree">Gluten Free</label>
+                                    <input type="checkbox" class="form-control"  name="glutenFree" required>
+                                    <label for="lactoseFree">Lactose Free</label>
+                                    <input type="checkbox" class="form-control"  name="lactoseFree" required>
+                                    <label for="itemimg">Item Image</label>
+                                    <input type="file" class="form-control"  name="itemimg" (change)="onFileSelected($event)" accept="image/*" required>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <button type="submit">Submit menue Item</button>
+                
+                                
+                
+                    </form>
+
                 </div>
             </div>
             <!-- meals -->

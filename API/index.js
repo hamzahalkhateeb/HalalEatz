@@ -1,7 +1,7 @@
 
 //import different apps and frameworks necessary for your application
 const express = require("express");
-const {sequelize, User, Restaurant, Review, Role, Menue } = require("./models"); //import all data object models
+const {sequelize, User, Restaurant, Review, Menue, Order } = require("./models"); //import all data object models
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
@@ -111,9 +111,9 @@ app.post('/login', async (req, res) => {
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
             if (user.accountType == 1){
-                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard'});
+                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', userId: user.id});
             } else {
-                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/restaurantAdmin'});
+                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/restaurantAdmin', userId: user.id});
             }
             
         }
@@ -210,7 +210,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
             
             
-            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", user, redirectUrl: "/restaurantAdmin"});
+            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", userId: user.id, redirectUrl: "/restaurantAdmin"});
         } else {
             res.status(200).json({success: false, message: "The email is already associated with another account, please use an email that is specifically for your restaurant!", user, redirectUrl: "/listing-form"});
         }

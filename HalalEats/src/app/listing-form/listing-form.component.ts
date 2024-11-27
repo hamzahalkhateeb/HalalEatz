@@ -123,7 +123,9 @@ export class ListingFormComponent implements OnInit{
             if(data.success){
               alert(data.message);
               //show the user the menu form!!!
-              this.router.navigateByUrl(data.redirectUrl);
+
+              const rurl = `${data.redirectUrl}?userId=${data.userId}`;
+              this.router.navigateByUrl(rurl);
 
             } else {
               console.log("unexpected json format! ", data.message);
