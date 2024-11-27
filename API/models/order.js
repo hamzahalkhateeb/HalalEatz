@@ -3,6 +3,7 @@ const sequelize = require('./database');
 const User = require('./User');
 const Restaurant = require("./Restaurant");
 
+
 const Order = sequelize.define('Order', {
     
     customerId:{
