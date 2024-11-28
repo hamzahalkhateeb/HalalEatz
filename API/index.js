@@ -1,7 +1,8 @@
 
 //import different apps and frameworks necessary for your application
 const express = require("express");
-const {sequelize, User, Restaurant, Review, Menue, Order } = require("./models"); //import all data object models
+const {sequelize, models } = require("./models"); //import all data object models
+const {User, Restaurant, Order, Menue} = models; //destructure the models object imported in the line above
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
@@ -229,8 +230,8 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
 
 app.post('/submitMenue', upload.single('image'), async (req, res) => {
-    Menue.destroy({ where: {} });
-
+    //Menue.destroy({ where: {} });
+    
     
     try{
         //extract all the information
@@ -239,24 +240,37 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
         
         
         const image = req.file;
-        const resName = req.body.resName;
+        const userId = parseInt(req.body.userId);
         
-        const resLocation = req.body.resLocation;
+        
         
         const itemType = menueItemObject.type;
+        
        
         const relItem = menueItemObject.name;
         
         
         
         
+        //find the related restaurant
         
+        let restaurant = await Restaurant.findOne({where : {UserId : userId}});
+        
+       
+        
+        if (!restaurant) {
+            
+            
+            return res.status(404).json({ success: false, message: "Restaurant or User not found" });
+        }
+        
+
         //change uploaded image name
-        const itemImageName = generateImgName(resName, itemType, image.originalname, relItem);
-    
+        const itemImageName = generateImgName(restaurant.name, itemType, image.originalname, relItem);
+        
         const oldPath = path.join(__dirname, 'uploads', image.filename);
         const newPath = path.join(__dirname, 'uploads', itemImageName);
-
+        
         fs.rename(oldPath, newPath, (err) => {
             if (err) {
                 console.error('Error renaming file:', err);
@@ -265,43 +279,39 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
         
         });
 
+        
+
         //store image path
         menueItemObject.imgPath = newPath;
         const menueItemString = JSON.stringify(menueItemObject);
         
     
-        //find the related restaurant
-        let restaurant = await Restaurant.findOne({where : {name : resName, location : resLocation}});
-       
         
-        if (!restaurant) {
-            
-            return res.status(404).json({ success: false, message: "Restaurant or User not found" });
-        }
         
 
         
         
         
-        let menue = await Menue.findOne({where : {RestaurantId: restaurant.id, UserId: restaurant.UserId}});
+        let menue = await Menue.findOne({where : {RestaurantId: restaurant.id}});
         
 
         if (!menue){
-
+            
     
             menue = await Menue.create({
                 meals: [],
                 drinks:[],
                 deserts:[],
                 RestaurantId: restaurant.id,
-                UserId: restaurant.UserId
+                
 
             });
-           
+
+            
             
             if (itemType === 'meal'){
                 menue.meals.push(menueItemString);
-                menue.meals.push(menueItemString);
+                
                 
             } else if (itemType === 'drink'){
                 menue.drinks.push(menueItemString);
@@ -312,7 +322,10 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
             }
             
             await menue.save();
+            
         } else {
+
+            
             if (itemType === 'meal'){
                 menue.meals.push(menueItemString);
             } else if (itemType === 'drink'){
@@ -333,7 +346,7 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
 
         
 
-        res.status(201).json({success: true, message: "You have added an item to the menu successfully!"});
+        res.status(201).json({success: true, message: `You have added an item to the menu successfully for restaurant ${restaurant.name}`});
 
 
     } catch {

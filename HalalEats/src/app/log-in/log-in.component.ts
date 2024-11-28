@@ -12,7 +12,7 @@ import { ListingFormComponent } from '../listing-form/listing-form.component';
   standalone: true,
   imports: [
     CommonModule, 
-    ListingFormComponent,
+    
     
   ],
   templateUrl: './log-in.component.html',
@@ -39,7 +39,8 @@ export class LogInComponent implements OnInit {
         next: (data:any) =>{
           if (data.success){
             alert(data.message);
-            this.router.navigateByUrl(data.redirectUrl);
+            const rurl = `${data.redirectUrl}?userId=${data.userId}`;
+            this.router.navigateByUrl(rurl);
           } else {
             console.log("unexpected json format! ", data);
           }

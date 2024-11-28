@@ -45,6 +45,8 @@ export class RestaurantAdminComponent implements OnInit {
 
     this.route.queryParams.subscribe(params => {
       this.currentuserId = params['userId']; });
+
+      console.log(`${this.currentuserId} -------------------------------------------------------------------------------`);
       
   }
 
@@ -80,8 +82,8 @@ export class RestaurantAdminComponent implements OnInit {
     //append all the needed data to said variable
     menueitemFormData.append("menueItem", JSON.stringify(this.menueItem));
     menueitemFormData.append("image", this.selectedFile!, this.selectedFile!.name);
-    menueitemFormData.append("resName", this.resInfo.name);
-    menueitemFormData.append("resLocation", this.resInfo.location);
+    menueitemFormData.append("userId", this.currentuserId.toString());
+    
 
 
     this.http.post('http://localhost:3000/submitMenue', menueitemFormData)
@@ -98,7 +100,7 @@ export class RestaurantAdminComponent implements OnInit {
           console.error('Error: ', error);
         }
       });
-
+    
     
   } 
 
