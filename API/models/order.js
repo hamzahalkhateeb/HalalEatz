@@ -41,7 +41,6 @@ const Order = sequelize.define('Order', {
 
 });
 
-Order.belongsTo(Restaurant, {foreignKey: 'restaurantId'});
-Order.belongsTo(User, {foreignKey: 'customerId'});
+
 
 module.exports = Order;

@@ -5,6 +5,22 @@ const User = require("./User");
 const Restaurant = require("./Restaurant");
 const Review = require("./Review");
 const Menue = require("./Menue");
+const Order = require("./order");
+const setupAssociations = require("./associations");
+
+
+
+const models = {
+    User : User,
+    Restaurant: Restaurant,
+    Review: Review,
+    Menue: Menue,
+    Order: Order,
+}
+
+setupAssociations(models);
+
+
 
 
 sequelize.sync()
@@ -15,11 +31,10 @@ sequelize.sync()
         console.error("Error synchronizing database: ", err);
     });
 
+
+
 module.exports = {
     sequelize,
-    User,
-    Restaurant,
-    Review,
-    Menue
+    models,
     
 };

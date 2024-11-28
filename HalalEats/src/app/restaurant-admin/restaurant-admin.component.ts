@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 
 
@@ -9,7 +10,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 @Component({
   selector: 'app-restaurant-admin',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, CommonModule],
   templateUrl: './restaurant-admin.component.html',
   styleUrl: './restaurant-admin.component.css'
 })

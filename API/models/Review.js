@@ -35,8 +35,6 @@ const Review = sequelize.define('Review', {
 
 });
 
-//define associations
-Review.belongsTo(User);
-Review.belongsTo(Restaurant);
+
 
 module.exports = Review;

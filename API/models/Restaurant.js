@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize") // import the sequelize library and Datatypes object
 const sequelize = require('./database'); //import the sequelize instance
 const User = require("./User");
-const Order = require('../models/Order.js');
+const Order = require('./order');
 
 const Restaurant = sequelize.define('Restaurant', {
     name: {
@@ -52,6 +52,5 @@ const Restaurant = sequelize.define('Restaurant', {
     
 });
 
-Restaurant.belongsTo(User);
-Restaurant.hasMany(Order, { foreignKey: 'restaurantId' });
+
 module.exports = Restaurant;

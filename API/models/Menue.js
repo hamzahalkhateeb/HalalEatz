@@ -21,7 +21,6 @@ const Menue = sequelize.define('Menue', {
 
 });
 
-Menue.belongsTo(Restaurant);
-Menue.belongsTo(User);
+
 module.exports = Menue;
 
