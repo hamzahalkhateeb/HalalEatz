@@ -32,7 +32,8 @@ export class LogInComponent implements OnInit {
   }
 
   handleCredentialResponse(response: any): void {
-    console.log("sign in attemp initiated!");
+    console.log("sign in attemp initiated! ******************************************");
+    
     const idToken = response.credential;
     this.http.post('http://localhost:3000/login', { id_token: idToken })
       .subscribe({

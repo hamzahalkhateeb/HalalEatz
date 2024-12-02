@@ -38,6 +38,49 @@ export class RestaurantAdminComponent implements OnInit {
     imgPath: "",
   };
 
+  mealsPackage: Array<{
+    type: '',
+    name: '',
+    description: '',
+    price: 0,
+    halal: false,
+    vegan: false,
+    vegetarian: false,
+    glutenFree: false,
+    lactoseFree: false,
+    imgPath: "",
+
+  }> = [];
+
+  drinksPackage: Array<{
+  type: '',
+  name: '',
+  description: '',
+  price: 0,
+  halal: false,
+  vegan: false,
+  vegetarian: false,
+  glutenFree: false,
+  lactoseFree: false,
+  imgPath: "",
+
+  }> = [];
+
+  desertsPackage: Array<{
+  type: '',
+  name: '',
+  description: '',
+  price: 0,
+  halal: false,
+  vegan: false,
+  vegetarian: false,
+  glutenFree: false,
+  lactoseFree: false,
+  imgPath: "",
+
+  }> = [];
+
+
   selectedFile: File | null = null;
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute ) {}
@@ -47,11 +90,23 @@ export class RestaurantAdminComponent implements OnInit {
       this.currentuserId = params['userId']; });
 
       console.log(`${this.currentuserId} -------------------------------------------------------------------------------`);
-      
+    this.LoadRestaurantAdminPackage(this.currentuserId);
   }
 
-  LoadRestaurantAdminPackage(response:any)  {
-    //this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', )
+  LoadRestaurantAdminPackage(userId:any)  {
+    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {userId : userId})
+    .subscribe({
+      next: (data: any) =>{
+        if (data.success){
+          alert(data.menue);
+        } else {
+          alert(data.message);
+        }
+      },
+      error: (error: any) =>{
+        console.error('error: ', error);
+      }
+    });
   }
 
 

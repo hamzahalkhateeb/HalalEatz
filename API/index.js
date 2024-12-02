@@ -322,7 +322,7 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
             }
             
             await menue.save();
-            
+            Menue.destroy({ where: {} });
         } else {
 
             
@@ -412,7 +412,29 @@ app.post('/getCloseRestaurants', async (req, res) => {
 
 
 
+app.post('/LoadRestaurantAdminPackage', async (req, res) => {
+    const userId = req.body.userId;
+    console.log(`user id received from front end is: ${userId}`);
 
+    try{
+        let restaurant = await Restaurant.findOne({where : {UserId : userId}});
+
+        console.log(`restaurant associated with the user is: ${restaurant.name}, ${restaurant.id}`);
+
+        let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurant.id}}));
+        console.log(`found a menue for the restaurant in question: ${menue}`);
+
+        if (!menue){
+        return res.json({success:false, message: "There are no items in your menue, please add items through the  menue tab"});
+        } else {
+        
+        return res.json({success: true, message: "menue retrieval successfull!", menue});
+        }
+    } catch (error){
+        res.status(500).json({success: false, message: "something went wrong, internal server error"});
+    }
+    
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
