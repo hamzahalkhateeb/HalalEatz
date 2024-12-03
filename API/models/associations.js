@@ -16,6 +16,6 @@ module.exports = (models) => {
    
     //menue and restaurant
     models.Menue.belongsTo(models.Restaurant, {foreignKey: 'restaurantId'});
-    models.Menue.belongsTo(models.User, {foreignKey: 'userId'});
+    
 
 }

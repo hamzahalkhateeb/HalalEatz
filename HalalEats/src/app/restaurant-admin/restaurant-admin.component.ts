@@ -98,7 +98,7 @@ export class RestaurantAdminComponent implements OnInit {
     .subscribe({
       next: (data: any) =>{
         if (data.success){
-          alert(data.menue);
+          alert(data.menue.meals);
         } else {
           alert(data.message);
         }
@@ -146,7 +146,7 @@ export class RestaurantAdminComponent implements OnInit {
         next: (data: any) => {
           if (data.success){
             alert(data.message);
-            this.router.navigateByUrl(data.redirectUrl);
+            //this.router.navigateByUrl(data.redirectUrl);
           } else {
             console.log("unexpected error: ", data);
           }

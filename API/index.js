@@ -279,89 +279,64 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
         
         });
 
-        
 
         //store image path
         menueItemObject.imgPath = newPath;
         const menueItemString = JSON.stringify(menueItemObject);
-        
     
-        
-        
+        let menue = await Menue.findOne({where : {restaurantId: restaurant.id}});
+        const fieldMap = {
+            meal: 'meals',
+            drink: 'drinks',
+            desert: 'deserts'
+        }
 
-        
-        
-        
-        let menue = await Menue.findOne({where : {RestaurantId: restaurant.id}});
+        const field = fieldMap[itemType];
         
 
         if (!menue){
             
-    
+            console.log(`menue doesn't exist, creating now`);
             menue = await Menue.create({
                 meals: [],
                 drinks:[],
                 deserts:[],
-                RestaurantId: restaurant.id,
+                restaurantId: restaurant.id,
                 
 
             });
 
-            
-            
-            if (itemType === 'meal'){
-                menue.meals.push(menueItemString);
-                
-                
-            } else if (itemType === 'drink'){
-                menue.drinks.push(menueItemString);
-            } else if (itemType === 'desert'){
-                menue.deserts.push(menueItemString);
-            } else {
-                return res.status(400).json({ success: false, message: "Invalid item type", redirectUrl:"restaurantAdmin" });
-            }
-            
-            await menue.save();
-            Menue.destroy({ where: {} });
-        } else {
-
-            
-            if (itemType === 'meal'){
-                menue.meals.push(menueItemString);
-            } else if (itemType === 'drink'){
-                menue.drinks.push(menueItemString);
-            } else if (itemType === 'desert'){
-                menue.deserts.push(menueItemString);
-                
-            } else {
-                return res.status(400).json({ success: false, message: "Invalid item type" });
-        
-            }
            
+
+            menue[field] = [...menue[field], menueItemString];
+            
+
             await menue.save();
-        }
+            
+            
+            //Menue.destroy({ where: {} });
+            res.status(201).json({success: true, message: `You have added an item to the menu successfully for restaurant ${restaurant.name}`});
+        } else {
+            
 
+            menue[field] = [...menue[field], menueItemString];
+            
 
-        
-
-        
-
-        res.status(201).json({success: true, message: `You have added an item to the menu successfully for restaurant ${restaurant.name}`});
-
-
-    } catch {
-        res.status(500).json({success: false, message: "Error adding an item your menue"});
-    }
+            await menue.save();
+            
+            
+            await menue.save();
+            
+            //Menue.destroy({ where: {} });
+            res.status(201).json({success: true, message: `You have added an item to the menu successfully for restaurant ${restaurant.name}`});
+        } 
 
     
         
-    
 
-
-
-
-
-});
+} catch {
+    res.status(500).json({success: false, message: "Error adding an item your menue"});
+}}); 
 
 
 
@@ -422,6 +397,9 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
         console.log(`restaurant associated with the user is: ${restaurant.name}, ${restaurant.id}`);
 
         let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurant.id}}));
+        console.log(menue.meals);
+        console.log(menue.drinks);
+        console.log(menue.deserts);
         console.log(`found a menue for the restaurant in question: ${menue}`);
 
         if (!menue){
