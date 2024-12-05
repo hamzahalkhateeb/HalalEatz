@@ -25,6 +25,11 @@ export class RestaurantAdminComponent implements OnInit {
   //a list meals, drinks and deserts
   currentuserId = -1;
 
+  mealsArray: any;
+  drinksArray: any;
+  desertsArray: any;
+  menue2: any;
+
   menueItem = {
     type: '',
     name: '',
@@ -98,7 +103,14 @@ export class RestaurantAdminComponent implements OnInit {
     .subscribe({
       next: (data: any) =>{
         if (data.success){
-          alert(data.menue.meals);
+          
+          this.menue2 = JSON.parse(data.menue);
+          
+          this.mealsArray  = this.menue2.meals.map((mealString: string) => JSON.parse(mealString));
+          this.drinksArray  = this.menue2.drinks.map((drinkString: string) => JSON.parse(drinkString));
+          this.desertsArray  = this.menue2.deserts.map((desertString: string)=> JSON.parse(desertString));
+          
+
         } else {
           alert(data.message);
         }
