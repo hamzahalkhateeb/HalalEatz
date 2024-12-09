@@ -188,7 +188,24 @@ export class RestaurantAdminComponent implements OnInit {
         console.error('error: ', error); 
       }
     });
+  }
 
+  deleteRestaurant(): void{
+    console.log(this.currentuserId);
+    this.http.post('http://localhost:3000/deleteRestaurant', {userId: this.currentuserId})
+    .subscribe({
+      next: (data: any) =>{
+        if (data.success){
+          alert('restaurant deleted successfully');
+          this.router.navigateByUrl(data.redirectUrl);
+        } else {
+          alert(data.message);
+        }
+      }, error: (error: any)=>{
+        console.error('error: ', error); 
+      }
+    });
+    
   }
 
 }

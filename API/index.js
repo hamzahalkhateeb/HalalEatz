@@ -448,12 +448,46 @@ app.post('/deleteItem', async (req, res) => {
         await menue.save();
         console.log(`saved menue: ${menue.meals}`);
 
+        res.status(201).json({success: true, message: `you have deleted an item successfully!`});
+
         
 
     } catch {
         res.status(500).json({success: false, message: 'error, something went wrong'});
     }
-})
+});
+
+app.post('/deleteRestaurant', async (req, res) => {
+    console.log(`restaurant deletion started`);
+
+    const userId = req.body.userId;
+    console.log(userId);
+
+    let user = await User.findOne({where : {id : userId}});
+    let restaurant = await Restaurant.findOne({where : {UserId : userId}});
+    let menue = await Menue.findOne({where : {restaurantId: restaurant.id}});
+    console.log(user);
+    console.log(restaurant);
+    console.log(menue);
+
+    try{
+        await menue.destroy();
+        console.log('menue destroyed');
+        await restaurant.destroy();
+        console.log('restaurant destroyed');
+        await user.destroy();
+        console.log('user destroyed');
+        req.session.destroy();
+        console.log('session destroyed!');
+
+        res.status(201).json({success: true, message:"menues, restaurant and user have all been deleted", redirectUrl: '/login'});
+        
+        
+    }catch{
+        res.status(500).json({success: false, message: 'error, something went wrong'});
+    }
+
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
