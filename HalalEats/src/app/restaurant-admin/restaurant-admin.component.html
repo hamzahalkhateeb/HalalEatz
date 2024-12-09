@@ -44,6 +44,9 @@
                         <div class="image">
                             <img [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
                         </div>
+                        <div class="deletebtndiv">
+                            <button (click)="deleteItem(meal.name, meal.description, meal.type)" class="deletebtn">Delete</button>
+                        </div>
 
                     </div>
                 </div>
@@ -63,6 +66,9 @@
                         </div>
                         <div class="image">
                             <img [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
+                        </div>
+                        <div class="deletebtndiv">
+                            <button (click)="deleteItem(drink.name, drink.description, drink.type)" class="deletebtn">Delete</button>
                         </div>
 
                     </div>
@@ -86,6 +92,9 @@
                         <div class="image">
                             <img [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
                         </div>
+                        <div class="deletebtndiv">
+                            <button (click)="deleteItem(desert.name, desert.description, desert.type)" class="deletebtn">Delete</button>
+                        </div>
 
                     </div>
 
@@ -94,7 +103,7 @@
                     <form #menueForm="ngForm" (ngSubmit)="submitMenueItem(menueForm)">
                         <div class="menu">
                             <div class="item" #itemContainer>
-                                <div class="form-group item" #itemDiv>
+                                <div class="form-group item" #itemDiv>  
                                     <label for="itemType">Item Type</label>
                                     <select id="itemType" name="itemType">
                                         <option value="meal">Meal</option>

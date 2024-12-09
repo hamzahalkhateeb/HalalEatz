@@ -269,7 +269,7 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
         const itemImageName = generateImgName(restaurant.name, itemType, image.originalname, relItem);
         
         const oldPath = path.join(__dirname, 'uploads', image.filename);
-        const newPath = path.join(__dirname, 'uploads', itemImageName);
+        const newPath = path.join('uploads', itemImageName);
         
         fs.rename(oldPath, newPath, (err) => {
             if (err) {
@@ -397,9 +397,7 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
         console.log(`restaurant associated with the user is: ${restaurant.name}, ${restaurant.id}`);
 
         let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurant.id}}));
-        console.log(menue.meals);
-        console.log(menue.drinks);
-        console.log(menue.deserts);
+        
         console.log(`found a menue for the restaurant in question: ${menue}`);
 
         if (!menue){
@@ -413,6 +411,49 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
     }
     
 });
+
+app.post('/deleteItem', async (req, res) => {
+    console.log('deleteitem initiatied');
+    const menueid = req.body.menueId;
+    const type = `${req.body.type}s`;
+    const itemName = req.body.itemName;
+    const itemDescription = req.body.itemDescription;
+
+    console.log(menueid, type, itemName, itemDescription);
+
+
+    try{
+        let menue = await Menue.findOne({where : {id: menueid}});
+
+        console.log(menue.meals)
+        console.log(`found menue!`);
+        console.log(`menue type before: ${menue[type]} ;;;`);
+
+        const newArray = [];
+        console.log(`new empty array: ${newArray} ;;;`);
+        for (let index in menue[type]){
+            if (!(menue[type][index].includes(`"name":"${itemName}"`) && menue[type][index].includes(`"description":"${itemDescription}"`))){
+
+                newArray.push(menue[type][index]);
+            }
+        }
+        
+        console.log(`just populated empty array with the following: ${menue[type]} ;;;`);
+        menue.set(type, newArray);
+
+        
+        
+        
+    
+        await menue.save();
+        console.log(`saved menue: ${menue.meals}`);
+
+        
+
+    } catch {
+        res.status(500).json({success: false, message: 'error, something went wrong'});
+    }
+})
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -29,6 +29,7 @@ export class RestaurantAdminComponent implements OnInit {
   drinksArray: any;
   desertsArray: any;
   menue2: any;
+  menueId: any;
 
   menueItem = {
     type: '',
@@ -109,6 +110,8 @@ export class RestaurantAdminComponent implements OnInit {
           this.mealsArray  = this.menue2.meals.map((mealString: string) => JSON.parse(mealString));
           this.drinksArray  = this.menue2.drinks.map((drinkString: string) => JSON.parse(drinkString));
           this.desertsArray  = this.menue2.deserts.map((desertString: string)=> JSON.parse(desertString));
+
+          
           
 
         } else {
@@ -170,5 +173,22 @@ export class RestaurantAdminComponent implements OnInit {
     
     
   } 
+
+  deleteItem(name: String, description: String, type: String): void {
+    console.log(`name: ${name}, description: ${description}, and menue id in question ${this.menue2.id}`);
+    this.http.post('http://localhost:3000/deleteItem', {menueId: this.menue2.id, itemName: name, itemDescription: description, type: type})
+    .subscribe({
+      next: (data: any) =>{
+        if (data.success){
+          alert('item deleted from menue successfully');
+        } else {
+          alert(data.message);
+        }
+      }, error: (error: any)=>{
+        console.error('error: ', error); 
+      }
+    });
+
+  }
 
 }
