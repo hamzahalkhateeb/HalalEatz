@@ -1,7 +1,7 @@
 import { CommonModule, isPlatformBrowser, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ListingFormComponent } from '../listing-form/listing-form.component';
 
 @Component({
@@ -15,6 +15,9 @@ export class DashBoardComponent implements OnInit {
 
   longitude = 0;
   latitude = 0;
+  
+  currentUserId!: number;
+  
 
   restaurantPackage: Array<{
        id: number;
@@ -28,12 +31,15 @@ export class DashBoardComponent implements OnInit {
   }> = [];
 
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     if(isPlatformBrowser(this.platformId)){
       (window as any)['logout'] = this.logout.bind(this);
       
+      this.currentUserId = Number(this.route.snapshot.queryParamMap.get('userId'));
+      console.log(`current userID: ${this.currentUserId}`);
+
       if(navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -109,11 +115,11 @@ export class DashBoardComponent implements OnInit {
       }
     });}
 
-    restaurantPage(restaurantId: number): void {
+    restaurantPage(restaurantId: number, currentUserId: number): void {
 
       console.log("restaurantPage is being clicked___________________________________");
       this.router.navigate(['/restaurantPage', restaurantId], {
-        queryParams: { restaurantId: restaurantId}
+        queryParams: { restaurantId: restaurantId, currentUserId: currentUserId}
       });
     }
   

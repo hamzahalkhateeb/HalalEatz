@@ -1,1 +1,87 @@
 <p>restaurant-page works! id is {{ restaurantId }}</p>
+<p>restaurant-page works! id is {{ currentUserId }}</p>
+
+
+<div class="menue">
+    <div class="topbar"> 
+        <div class="meals"></div>
+        <div class="drinks"></div>
+        <div class="deserts"></div>
+
+    </div>
+    <div class="content">
+        <div class="mealsContainer" *ngIf="mealsArray">
+            <div class="mealsContent" *ngFor="let meal of mealsArray">
+                <div class="data">
+                    <div class="Mname">{{meal.name}}</div>
+                    <div class="Mdescription">{{meal.description}}</div>
+                    <div class="Mprice">${{meal.price}}</div>
+                    <div class="Mhalal" *ngIf="meal.halal"> halal _/</div>
+                    <div class="Mvegan" *ngIf="meal.vegan"> vegan _/</div>
+                    <div class="Mvegetarian" *ngIf="meal.vegetarian"> vegetarian _/</div>
+                    <div class="Mlactosefree" *ngIf="meal.lactoseFree">lactose free _/</div>
+                    <div class="Mglutenfree" *ngIf="meal.glutenFree"> gluten free _/</div>
+                </div>
+                <div class="image">
+                    <img [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
+                </div>
+                <div class="addToCart">
+                    <button (click)="addToCart(meal.name)" class="addToCartBtn">add to cart</button>
+                </div>
+
+            </div>
+        </div>
+            
+        <div class="drinksContent" *ngIf="drinksArray">
+
+            <div class="drinksContent" *ngFor="let drink of drinksArray">
+                <div class="data">
+                    <div class="Mname">{{drink.name}}</div>
+                    <div class="Mdescription">{{drink.description}}</div>
+                    <div class="Mprice">${{drink.price}}</div>
+                    <div class="Mhalal" *ngIf="drink.halal"> halal _/</div>
+                    <div class="Mvegan" *ngIf="drink.vegan"> vegan _/</div>
+                    <div class="Mvegetarian" *ngIf="drink.vegetarian"> vegetarian _/</div>
+                    <div class="Mlactosefree" *ngIf="drink.lactoseFree">lactose free _/</div>
+                    <div class="Mglutenfree" *ngIf="drink.glutenFree"> gluten free _/</div>
+                </div>
+                <div class="image">
+                    <img [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
+                </div>
+                <div class="addToCart">
+                    <button (click)="addToCart(drink.name)" class="addToCartBtn">add to cart</button>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="desertsContent" *ngIf="desertsArray">
+
+
+            <div class="desertsContent" *ngFor="let desert of desertsArray">
+                <div class="data">
+                    <div class="Mname">{{desert.name}}</div>
+                    <div class="Mdescription">{{desert.description}}</div>
+                    <div class="Mprice">${{desert.price}}</div>
+                    <div class="Mhalal" *ngIf="desert.halal"> halal _/</div>
+                    <div class="Mvegan" *ngIf="desert.vegan"> vegan _/</div>
+                    <div class="Mvegetarian" *ngIf="desert.vegetarian"> vegetarian _/</div>
+                    <div class="Mlactosefree" *ngIf="desert.lactoseFree">lactose free _/</div>
+                    <div class="Mglutenfree" *ngIf="desert.glutenFree"> gluten free _/</div>
+                </div>
+                <div class="image">
+                    <img [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
+                </div>
+                <div class="addToCart">
+                    <button (click)="addToCart(desert.name)" class="addToCartBtn">add to cart</button>
+                </div>
+
+            </div>
+
+        </div>
+        
+    </div>
+    
+    
+</div>

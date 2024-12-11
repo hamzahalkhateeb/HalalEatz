@@ -18,7 +18,7 @@
                 <img [src]=" 'http://localhost:3000/' + restaurant.images" alt="Description of image"/>
             </div>
             <div class="resName">
-                <h1 (click)="restaurantPage(restaurant.id)">{{ restaurant.name }}</h1>
+                <h1 (click)="restaurantPage(restaurant.id, currentUserId)">{{ restaurant.name }}</h1>
             </div>
             <div class="disrating">
                 <div class="dis">

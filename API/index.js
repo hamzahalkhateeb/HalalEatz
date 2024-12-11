@@ -79,6 +79,8 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
 
 
 app.post('/login', async (req, res) => {
+
+    // User.destroy({ where: {id: 72} });
     
     console.log("login called");
     const token = req.body.id_token;
@@ -143,9 +145,10 @@ app.post('/logout', (req, res) =>{
 app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     //Restaurant.destroy({ where: {} });
     //Menue.destroy({ where: {} });
-    //User.destroy({ where: {} });
+    //User.destroy({ where: {id : 72} });
     
-
+    console.log(`listing restaurant order received `);
+    console.log(` `);
     //extract received information
     const token = req.body.id_token;
     const resInfo = JSON.parse(req.body.resInfo);
@@ -187,6 +190,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
         let user = await User.findOne({where: {email : email}});
 
         if (!user){
+            console.log(` there was no user, creating one now `);
             
             user = await User.create({
                 email, picture, firstName: given_name, lastName: family_name, accountType: 2, 
@@ -195,7 +199,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
             req.session.isLoggedIn = true;
 
             
-            restaurant = await Restaurant.create({
+            let restaurant = await Restaurant.create({
                 
                 name: resInfo.name,
                 location: resInfo.location,
@@ -203,7 +207,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
                 lon: resInfo.lon,
                 openingHours: JSON.stringify(resInfo.days), 
                 halalRating: resInfo.halalRating, 
-                UserId: user.id, 
+                userId: user.id, 
                 images: newPath,
             });
             
@@ -388,28 +392,60 @@ app.post('/getCloseRestaurants', async (req, res) => {
 
 
 app.post('/LoadRestaurantAdminPackage', async (req, res) => {
-    const userId = req.body.userId;
-    console.log(`user id received from front end is: ${userId}`);
 
-    try{
-        let restaurant = await Restaurant.findOne({where : {UserId : userId}});
-
-        console.log(`restaurant associated with the user is: ${restaurant.name}, ${restaurant.id}`);
-
-        let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurant.id}}));
-        
-        console.log(`found a menue for the restaurant in question: ${menue}`);
-
-        if (!menue){
-        return res.json({success:false, message: "There are no items in your menue, please add items through the  menue tab"});
-        } else {
-        
-        return res.json({success: true, message: "menue retrieval successfull!", menue});
-        }
-    } catch (error){
-        res.status(500).json({success: false, message: "something went wrong, internal server error"});
-    }
+    const type = req.body.userType;
     
+
+    if (type === "admin"){
+        const userId = req.body.Id;
+        console.log(`user id received from front end is: ${userId}`);
+
+
+        try{
+            let restaurant = await Restaurant.findOne({where : {UserId : userId}});
+
+            console.log(`restaurant associated with the user is: ${restaurant.name}, ${restaurant.id}`);
+
+            let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurant.id}}));
+            
+            console.log(`found a menue for the restaurant in question: ${menue}`);
+
+            if (!menue){
+            return res.json({success:false, message: "There are no items in your menue, please add items through the  menue tab"});
+            } else {
+            
+            return res.json({success: true, message: "menue retrieval successfull!", menue});
+            }
+        } catch (error){
+            res.status(500).json({success: false, message: "something went wrong, internal server error"});
+        }
+    } else if (type === "consumer") {
+
+        const restaurantId = req.body.Id;
+
+        try{
+            
+            let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurantId}}));
+            
+            console.log(`found a menue for the restaurant in question: ${menue}`);
+
+            if (!menue){
+            return res.json({success:false, message: "This restaurant does not have any items available tp purchase"});
+            } else {
+            
+            return res.json({success: true, message: "menue retrieval successfull!", menue});
+            }
+        } catch (error){
+            res.status(500).json({success: false, message: "something went wrong, internal server error"});
+        }
+
+    } else {
+        console.log('wrong type, has to be either admin or consumer');
+    }
+
+
+
+
 });
 
 app.post('/deleteItem', async (req, res) => {

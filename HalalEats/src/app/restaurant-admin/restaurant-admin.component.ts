@@ -44,7 +44,7 @@ export class RestaurantAdminComponent implements OnInit {
     imgPath: "",
   };
 
-  mealsPackage: Array<{
+  /*mealsPackage: Array<{
     type: '',
     name: '',
     description: '',
@@ -84,7 +84,7 @@ export class RestaurantAdminComponent implements OnInit {
   lactoseFree: false,
   imgPath: "",
 
-  }> = [];
+  }> = []; */
 
 
   selectedFile: File | null = null;
@@ -100,7 +100,7 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   LoadRestaurantAdminPackage(userId:any)  {
-    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {userId : userId})
+    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {Id : userId, userType: 'admin'})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
