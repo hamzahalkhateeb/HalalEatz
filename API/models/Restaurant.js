@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize") // import the sequelize library and Datatypes object
 const sequelize = require('./database'); //import the sequelize instance
 const User = require("./User");
-const Order = require('./order');
+const Order = require('./Order');
 
 const Restaurant = sequelize.define('Restaurant', {
     name: {

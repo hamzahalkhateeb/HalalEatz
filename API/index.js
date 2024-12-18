@@ -75,9 +75,6 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
 }
 
 
-
-
-
 app.post('/login', async (req, res) => {
 
     // User.destroy({ where: {id: 72} });
@@ -522,6 +519,34 @@ app.post('/deleteRestaurant', async (req, res) => {
     }catch{
         res.status(500).json({success: false, message: 'error, something went wrong'});
     }
+
+});
+
+app.post('/placeOrder', async (req, res) => {
+    console.log(`received in the back end. user id: ${req.body.userId}, restaurant id: ${req.body.restaurantId}, order status: ${req.body.status}, order string${req.body.orderArray}`);
+
+    const items = JSON.parse(req.body.orderArray);
+    const userId = req.body.userId;
+    const restaurantId = req.body.restaurantId;
+    const status = req.body.status;
+    try{
+
+        console.log('attempting to create order');
+        let order = await Order.create({
+            customerId : userId,
+            restaurantId: restaurantId,
+            status: status,
+            items: items
+    
+        });
+        console.log('created an order  object');
+        console.log(order);
+        res.status(201).json({success: true, message: "order places correctly, please check the orders tab for updates"});
+    } catch {
+        console.log('error!');
+        res.status(500).json({success: false, error: 'something went wrong', message: 'something went wrong'});
+    }
+    
 
 });
 

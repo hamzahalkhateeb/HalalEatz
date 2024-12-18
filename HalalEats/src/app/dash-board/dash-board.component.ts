@@ -115,6 +115,8 @@ export class DashBoardComponent implements OnInit {
       }
     });}
 
+    
+
     restaurantPage(restaurantId: number, currentUserId: number): void {
 
       console.log("restaurantPage is being clicked___________________________________");

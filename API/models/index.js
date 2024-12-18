@@ -5,7 +5,7 @@ const User = require("./User");
 const Restaurant = require("./Restaurant");
 const Review = require("./Review");
 const Menue = require("./Menue");
-const Order = require("./order");
+const Order = require("./Order");
 const setupAssociations = require("./associations");
 
 

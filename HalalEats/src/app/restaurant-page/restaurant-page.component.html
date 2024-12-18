@@ -7,6 +7,20 @@
         <div class="meals"></div>
         <div class="drinks"></div>
         <div class="deserts"></div>
+        <div class="cart">
+            <div class="divItems" *ngFor="let item of orderArray">
+                <h6 class="itemName">{{item.itemName}}</h6>
+                <h6 class="itemPrice">{{item.itemPrice}}</h6>
+                <button class="dltBtn" (click)="dlt( item.itemName, item.itemPrice)">delete</button>
+
+            </div>
+            <div class="totalPrice">
+               <h4 class="price">${{ getTotal() }}</h4>
+            </div>
+            <div class="checkout">
+                <button class="checkoutBtn" (click)="checkout( getTotal() )">Checkout</button>
+            </div>
+        </div>
 
     </div>
     <div class="content">
@@ -26,7 +40,7 @@
                     <img [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
                 </div>
                 <div class="addToCart">
-                    <button (click)="addToCart(meal.name)" class="addToCartBtn">add to cart</button>
+                    <button (click)="addToCart(meal.name, meal.description, meal.price)" class="addToCartBtn">add to cart</button>
                 </div>
 
             </div>
@@ -49,7 +63,7 @@
                     <img [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
                 </div>
                 <div class="addToCart">
-                    <button (click)="addToCart(drink.name)" class="addToCartBtn">add to cart</button>
+                    <button (click)="addToCart(drink.name, drink.description, drink.price)" class="addToCartBtn">add to cart</button>
                 </div>
 
             </div>
@@ -74,7 +88,7 @@
                     <img [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
                 </div>
                 <div class="addToCart">
-                    <button (click)="addToCart(desert.name)" class="addToCartBtn">add to cart</button>
+                    <button (click)="addToCart(desert.name, desert.description, desert.price)" class="addToCartBtn">add to cart</button>
                 </div>
 
             </div>
