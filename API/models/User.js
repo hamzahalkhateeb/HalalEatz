@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize") // import the sequelize library and Datatypes object
 const sequelize = require('./database'); //import the sequelize instance
 
-const Order = require('./order.js');
+
 
 //define the model fields
 const User = sequelize.define('User', {

@@ -1,11 +1,14 @@
 const {Sequelize, DataTypes } = require("sequelize")
 const sequelize = require('./database');
-const User = require('./User');
-const Restaurant = require("./Restaurant");
+
 
 
 const Order = sequelize.define('Order', {
-    
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
     customerId:{
         type: DataTypes.INTEGER,
         allowNull: false,

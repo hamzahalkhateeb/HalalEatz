@@ -523,22 +523,42 @@ app.post('/deleteRestaurant', async (req, res) => {
 });
 
 app.post('/placeOrder', async (req, res) => {
-    console.log(`received in the back end. user id: ${req.body.userId}, restaurant id: ${req.body.restaurantId}, order status: ${req.body.status}, order string${req.body.orderArray}`);
-
-    const items = JSON.parse(req.body.orderArray);
-    const userId = req.body.userId;
-    const restaurantId = req.body.restaurantId;
+    
+    Order.destroy({ where: {} });
+    const items = (req.body.orderArray);
+    const userId = Number(req.body.userId);
+    const restaurantId = Number(req.body.restaurantId);
     const status = req.body.status;
+
+    console.log(`variable userId: ${userId} type: ${typeof userId}`);
+    console.log(`variable restaurantId: ${restaurantId} type: ${typeof restaurantId}`);
+    console.log(`variable items: ${items} type: ${typeof items}`);
+    console.log(`variable status: ${status} type: ${typeof status}`);
+
     try{
 
         console.log('attempting to create order');
-        let order = await Order.create({
-            customerId : userId,
-            restaurantId: restaurantId,
-            status: status,
-            items: items
-    
-        });
+
+        /*const query = `
+        INSERT INTO Orders (customerId, restaurantId, status, items, createdAt, updatedAt)
+        VALUES (:customerId, :restaurantId, :status, :items, NOW(), NOW());`;
+
+        await sequelize.query(query, {
+            replacements: {
+                customerId: userId,
+                restaurantId: restaurantId,
+                status: status,
+                items: items,
+            }, type: QueryTypes.INSERT, logging: console.log,
+        }); */
+
+       const order = await Order.create({
+        customerId : userId,
+        restaurantId: restaurantId,
+        status: status,
+        items: items
+       });
+
         console.log('created an order  object');
         console.log(order);
         res.status(201).json({success: true, message: "order places correctly, please check the orders tab for updates"});

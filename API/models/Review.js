@@ -1,7 +1,6 @@
 const {Sequelize, DataTypes} = require("sequelize")
 const sequelize = require("./database");
-const User = require('./User') // import the user model
-const Restaurant = require("./Restaurant")
+
 
 
 const Review = sequelize.define('Review', {
