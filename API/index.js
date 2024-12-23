@@ -13,8 +13,29 @@ const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
+const paypal = require('@paypal/paypal-server-sdk');
 
 
+
+const { Client, Environment} = paypal;
+
+const paypalClient = new Client({
+    clientCredentialsAuthCredentials: {
+        oAuthClientId: '',
+        oAuthClientSecret: '' 
+    },
+    environment: Environment.Sandbox,
+    timeout: 0,
+    logging: {
+        logLevel: 'INFO', // Log level (optional)
+        logRequest: {
+            logBody: true // Log request body (optional)
+        },
+        logResponse: {
+            logHeaders: true // Log response headers (optional)
+        }
+    }
+}); 
 
 
 
@@ -530,27 +551,31 @@ app.post('/placeOrder', async (req, res) => {
     const restaurantId = Number(req.body.restaurantId);
     const status = req.body.status;
 
+    /*&const paymentjson = {
+        intent: 'sale',
+        payer: {
+            payment_method: 'paypal',
+        },
+        transactions: [
+            item_list: {
+
+            },
+        ]
+    }*/
+
     console.log(`variable userId: ${userId} type: ${typeof userId}`);
     console.log(`variable restaurantId: ${restaurantId} type: ${typeof restaurantId}`);
     console.log(`variable items: ${items} type: ${typeof items}`);
     console.log(`variable status: ${status} type: ${typeof status}`);
 
-    try{
+
+
+
+
+
+    /*try{
 
         console.log('attempting to create order');
-
-        /*const query = `
-        INSERT INTO Orders (customerId, restaurantId, status, items, createdAt, updatedAt)
-        VALUES (:customerId, :restaurantId, :status, :items, NOW(), NOW());`;
-
-        await sequelize.query(query, {
-            replacements: {
-                customerId: userId,
-                restaurantId: restaurantId,
-                status: status,
-                items: items,
-            }, type: QueryTypes.INSERT, logging: console.log,
-        }); */
 
        const order = await Order.create({
         customerId : userId,
@@ -565,7 +590,7 @@ app.post('/placeOrder', async (req, res) => {
     } catch {
         console.log('error!');
         res.status(500).json({success: false, error: 'something went wrong', message: 'something went wrong'});
-    }
+    }*/
     
 
 });
