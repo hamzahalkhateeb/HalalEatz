@@ -9,15 +9,20 @@
         <div class="deserts"></div>
         <div class="cart">
             <div class="divItems" *ngFor="let item of orderArray">
-                <h6 class="itemName">{{item.itemName}}</h6>
-                <h6 class="itemPrice">{{item.itemPrice}}</h6>
-                <button class="dltBtn" (click)="dlt( item.itemName, item.itemPrice)">delete</button>
+                <h6 class="itemName">{{item.name}}</h6>
+                <h6 class="itemPrice">{{item.unit_amount.value}}</h6>
+                <div class="quantity">
+                    <button class="dltBtn" (click)="dlt( item.name, item.description, item.unit_amount.value)">-</button>
+                    <h6 class="itemQuantity">{{item.quantity}}</h6>
+                    <button (click)="addToCart(item.name, item.description, item.unit_amount.value)" class="addToCartBtn">+</button>
+                </div>
+                
 
             </div>
-            <div class="totalPrice">
+            <div class="totalPrice" *ngIf="getTotal() > 0">
                <h4 class="price">${{ getTotal() }}</h4>
             </div>
-            <div class="checkout">
+            <div class="checkout" *ngIf="getTotal() > 0">
                 <button class="checkoutBtn" (click)="checkout( getTotal() )">Checkout</button>
             </div>
         </div>

@@ -13,7 +13,7 @@ const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
-const paypal = require('@paypal/paypal-server-sdk');
+const paypal= require('@paypal/paypal-server-sdk');
 
 
 
@@ -550,23 +550,19 @@ app.post('/placeOrder', async (req, res) => {
     const userId = Number(req.body.userId);
     const restaurantId = Number(req.body.restaurantId);
     const status = req.body.status;
+    const totalPrice = req.body.totalPrice;
 
-    /*&const paymentjson = {
-        intent: 'sale',
-        payer: {
-            payment_method: 'paypal',
-        },
-        transactions: [
-            item_list: {
-
-            },
-        ]
+    /*const paymentjson = {
+        intent: 'capture',
+        'purchase_units'
+       
     }*/
 
     console.log(`variable userId: ${userId} type: ${typeof userId}`);
     console.log(`variable restaurantId: ${restaurantId} type: ${typeof restaurantId}`);
     console.log(`variable items: ${items} type: ${typeof items}`);
     console.log(`variable status: ${status} type: ${typeof status}`);
+    console.log(`variable total price: ${totalPrice}`);
 
 
 

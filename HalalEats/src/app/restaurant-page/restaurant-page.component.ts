@@ -22,9 +22,14 @@ export class RestaurantPageComponent implements OnInit {
   desertsArray: any;
 
   orderArray: Array<{
-    itemName: '',
-    itemDescription: '',
-    itemPrice: 0;
+    name: string,
+    description: string,
+    quantity: number,
+    unit_amount: {
+      currency_code : string,
+      value: number,
+    }
+    
   }> = [];
 
   constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) {}
@@ -64,26 +69,56 @@ export class RestaurantPageComponent implements OnInit {
   addToCart(itemName: any, itemDescription: any,  itemPrice: any){
 
 
+    for (let i = 0; i < this.orderArray.length; i++) {
+      if(this.orderArray[i].name == itemName &&
+        this.orderArray[i].unit_amount.value == itemPrice && 
+        this.orderArray[i].description == itemDescription){
+           
+        this.orderArray[i].quantity++;
+        return;
+      }
+    }
+
+
     this.orderArray.push({
-      itemName: itemName,
-      itemDescription: itemDescription,
-      itemPrice: itemPrice
+      name: itemName,
+      description: itemDescription,
+      quantity: 1,
+      unit_amount: {
+        currency_code: 'AUD',
+        value: itemPrice
+      }
+        
     })
 
   }
 
-  dlt(itemName: any, itemPrice: any){
+  dlt(itemName: any, itemDescription: any, itemPrice: any){
     for (let i = 0; i < this.orderArray.length; i++){
-      if (this.orderArray[i].itemName == itemName && this.orderArray[i].itemPrice == itemPrice){
-        this.orderArray.splice(i, 1);
-        break;
+      if (this.orderArray[i].name == itemName &&
+          this.orderArray[i].unit_amount.value == itemPrice &&
+          this.orderArray[i].description == itemDescription){
+            if (this.orderArray[i].quantity > 1){
+              this.orderArray[i].quantity--;
+              break;
+            } else {
+              this.orderArray.splice(i, 1);
+              break;
+            }
       }
     }
 
   }
 
   getTotal(): number{
-    return this.orderArray.reduce((total, item) => total + item.itemPrice, 0);
+    let total = 0;
+
+    for(let i = 0; i < this.orderArray.length; i++){
+      total += this.orderArray[i].quantity * this.orderArray[i].unit_amount.value;
+    }
+
+    return total;
+    
   }
 
   checkout(totalPrice: number){
@@ -92,7 +127,7 @@ export class RestaurantPageComponent implements OnInit {
     console.log(`restaurant id: ${this.restaurantId}`);
     console.log(JSON.stringify(this.orderArray));
 
-    this.http.post(`http://localhost:3000/placeOrder`, {userId: this.currentUserId, restaurantId: this.restaurantId, status: 'submitted', orderArray: JSON.stringify(this.orderArray)})
+    this.http.post(`http://localhost:3000/placeOrder`, {userId: this.currentUserId, restaurantId: this.restaurantId, status: 'submitted', orderArray: JSON.stringify(this.orderArray), totalPrice: totalPrice})
     .subscribe({
       next:(data: any)=>{
         if (data.success){
