@@ -14,6 +14,7 @@ const path = require('path');
 const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
 const paypal= require('@paypal/paypal-server-sdk');
+const { request } = require("http");
 
 
 
@@ -21,13 +22,13 @@ const { Client, Environment} = paypal;
 
 const paypalClient = new Client({
     clientCredentialsAuthCredentials: {
-        oAuthClientId: '',
-        oAuthClientSecret: '' 
+        oAuthClientId: 'AbpViNd7G_duDz8kbW7HY1KQD7rwqKLk1GZtMYrITXdUuVyLQM5rElh-9GF_D-0LMdYuZwBNbBzkhbBb',
+        oAuthClientSecret: 'EJtdgBjJGJ_62R06YXNJfyBw0xuuryQMv7Yyd4qiFquq1kkwuG7bnh2U-wMqOZHo_xcWTtPhS4ybbqzo' 
     },
     environment: Environment.Sandbox,
     timeout: 0,
     logging: {
-        logLevel: 'INFO', // Log level (optional)
+        logLevel: paypal.LogLevel.Info, // Log level (optional)
         logRequest: {
             logBody: true // Log request body (optional)
         },
@@ -37,6 +38,7 @@ const paypalClient = new Client({
     }
 }); 
 
+const ordersController = new paypal.OrdersController(paypalClient);
 
 
 
@@ -552,17 +554,49 @@ app.post('/placeOrder', async (req, res) => {
     const status = req.body.status;
     const totalPrice = req.body.totalPrice;
 
-    /*const paymentjson = {
-        intent: 'capture',
-        'purchase_units'
-       
-    }*/
+    const purchaseUnits = {
+            amount: {
+                currency_code: 'AUD',
+                value: totalPrice,
+                breakdown: {
+                    item_total: {currency_code: 'AUD', value: totalPrice},
+                    tax_total: {currency_code: 'AUD', value: 0}
+                }
+            },
+            items: JSON.parse(items)
 
-    console.log(`variable userId: ${userId} type: ${typeof userId}`);
+        }
+
+    ;
+    const requestBody = {
+        intent: 'CAPTURE',
+        payer:{
+            payment_method: 'PAYPAL',
+        },
+        purchaseUnits: purchaseUnits,
+        paymentSource: {
+            payment_method: 'PAYPAL'
+        },
+        application_context: {
+            brand_name: 'Halal Eatz',
+            landing_page: 'BILLING',
+            user_action: 'PAY_NOW'
+        },
+
+    };
+    
+    
+
+    //onsole.log(JSON.stringify(requestBody));
+       
+
+    createOrder(requestBody);
+
+    /*console.log(`variable userId: ${userId} type: ${typeof userId}`);
     console.log(`variable restaurantId: ${restaurantId} type: ${typeof restaurantId}`);
     console.log(`variable items: ${items} type: ${typeof items}`);
     console.log(`variable status: ${status} type: ${typeof status}`);
-    console.log(`variable total price: ${totalPrice}`);
+    console.log(`variable total price: ${totalPrice}`); */
 
 
 
@@ -590,6 +624,27 @@ app.post('/placeOrder', async (req, res) => {
     
 
 });
+
+async function createOrder(body){
+
+    console.log(`${JSON.stringify(body, null, 2)}`);
+    
+    try {
+        const {result} = await ordersController.ordersCreate({
+            body,
+            prefer: 'return=representation'
+        });
+
+        console.log(result);
+        return result;
+    } catch  (error){
+        if (error instanceof paypal.ApiError){
+            console.error('error creating order: ', error.result);
+        } else {
+            console.error('unexpected error: ', error);
+        }
+    }
+}
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
