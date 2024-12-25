@@ -15,6 +15,7 @@ const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
 const paypal= require('@paypal/paypal-server-sdk');
 const { request } = require("http");
+const axios = require('axios');
 
 
 
@@ -547,60 +548,56 @@ app.post('/deleteRestaurant', async (req, res) => {
 
 app.post('/placeOrder', async (req, res) => {
     
-    Order.destroy({ where: {} });
+    //Order.destroy({ where: {} });
     const items = (req.body.orderArray);
     const userId = Number(req.body.userId);
     const restaurantId = Number(req.body.restaurantId);
     const status = req.body.status;
     const totalPrice = req.body.totalPrice;
 
-    const purchaseUnits = {
-            amount: {
+    const purchase_units = [{
+        items: JSON.parse(items),
+        amount: {
                 currency_code: 'AUD',
                 value: totalPrice,
                 breakdown: {
                     item_total: {currency_code: 'AUD', value: totalPrice},
-                    tax_total: {currency_code: 'AUD', value: 0}
+                    tax_total: {currency_code: 'AUD', value: '0.00'}
                 }
             },
-            items: JSON.parse(items)
+            
 
-        }
+        } ]
 
     ;
     const requestBody = {
         intent: 'CAPTURE',
-        payer:{
-            payment_method: 'PAYPAL',
-        },
-        purchaseUnits: purchaseUnits,
-        paymentSource: {
-            payment_method: 'PAYPAL'
-        },
+        purchase_units: purchase_units,
         application_context: {
-            brand_name: 'Halal Eatz',
-            landing_page: 'BILLING',
-            user_action: 'PAY_NOW'
+            return_url : 'http://localhost:4200/complete-order',
+            cancel_url : 'http://localhost:4200/cancel-order'
         },
 
     };
+
+
+    
+    console.log(items);
+
+    createOrder(purchase_units);
     
     
 
     //onsole.log(JSON.stringify(requestBody));
        
 
-    createOrder(requestBody);
+    //createOrder(requestBody);
 
     /*console.log(`variable userId: ${userId} type: ${typeof userId}`);
     console.log(`variable restaurantId: ${restaurantId} type: ${typeof restaurantId}`);
     console.log(`variable items: ${items} type: ${typeof items}`);
     console.log(`variable status: ${status} type: ${typeof status}`);
     console.log(`variable total price: ${totalPrice}`); */
-
-
-
-
 
 
     /*try{
@@ -625,27 +622,83 @@ app.post('/placeOrder', async (req, res) => {
 
 });
 
-async function createOrder(body){
-
-    console.log(`${JSON.stringify(body, null, 2)}`);
-    
-    try {
-        const {result} = await ordersController.ordersCreate({
-            body,
-            prefer: 'return=representation'
-        });
-
-        console.log(result);
-        return result;
-    } catch  (error){
-        if (error instanceof paypal.ApiError){
-            console.error('error creating order: ', error.result);
-        } else {
-            console.error('unexpected error: ', error);
+async function generateAccess_Token(purchase_units){
+    const response = await axios({
+        url: "https://api-m.sandbox.paypal.com/v1/oauth2/token",
+        method: 'POST',
+        data: 'grant_type=client_credentials',
+        auth: {
+            username: 'AbpViNd7G_duDz8kbW7HY1KQD7rwqKLk1GZtMYrITXdUuVyLQM5rElh-9GF_D-0LMdYuZwBNbBzkhbBb',
+            password: 'EJtdgBjJGJ_62R06YXNJfyBw0xuuryQMv7Yyd4qiFquq1kkwuG7bnh2U-wMqOZHo_xcWTtPhS4ybbqzo'
         }
-    }
+    })
+
+    console.log(response.data.access_token);
+    return response.data.access_token;
 }
 
+
+async function createOrder(purchase_units){
+    let access_token = await generateAccess_Token();
+
+    console.log(JSON.stringify(purchase_units, null, 2));
+    const response = await axios({
+        url: 'https://api-m.sandbox.paypal.com/v2/checkout/orders',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + access_token
+        },
+        data: JSON.stringify({
+            intent: 'CAPTURE',
+            purchase_units: [ {
+                "items": [
+                    {
+                    "name": "meal 1",
+                    "description": "meal 1",
+                    "quantity": '2',
+                    "unit_amount": {
+                        "currency_code": "AUD",
+                        "value": '2.00'
+                    }
+                    },
+                    {
+                    "name": "drink 1",
+                    "description": "drink 1",
+                    "quantity": '1',
+                    "unit_amount": {
+                        "currency_code": "AUD",
+                        "value": '4.00'
+                    }
+                    }
+                ],
+                "amount": {
+                    "currency_code": "AUD",
+                    "value": '8.00',
+                    "breakdown": {
+                    "item_total": {
+                        "currency_code": "AUD",
+                        "value": '8.00'
+                    },
+                    "tax_total": {
+                        "currency_code": "AUD",
+                        "value": '0.00'
+                    }
+                    }
+                },
+            }],
+            application_context: {
+                return_url : 'http://localhost:4200/complete-order',
+                cancel_url : 'http://localhost:4200/cancel-order'
+            }
+        })
+
+    });
+    console.log(response.data);
+
+    
+
+}
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT} !`);

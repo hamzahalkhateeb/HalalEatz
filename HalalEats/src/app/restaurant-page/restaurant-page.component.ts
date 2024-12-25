@@ -24,10 +24,10 @@ export class RestaurantPageComponent implements OnInit {
   orderArray: Array<{
     name: string,
     description: string,
-    quantity: number,
+    quantity: any,
     unit_amount: {
       currency_code : string,
-      value: number,
+      value: any,
     }
     
   }> = [];
@@ -121,13 +121,27 @@ export class RestaurantPageComponent implements OnInit {
     
   }
 
+
   checkout(totalPrice: number){
 
     console.log(`user id: ${this.currentUserId}`);
     console.log(`restaurant id: ${this.restaurantId}`);
     console.log(JSON.stringify(this.orderArray));
 
-    this.http.post(`http://localhost:3000/placeOrder`, {userId: this.currentUserId, restaurantId: this.restaurantId, status: 'submitted', orderArray: JSON.stringify(this.orderArray), totalPrice: totalPrice})
+    this.orderArray.forEach(item => {
+      
+      item.quantity = item.quantity.toString();
+      if(typeof(item.unit_amount.value) == 'string'){
+
+      } else { item.unit_amount.value = (item.unit_amount.value.toFixed(2)).toString(); }
+      
+      
+
+    });
+    console.log(totalPrice.toFixed(2));
+    console.log(this.orderArray);
+
+    this.http.post(`http://localhost:3000/placeOrder`, {userId: this.currentUserId, restaurantId: this.restaurantId, status: 'submitted', orderArray: JSON.stringify(this.orderArray), totalPrice: totalPrice.toFixed(2)})
     .subscribe({
       next:(data: any)=>{
         if (data.success){
@@ -140,10 +154,14 @@ export class RestaurantPageComponent implements OnInit {
       }
     });
 
+  }
+
     
-    }
+
+    
+}
   
 
 
 
-}
+
