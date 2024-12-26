@@ -570,28 +570,11 @@ app.post('/placeOrder', async (req, res) => {
         } ]
 
     ;
-    const requestBody = {
-        intent: 'CAPTURE',
-        purchase_units: purchase_units,
-        application_context: {
-            return_url : 'http://localhost:4200/complete-order',
-            cancel_url : 'http://localhost:4200/cancel-order'
-        },
-
-    };
-
-
-    
-    console.log(items);
-
-    createOrder(purchase_units);
-    
     
 
-    //onsole.log(JSON.stringify(requestBody));
-       
+    const payment = await createOrder(purchase_units);
+    
 
-    //createOrder(requestBody);
 
     /*console.log(`variable userId: ${userId} type: ${typeof userId}`);
     console.log(`variable restaurantId: ${restaurantId} type: ${typeof restaurantId}`);
@@ -622,7 +605,7 @@ app.post('/placeOrder', async (req, res) => {
 
 });
 
-async function generateAccess_Token(purchase_units){
+async function generateAccess_Token(){
     const response = await axios({
         url: "https://api-m.sandbox.paypal.com/v1/oauth2/token",
         method: 'POST',
@@ -651,59 +634,29 @@ async function createOrder(purchase_units){
         },
         data: JSON.stringify({
             intent: 'CAPTURE',
-            purchase_units: [ {
-                "items": [
-                    {
-                    "name": "meal 1",
-                    "description": "meal 1",
-                    "quantity": '2',
-                    "unit_amount": {
-                        "currency_code": "AUD",
-                        "value": '2.00'
-                    }
-                    },
-                    {
-                    "name": "drink 1",
-                    "description": "drink 1",
-                    "quantity": '1',
-                    "unit_amount": {
-                        "currency_code": "AUD",
-                        "value": '4.00'
-                    }
-                    }
-                ],
-                "amount": {
-                    "currency_code": "AUD",
-                    "value": '8.00',
-                    "breakdown": {
-                    "item_total": {
-                        "currency_code": "AUD",
-                        "value": '8.00'
-                    },
-                    "tax_total": {
-                        "currency_code": "AUD",
-                        "value": '0.00'
-                    }
-                    }
-                },
-            }],
+            purchase_units: purchase_units,
             application_context: {
                 return_url : 'http://localhost:4200/complete-order',
-                cancel_url : 'http://localhost:4200/cancel-order'
+                cancel_url : 'http://localhost:4200/cancel-order',
+                shipping_preference: 'NO_SHIPPING',
+                user_action: 'PAY_NOW',
+                brand_name: 'Halal Eatz'
             }
-        })
+        }) 
+    })
+    console.log(response.data.links.find(link => link.rel === "approve").href);
 
-    });
-    console.log(response.data);
+    return response.data.links.find(link => link.rel === "approve").href;
+};
+    
 
     
 
-}
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT} !`);
 });
-
 
 
 
