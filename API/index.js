@@ -567,15 +567,37 @@ app.post('/placeOrder', async (req, res) => {
             },
             
 
-        } ]
-
-    ;
+        }];
     
 
-    const payment = await createOrder(purchase_units);
+    try{
+        const paymentURL = await createOrder(purchase_units, restaurantId, userId);
+        
+        res.status(201).json({success: true, message: "payment captured, proceeding to completion now!", redirectUrl: paymentURL});
+    } catch {
+        res.status(500).json({success: false, message: 'error, something went wrong'});
+    }
     
 
+});
 
+
+app.post('/capturePayment', async (req, res)=>{
+
+    console.log('execure payment request received!')
+    const token = req.body.token;
+
+    try{
+        let response = await capture_payment(token);
+        
+
+        res.status(201).json({success: true, message: "payment successfull, you will be redirected to shortly, ADD REDIRECT URL LATER", response: response});
+
+    } catch {
+        res.status(500).json({success: false, message: 'error, something went wrongGGGGGGG'});
+    }
+
+    
     /*console.log(`variable userId: ${userId} type: ${typeof userId}`);
     console.log(`variable restaurantId: ${restaurantId} type: ${typeof restaurantId}`);
     console.log(`variable items: ${items} type: ${typeof items}`);
@@ -602,8 +624,35 @@ app.post('/placeOrder', async (req, res) => {
         res.status(500).json({success: false, error: 'something went wrong', message: 'something went wrong'});
     }*/
     
+})
 
-});
+async function createOrder(purchase_units, restaurantId, userId){
+    let access_token = await generateAccess_Token();
+
+    console.log(JSON.stringify(purchase_units, null, 2));
+    const response = await axios({
+        url: 'https://api-m.sandbox.paypal.com/v2/checkout/orders',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + access_token
+        },
+        data: JSON.stringify({
+            intent: 'CAPTURE',
+            purchase_units: purchase_units,
+            application_context: {
+                return_url : 'http://localhost:4200/succesfullPayment',
+                cancel_url : `http://localhost:4200/restaurantPage/${restaurantId}?restaurantId=${restaurantId}&${userId}=`,
+                shipping_preference: 'NO_SHIPPING',
+                user_action: 'PAY_NOW',
+                brand_name: 'Halal Eatz'
+            }
+        }) 
+    })
+    console.log(response.data.links.find(link => link.rel === "approve").href);
+
+    return response.data.links.find(link => link.rel === "approve").href;
+};
 
 async function generateAccess_Token(){
     const response = await axios({
@@ -621,33 +670,28 @@ async function generateAccess_Token(){
 }
 
 
-async function createOrder(purchase_units){
-    let access_token = await generateAccess_Token();
+async function capture_payment(paymentId){
 
-    console.log(JSON.stringify(purchase_units, null, 2));
+    const access_token = generateAccess_token();
+
     const response = await axios({
-        url: 'https://api-m.sandbox.paypal.com/v2/checkout/orders',
+        url: `https://api-m.paypal.com/v2/checkout/orders/${paymentId}/capture`,
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + access_token
-        },
-        data: JSON.stringify({
-            intent: 'CAPTURE',
-            purchase_units: purchase_units,
-            application_context: {
-                return_url : 'http://localhost:4200/complete-order',
-                cancel_url : 'http://localhost:4200/cancel-order',
-                shipping_preference: 'NO_SHIPPING',
-                user_action: 'PAY_NOW',
-                brand_name: 'Halal Eatz'
-            }
-        }) 
-    })
-    console.log(response.data.links.find(link => link.rel === "approve").href);
 
-    return response.data.links.find(link => link.rel === "approve").href;
-};
+        },
+
+    })
+    
+    console.log(response.data);
+    return response.data
+}
+
+
+
+
     
 
     

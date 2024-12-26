@@ -6,6 +6,7 @@ import { DashBoardComponent } from './dash-board/dash-board.component';
 import { ListingFormComponent } from './listing-form/listing-form.component';
 import { RestaurantAdminComponent } from './restaurant-admin/restaurant-admin.component';
 import { RestaurantPageComponent } from './restaurant-page/restaurant-page.component';
+import { SuccesfullPaymentComponent } from './succesfull-payment/succesfull-payment.component';
 
 
 export const routes: Routes = [
@@ -16,6 +17,7 @@ export const routes: Routes = [
     {path: 'error', component: ErrorComponent},
     {path: 'restaurantAdmin', component: RestaurantAdminComponent},
     {path: 'restaurantPage/:id', component: RestaurantPageComponent},
+    {path: 'succesfullPayment', component: SuccesfullPaymentComponent},
 
     
 ];

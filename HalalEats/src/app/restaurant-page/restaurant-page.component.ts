@@ -141,11 +141,11 @@ export class RestaurantPageComponent implements OnInit {
     console.log(totalPrice.toFixed(2));
     console.log(this.orderArray);
 
-    this.http.post(`http://localhost:3000/placeOrder`, {userId: this.currentUserId, restaurantId: this.restaurantId, status: 'submitted', orderArray: JSON.stringify(this.orderArray), totalPrice: totalPrice.toFixed(2)})
+    this.http.post(`http://localhost:3000/placeOrder`, {userId: this.currentUserId, restaurantId: this.restaurantId, status: 'submitted', orderArray: JSON.stringify(this.orderArray), totalPrice: totalPrice.toFixed(2),})
     .subscribe({
       next:(data: any)=>{
-        if (data.success){
-          //
+        if (data.success && data.redirectUrl){
+          window.location.href = data.redirectUrl;
         } else {
           //
         }
