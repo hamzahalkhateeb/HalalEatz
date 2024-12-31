@@ -15,6 +15,8 @@ export class SuccesfullPaymentComponent implements OnInit{
 
   token! : any;
   payerId!: any;
+  orderId!: any;
+  timesReceived = 1;
 
   constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) {}
 
@@ -22,22 +24,32 @@ export class SuccesfullPaymentComponent implements OnInit{
     this.route.queryParams.subscribe(params => {
       this.token = params['token'];
       this.payerId = params['payerId'];
-    });
-
-    console.log(this.token);
-
-    this.http.post(`http://localhost:3000/capturePayment`, {token: this.token})
-    .subscribe({
-      next:(data: any)=>{
-        if (data.success){
-          alert(data.message);
-        } else{
-          alert(data.message);
-        }
-      },error : (error: any) =>{
-        console.error('error: ', error);
+      this.orderId = params['orderId'];
+      
+      console.log(`ORDER received in front end!**###**##***###*3##*********####*####*********####******** ${this.orderId}, times this function has been called received: ${this.timesReceived}`);
+      this.timesReceived++;
+    
+      if(this.token && this.orderId){
+        this.http.post(`http://localhost:3000/capturePayment`, {token: this.token, orderId: this.orderId})
+        .subscribe({
+          next:(data: any)=>{
+            if (data.success){
+              console.log(` ${data.message}`);
+            
+              this.router.navigateByUrl('/dashboard');
+            } else{
+              alert(data.message);
+            }
+          },error : (error: any) =>{
+            console.error('error: ', error);
+          }
+        });
       }
+
     });
+
+   
+
 
   }
 

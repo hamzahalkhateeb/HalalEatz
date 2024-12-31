@@ -555,6 +555,20 @@ app.post('/placeOrder', async (req, res) => {
     const status = req.body.status;
     const totalPrice = req.body.totalPrice;
 
+    
+
+    const transaction = await sequelize.transaction();
+
+    const order = await Order.create({
+        customerId : userId,
+        restaurantId: restaurantId,
+        status: status,
+        items: items
+       }, { transaction });
+
+    const orderId = order.id;
+    console.log(`ORDER ID JUST CREATED!**###**##***###*3##*********####*####*********####******** ${orderId}`);
+
     const purchase_units = [{
         items: JSON.parse(items),
         amount: {
@@ -568,68 +582,63 @@ app.post('/placeOrder', async (req, res) => {
             
 
         }];
-    
-
-    try{
-        const paymentURL = await createOrder(purchase_units, restaurantId, userId);
         
+    
+        
+    try{
+        const paymentURL = await createOrder(purchase_units, restaurantId, userId, orderId); //this will send to the front end and front end will call /CapturePayment end point below
+
+        
+        await transaction.commit();
+                
         res.status(201).json({success: true, message: "payment captured, proceeding to completion now!", redirectUrl: paymentURL});
     } catch {
+        await transaction.rollback();
         res.status(500).json({success: false, message: 'error, something went wrong'});
     }
-    
+        
 
 });
 
 
 app.post('/capturePayment', async (req, res)=>{
 
-    console.log('execure payment request received!')
     const token = req.body.token;
+
+    const orderId = req.body.orderId;
+    console.log(`ORDER ID PASSED TO CAPTURE PAYMENT!**###**##***###*3##*********####*####*********####******** ${orderId}`);
+
+    const order = await Order.findOne({where : {id: orderId}});
+
 
     try{
         let response = await capture_payment(token);
         
+    
+        order.status = 'paid';
+        await order.save()
 
-        res.status(201).json({success: true, message: "payment successfull, you will be redirected to shortly, ADD REDIRECT URL LATER", response: response});
+        res.status(201).json({success: true, message: "payment successfull, you will be redirected to shortly!", response: response, redirectUrl: '/dashboard'});
 
-    } catch {
-        res.status(500).json({success: false, message: 'error, something went wrongGGGGGGG'});
+    }  catch (error) {
+
+        await Order.destroy({where : {id: orderId}});
+        console.error('Error capturing payment:', error.message);
+        throw error;
+        
     }
 
     
-    /*console.log(`variable userId: ${userId} type: ${typeof userId}`);
-    console.log(`variable restaurantId: ${restaurantId} type: ${typeof restaurantId}`);
-    console.log(`variable items: ${items} type: ${typeof items}`);
-    console.log(`variable status: ${status} type: ${typeof status}`);
-    console.log(`variable total price: ${totalPrice}`); */
-
-
-    /*try{
-
-        console.log('attempting to create order');
-
-       const order = await Order.create({
-        customerId : userId,
-        restaurantId: restaurantId,
-        status: status,
-        items: items
-       });
-
-        console.log('created an order  object');
-        console.log(order);
-        res.status(201).json({success: true, message: "order places correctly, please check the orders tab for updates"});
-    } catch {
-        console.log('error!');
-        res.status(500).json({success: false, error: 'something went wrong', message: 'something went wrong'});
-    }*/
+    
     
 })
 
-async function createOrder(purchase_units, restaurantId, userId){
+async function createOrder(purchase_units, restaurantId, userId, orderId){
     let access_token = await generateAccess_Token();
 
-    console.log(JSON.stringify(purchase_units, null, 2));
+    
+    console.log(`2- (create order function): access token used by the create order function: `, access_token);
+    
     const response = await axios({
         url: 'https://api-m.sandbox.paypal.com/v2/checkout/orders',
         method: 'POST',
@@ -641,15 +650,17 @@ async function createOrder(purchase_units, restaurantId, userId){
             intent: 'CAPTURE',
             purchase_units: purchase_units,
             application_context: {
-                return_url : 'http://localhost:4200/succesfullPayment',
-                cancel_url : `http://localhost:4200/restaurantPage/${restaurantId}?restaurantId=${restaurantId}&${userId}=`,
+                return_url : `http://localhost:4200/succesfullPayment?orderId=${orderId}`,
+                cancel_url : `http://localhost:4200/restaurantPage/${restaurantId}?restaurantId=${restaurantId}&${userId}=userId`,
                 shipping_preference: 'NO_SHIPPING',
                 user_action: 'PAY_NOW',
                 brand_name: 'Halal Eatz'
             }
         }) 
     })
-    console.log(response.data.links.find(link => link.rel === "approve").href);
+    console.log("2- (inside create order function): order id: ", response.data.id);
+
+
 
     return response.data.links.find(link => link.rel === "approve").href;
 };
@@ -665,17 +676,23 @@ async function generateAccess_Token(){
         }
     })
 
-    console.log(response.data.access_token);
+    console.log(`1- (generate access token function: access token generated: `, response.data.access_token);
     return response.data.access_token;
 }
 
 
-async function capture_payment(paymentId){
 
-    const access_token = generateAccess_token();
+async function capture_payment(paymentId){
+    
+    let access_token = await generateAccess_Token();
+
+    console.log(`3- access token passed to capture payment: ${access_token}`); 
+
+    console.log(`3-  id passed to the capture function: ${paymentId}`);
+    
 
     const response = await axios({
-        url: `https://api-m.paypal.com/v2/checkout/orders/${paymentId}/capture`,
+        url: `https://api-m.sandbox.paypal.com/v2/checkout/orders/${paymentId}/capture`,
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -685,9 +702,9 @@ async function capture_payment(paymentId){
 
     })
     
-    console.log(response.data);
-    return response.data
-}
+    console.log(response.data); 
+    return response.data;
+} 
 
 
 
