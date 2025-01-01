@@ -77,7 +77,7 @@ const storage = multer.diskStorage({
         
         const ogName = file.originalname;
         cb(null, ogName);
-        console.log("image uploaded successfully!")
+        
     }
 }); 
 
@@ -103,9 +103,9 @@ app.post('/login', async (req, res) => {
 
     // User.destroy({ where: {id: 72} });
     
-    console.log("login called");
+    
     const token = req.body.id_token;
-    console.log("token received: ");
+    
     try{
         const ticket = await client.verifyIdToken({
             idToken: token,
@@ -119,7 +119,7 @@ app.post('/login', async (req, res) => {
         let user = await User.findOne({where: {email: email}});
 
         if(!user){
-            console.log("user wasn't found, creating new user...");
+            
             user = await User.create({
                 email,
                 picture,
@@ -131,7 +131,6 @@ app.post('/login', async (req, res) => {
             req.session.isLoggedIn = true;
             res.status(201).json({success: true, message: "You have signed up successfully!", user, redirectUrl: "/dashboard"});
         } else {
-            console.log("user found, logging in...");
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
             if (user.accountType == 1){
@@ -168,8 +167,6 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     //Menue.destroy({ where: {} });
     //User.destroy({ where: {id : 72} });
     
-    console.log(`listing restaurant order received `);
-    console.log(` `);
     //extract received information
     const token = req.body.id_token;
     const resInfo = JSON.parse(req.body.resInfo);
@@ -186,7 +183,6 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     // declaring paths and renaming the newly stored image!
     const oldPath = path.join(__dirname, 'uploads', uploadedImg.filename);
     const newPath = path.join('uploads', newImageName);
-    console.log(newPath);
 
     fs.rename(oldPath, newPath, (err) => {
         if (err) {
@@ -211,7 +207,6 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
         let user = await User.findOne({where: {email : email}});
 
         if (!user){
-            console.log(` there was no user, creating one now `);
             
             user = await User.create({
                 email, picture, firstName: given_name, lastName: family_name, accountType: 2, 
@@ -245,7 +240,6 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
 
     } catch {
-        console.log("lolololo, terrible request");
         
         res.status(400).json({error: 'invalid token', redirectUrl: "/error"});
     }
@@ -321,7 +315,6 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
 
         if (!menue){
             
-            console.log(`menue doesn't exist, creating now`);
             menue = await Menue.create({
                 meals: [],
                 drinks:[],
@@ -369,7 +362,6 @@ app.post('/getCloseRestaurants', async (req, res) => {
     const Ulong = parseFloat(req.body.long);
     const Ulat = parseFloat(req.body.lat);
     //lat: -34.782893, long: 138.628749
-    console.log(`lat: ${req.body.lat}, long: ${req.body.long}`);
 
 
     const query = `
@@ -390,13 +382,10 @@ app.post('/getCloseRestaurants', async (req, res) => {
     `;
 
     try {
-        console.log("about to execute sql query!");
         const closestRestaurants = await sequelize.query(query, {
             replacements: {Ulat, Ulong},
             type: QueryTypes.SELECT
         });
-        console.log("Executed successfully");
-        console.log(closestRestaurants);
 
         if (closestRestaurants.length === 0){
             return res.json({success: false, message: "no restaurants available to display!"});
@@ -419,17 +408,14 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
 
     if (type === "admin"){
         const userId = req.body.Id;
-        console.log(`user id received from front end is: ${userId}`);
 
 
         try{
             let restaurant = await Restaurant.findOne({where : {UserId : userId}});
 
-            console.log(`restaurant associated with the user is: ${restaurant.name}, ${restaurant.id}`);
 
             let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurant.id}}));
             
-            console.log(`found a menue for the restaurant in question: ${menue}`);
 
             if (!menue){
             return res.json({success:false, message: "There are no items in your menue, please add items through the  menue tab"});
@@ -448,7 +434,6 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
             
             let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurantId}}));
             
-            console.log(`found a menue for the restaurant in question: ${menue}`);
 
             if (!menue){
             return res.json({success:false, message: "This restaurant does not have any items available tp purchase"});
@@ -461,7 +446,6 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
         }
 
     } else {
-        console.log('wrong type, has to be either admin or consumer');
     }
 
 
@@ -470,24 +454,18 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
 });
 
 app.post('/deleteItem', async (req, res) => {
-    console.log('deleteitem initiatied');
     const menueid = req.body.menueId;
     const type = `${req.body.type}s`;
     const itemName = req.body.itemName;
     const itemDescription = req.body.itemDescription;
 
-    console.log(menueid, type, itemName, itemDescription);
 
 
     try{
         let menue = await Menue.findOne({where : {id: menueid}});
 
-        console.log(menue.meals)
-        console.log(`found menue!`);
-        console.log(`menue type before: ${menue[type]} ;;;`);
 
         const newArray = [];
-        console.log(`new empty array: ${newArray} ;;;`);
         for (let index in menue[type]){
             if (!(menue[type][index].includes(`"name":"${itemName}"`) && menue[type][index].includes(`"description":"${itemDescription}"`))){
 
@@ -495,7 +473,6 @@ app.post('/deleteItem', async (req, res) => {
             }
         }
         
-        console.log(`just populated empty array with the following: ${menue[type]} ;;;`);
         menue.set(type, newArray);
 
         
@@ -503,7 +480,6 @@ app.post('/deleteItem', async (req, res) => {
         
     
         await menue.save();
-        console.log(`saved menue: ${menue.meals}`);
 
         res.status(201).json({success: true, message: `you have deleted an item successfully!`});
 
@@ -515,27 +491,25 @@ app.post('/deleteItem', async (req, res) => {
 });
 
 app.post('/deleteRestaurant', async (req, res) => {
-    console.log(`restaurant deletion started`);
+    
 
     const userId = req.body.userId;
-    console.log(userId);
+    
 
     let user = await User.findOne({where : {id : userId}});
     let restaurant = await Restaurant.findOne({where : {UserId : userId}});
     let menue = await Menue.findOne({where : {restaurantId: restaurant.id}});
-    console.log(user);
-    console.log(restaurant);
-    console.log(menue);
+    
 
     try{
         await menue.destroy();
-        console.log('menue destroyed');
+        
         await restaurant.destroy();
-        console.log('restaurant destroyed');
+       
         await user.destroy();
-        console.log('user destroyed');
+        
         req.session.destroy();
-        console.log('session destroyed!');
+        
 
         res.status(201).json({success: true, message:"menues, restaurant and user have all been deleted", redirectUrl: '/login'});
         
@@ -603,10 +577,11 @@ app.post('/placeOrder', async (req, res) => {
 
 app.post('/capturePayment', async (req, res)=>{
 
+    console.log(`Capture paymenty function called!!`);
     const token = req.body.token;
 
     const orderId = req.body.orderId;
-    console.log(`ORDER ID PASSED TO CAPTURE PAYMENT!**###**##***###*3##*********####*####*********####******** ${orderId}`);
+    
 
     const order = await Order.findOne({where : {id: orderId}});
 
@@ -624,14 +599,13 @@ app.post('/capturePayment', async (req, res)=>{
 
         await Order.destroy({where : {id: orderId}});
         console.error('Error capturing payment:', error.message);
-        throw error;
-        
+        res.status(500).json({success: true, messagge: "payment did not go through, internal error"});
     }
 
     
     
     
-})
+});
 
 async function createOrder(purchase_units, restaurantId, userId, orderId){
     let access_token = await generateAccess_Token();
@@ -686,12 +660,15 @@ async function capture_payment(paymentId){
     
     let access_token = await generateAccess_Token();
 
+    console.log(`capture payment FUNCTION called!`);
+    
+
     console.log(`3- access token passed to capture payment: ${access_token}`); 
 
     console.log(`3-  id passed to the capture function: ${paymentId}`);
     
 
-    const response = await axios({
+   const response = await axios({
         url: `https://api-m.sandbox.paypal.com/v2/checkout/orders/${paymentId}/capture`,
         method: 'POST',
         headers: {

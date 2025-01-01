@@ -16,7 +16,7 @@ export class SuccesfullPaymentComponent implements OnInit{
   token! : any;
   payerId!: any;
   orderId!: any;
-  timesReceived = 1;
+  
 
   constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) {}
 
@@ -26,10 +26,10 @@ export class SuccesfullPaymentComponent implements OnInit{
       this.payerId = params['payerId'];
       this.orderId = params['orderId'];
       
-      console.log(`ORDER received in front end!**###**##***###*3##*********####*####*********####******** ${this.orderId}, times this function has been called received: ${this.timesReceived}`);
-      this.timesReceived++;
+    
     
       if(this.token && this.orderId){
+        console.log('about to send capture payment request');
         this.http.post(`http://localhost:3000/capturePayment`, {token: this.token, orderId: this.orderId})
         .subscribe({
           next:(data: any)=>{
@@ -44,7 +44,9 @@ export class SuccesfullPaymentComponent implements OnInit{
             console.error('error: ', error);
           }
         });
+        console.log('sent capture payment request successfully');
       }
+      
 
     });
 
