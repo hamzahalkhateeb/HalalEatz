@@ -575,6 +575,8 @@ app.post('/placeOrder', async (req, res) => {
 });
 
 
+
+
 app.post('/capturePayment', async (req, res)=>{
 
     console.log(`Capture paymenty function called!!`);
@@ -588,12 +590,26 @@ app.post('/capturePayment', async (req, res)=>{
 
     try{
         let response = await capture_payment(token);
-        
-    
-        order.status = 'paid';
-        await order.save()
 
-        res.status(201).json({success: true, message: "payment successfull, you will be redirected to shortly!", response: response, redirectUrl: '/dashboard'});
+        
+        if (response.status === "COMPLETED"){
+            order.status = 'paid';
+            await order.save();
+
+            res.status(201).json({success: true, message: "payment successfull, you will be redirected to shortly!", response: response, redirectUrl: '/dashboard'});
+
+        } else if (response.status = "already complete") {
+            
+            res.status(201).json({success: true, message: "payment successfull, you will be redirected to shortly!", response: response, redirectUrl: '/dashboard'});
+
+        } else  {
+
+            await Order.destroy({where : {id: orderId}});
+            console.error('Error capturing payment:', error.message);
+            res.status(500).json({success: true, messagge: "payment did not go through, internal error"});
+
+        }
+        
 
     }  catch (error) {
 
@@ -603,9 +619,8 @@ app.post('/capturePayment', async (req, res)=>{
     }
 
     
-    
-    
-});
+}); 
+
 
 async function createOrder(purchase_units, restaurantId, userId, orderId){
     let access_token = await generateAccess_Token();
@@ -635,7 +650,7 @@ async function createOrder(purchase_units, restaurantId, userId, orderId){
     console.log("2- (inside create order function): order id: ", response.data.id);
 
 
-
+    
     return response.data.links.find(link => link.rel === "approve").href;
 };
 
@@ -654,33 +669,53 @@ async function generateAccess_Token(){
     return response.data.access_token;
 }
 
+const processedPayments = new Set();
+
 
 
 async function capture_payment(paymentId){
     
-    let access_token = await generateAccess_Token();
+    if (processedPayments.has(paymentId)){
+        console.log('payment already captured, cancelling capture payment function');
+        
+        return response  = {
+            status: "already complete"
+            
+        }
+    } else {
 
-    console.log(`capture payment FUNCTION called!`);
+        let access_token = await generateAccess_Token();
+
+        console.log(`capture payment FUNCTION called!`);
     
 
-    console.log(`3- access token passed to capture payment: ${access_token}`); 
+        console.log(`3- access token passed to capture payment: ${access_token}`); 
 
-    console.log(`3-  id passed to the capture function: ${paymentId}`);
+        console.log(`3-  id passed to the capture function: ${paymentId}`);
     
 
-   const response = await axios({
-        url: `https://api-m.sandbox.paypal.com/v2/checkout/orders/${paymentId}/capture`,
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + access_token
+        const response = await axios({
+                url: `https://api-m.sandbox.paypal.com/v2/checkout/orders/${paymentId}/capture`,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + access_token
 
-        },
+                },
 
-    })
+            });
+
+        if(response.data.status === 'COMPLETED'){
+            processedPayments.add(paymentId);
+            console.log('first time capturing, payment id addedd to process payments set');
+        }
     
-    console.log(response.data); 
-    return response.data;
+        console.log(response.data); 
+        return response.data;
+
+    }
+
+    
 } 
 
 

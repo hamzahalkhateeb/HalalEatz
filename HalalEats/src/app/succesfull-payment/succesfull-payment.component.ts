@@ -26,9 +26,12 @@ export class SuccesfullPaymentComponent implements OnInit{
       this.payerId = params['payerId'];
       this.orderId = params['orderId'];
       
-    
+      console.log(`paymentId aka token: ${this.token}`);
+      console.log(`orderId: ${this.orderId}`);
     
       if(this.token && this.orderId){
+        console.log(`paymentId aka token: ${this.token}`);
+        console.log(`orderId: ${this.orderId}`);
         console.log('about to send capture payment request');
         this.http.post(`http://localhost:3000/capturePayment`, {token: this.token, orderId: this.orderId})
         .subscribe({
@@ -43,8 +46,8 @@ export class SuccesfullPaymentComponent implements OnInit{
           },error : (error: any) =>{
             console.error('error: ', error);
           }
-        });
-        console.log('sent capture payment request successfully');
+        }); 
+        console.log('sent capture payment request successfully'); 
       }
       
 
