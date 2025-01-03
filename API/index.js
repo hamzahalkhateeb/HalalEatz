@@ -528,6 +528,7 @@ app.post('/placeOrder', async (req, res) => {
     const restaurantId = Number(req.body.restaurantId);
     const status = req.body.status;
     const totalPrice = req.body.totalPrice;
+    
 
     
 
@@ -539,6 +540,14 @@ app.post('/placeOrder', async (req, res) => {
         status: status,
         items: items
        }, { transaction });
+
+    const restaurantObjetc = await Restaurant.findOne({where : {id : restaurantId}});
+    console.log('found restaurant object : ', restaurantObjetc.userId);
+
+    const restaurantOwner = await User.findOne({where: {id : restaurantObjetc.userId}});
+    console.log('found restaurant owner and his email is the following: ', restaurantOwner.email);
+
+    const payeeEmail = restaurantOwner.email;
 
     const orderId = order.id;
     console.log(`ORDER ID JUST CREATED!**###**##***###*3##*********####*####*********####******** ${orderId}`);
@@ -553,9 +562,13 @@ app.post('/placeOrder', async (req, res) => {
                     tax_total: {currency_code: 'AUD', value: '0.00'}
                 }
             },
+        payee: {
+            email_address: payeeEmail
+        }
             
-
         }];
+
+        console.log(purchase_units);
         
     
         
@@ -647,7 +660,7 @@ async function createOrder(purchase_units, restaurantId, userId, orderId){
             }
         }) 
     })
-    console.log("2- (inside create order function): order id: ", response.data.id);
+    console.log("2- (inside create order function): order id: ", response.data);
 
 
     
