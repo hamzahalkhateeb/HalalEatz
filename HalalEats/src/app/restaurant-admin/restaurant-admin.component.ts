@@ -44,47 +44,8 @@ export class RestaurantAdminComponent implements OnInit {
     imgPath: "",
   };
 
-  /*mealsPackage: Array<{
-    type: '',
-    name: '',
-    description: '',
-    price: 0,
-    halal: false,
-    vegan: false,
-    vegetarian: false,
-    glutenFree: false,
-    lactoseFree: false,
-    imgPath: "",
+  ordersRetrieved: any[] = [];
 
-  }> = [];
-
-  drinksPackage: Array<{
-  type: '',
-  name: '',
-  description: '',
-  price: 0,
-  halal: false,
-  vegan: false,
-  vegetarian: false,
-  glutenFree: false,
-  lactoseFree: false,
-  imgPath: "",
-
-  }> = [];
-
-  desertsPackage: Array<{
-  type: '',
-  name: '',
-  description: '',
-  price: 0,
-  halal: false,
-  vegan: false,
-  vegetarian: false,
-  glutenFree: false,
-  lactoseFree: false,
-  imgPath: "",
-
-  }> = []; */
 
 
   selectedFile: File | null = null;
@@ -206,6 +167,23 @@ export class RestaurantAdminComponent implements OnInit {
       }
     });
     
+  }
+
+  getOrders(): void{
+    console.log
+
+    this.http.post('http://localhost:3000/getOrders', {userId: this.currentuserId})
+    .subscribe({
+      next: (data: any) =>{
+        if (data.success){
+          this.ordersRetrieved = data.orders;
+        } else {
+          alert(data.message)
+        }
+      }, error: (error: any) =>{
+        console.error('error: ', error);
+      }
+    });
   }
 
 }

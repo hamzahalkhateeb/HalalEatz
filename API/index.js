@@ -14,8 +14,11 @@ const path = require('path');
 const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
 const paypal= require('@paypal/paypal-server-sdk');
-const { request } = require("http");
+const  request  = require("http");
 const axios = require('axios');
+const WebSocket = require('ws');
+
+
 
 
 
@@ -39,12 +42,54 @@ const paypalClient = new Client({
     }
 }); 
 
-const ordersController = new paypal.OrdersController(paypalClient);
 
 
 
 //assigning an express instance to an "app" object, basically making the express app
 const app= express();
+
+//start the web socket server
+
+const server = request.createServer(app);
+
+//initilize websocket server
+const wss = new WebSocket.Server({server});
+
+//active websocket clients
+let restaurantClient! = any;
+let customerClient! = any;
+
+wss.on('connection', (ws, req)=>{
+    console.log(`new websocket client connected`);
+
+    //determine if client is a customer or a restaurant
+    const userRole = req.url.includes('restaurant') ? 'restaurant' : 'buyer';
+    if (userRole === 'restaurant'){
+        restaurantClient = ws;
+    } else {
+        customerClient = ws;
+    }
+
+
+    //listen for incoming messages
+    ws.on('message', (message)=>{
+        console.log('recevied: ', message);
+
+    });
+
+
+    //handle websocket closure
+    ws.on('close', ()=>{
+        wconsole.log('client disconneted from websocket');
+        if (userRole === 'restaurant'){
+            restaurantClient = null;
+        } else {
+            customerClient = null;
+        }
+    });
+
+})
+
 
 //Setting the view engine as ejs. The following is unnecessary as angular will handle the frontend
 app.set('view engine', 'ejs');
@@ -634,6 +679,27 @@ app.post('/capturePayment', async (req, res)=>{
     
 }); 
 
+app.post('/getOrders', async (req, res) =>{
+    
+    const userId = req.body.userId;
+
+    try {
+        const restaurant = await Restaurant.findOne({where : {userId : userId}});
+        const orders = await Order.findAll({where : {restaurantId : restaurant.id}});
+
+        const plainOrders = orders.map(order => order.toJSON());
+
+        res.status(200).json({success: true, message: "orders loaded successfully, sending them now", orders : plainOrders});
+
+    } catch {
+
+        res.status(500).json({success: false, message: "error, something went wrong"});
+
+    }
+
+
+});
+
 
 async function createOrder(purchase_units, restaurantId, userId, orderId){
     let access_token = await generateAccess_Token();
@@ -728,8 +794,21 @@ async function capture_payment(paymentId){
 
     }
 
-    
 } 
+
+function broadcastNewOrder(order) {
+    if (restaurantClient.readyState === WebSocket.OPEN){
+        restaurantClient.send(JSON.stringify(order));
+    }
+}
+
+function notifyCustomer(orderUpdate) {
+    if (customerClient.readyState === WebSocket.OPEN){
+        customerClient.send(JSON.stringify(orderUpdate));
+    }
+}
+
+
 
 
 
