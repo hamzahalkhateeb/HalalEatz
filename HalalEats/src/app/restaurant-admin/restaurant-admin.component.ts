@@ -3,6 +3,7 @@ import { Component, OnInit, PLATFORM_ID, ViewChild, ElementRef, OnDestroy } from
 import {Router, ActivatedRoute} from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import {io, Socket} from 'socket.io-client';
 
 
 
@@ -14,19 +15,11 @@ import { CommonModule } from '@angular/common';
   templateUrl: './restaurant-admin.component.html',
   styleUrl: './restaurant-admin.component.css'
 })
-export class RestaurantAdminComponent implements OnInit, OnDestroy {
+export class RestaurantAdminComponent implements OnInit {
 
   @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
 
-  private ws: WebSocket | undefined;
-
-  //this.connectWebsocket();
-
-
-
-  //declare all data variable that you need!
-  //a list of orders
-  //a list meals, drinks and deserts
+  
   currentuserId = -1;
 
   mealsArray: any;
@@ -52,13 +45,16 @@ export class RestaurantAdminComponent implements OnInit, OnDestroy {
   ordersParsed : any[] = [];
 
 
+  private socket! : Socket;
+
+
 
   selectedFile: File | null = null;
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute ) {}
   ngOnInit(): void {
 
-    this.connectWebsocket();
+   
 
     this.route.queryParams.subscribe(params => {
       this.currentuserId = params['userId']; });
@@ -66,11 +62,15 @@ export class RestaurantAdminComponent implements OnInit, OnDestroy {
     console.log(`${this.currentuserId} -------------------------------------------------------------------------------`);
     this.LoadRestaurantAdminPackage(this.currentuserId);
     this.getOrders();
+
+    
+
   }
 
-  ngOnDestroy(): void {
-      
-  }
+  
+
+
+
 
   LoadRestaurantAdminPackage(userId:any)  {
     this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {Id : userId, userType: 'admin'})
@@ -207,38 +207,6 @@ export class RestaurantAdminComponent implements OnInit, OnDestroy {
   }
 
 
-  connectWebsocket(){
-    this.ws = new WebSocket('ws://localhost:3000');
-
-    //receive from backend
-    this.ws.onmessage = (event) =>{
-      console.log('received messahe from server: ', event.data);
-      //process the message here!
-    };
-
-    this.ws.onerror = (error) =>{
-      console.error('websocket error: ', error);
-      //add more logic here
-    };
-
-
-    this.ws.onopen = () =>{
-      console.log('Websocket connection established');
-
-      this.ws?.send(JSON.stringify({clientType : 'restaurant', userId: this.currentuserId, message: 'restaurant admin connected to ws'}));
-
-      //add more logic here
-    };
-  }
-
-
-    sendMessage(message: string){
-
-      if (this.ws && this.ws.readyState === WebSocket.OPEN){
-        this.ws.send(JSON.stringify({message}));
-      }
-
-    }
 
   
 }

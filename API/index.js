@@ -1,6 +1,6 @@
 
 //import different apps and frameworks necessary for your application
-const express = require("express");
+
 const {sequelize, models } = require("./models"); //import all data object models
 const {User, Restaurant, Order, Menue} = models; //destructure the models object imported in the line above
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
@@ -14,10 +14,17 @@ const path = require('path');
 const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
 const paypal= require('@paypal/paypal-server-sdk');
-const  request  = require("http");
 const axios = require('axios');
 const WebSocket = require('ws');
 
+
+
+const express = require("express");
+const app= express();
+const  request  = require("http");
+const server = request.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 
 
 
@@ -44,22 +51,26 @@ const paypalClient = new Client({
 
 
 
+io.on('connect', (socket) => {
+    console.log("a user connected");
 
-//assigning an express instance to an "app" object, basically making the express app
-const app= express();
+    socket.on("disconnect", () => {
+        console.log("a user disconnected");
+    })
+});
 
-//start the web socket server
 
-const server = request.createServer(app);
+
+
 
 //initilize websocket server
-const wss = new WebSocket.Server({server});
+//const wss = new WebSocket.Server({server});
 
 //active websocket clients
 let restaurantClient = [];
 let customerClient = [];
 
-wss.on('connection', (ws, req)=>{
+/*wss.on('connection', (ws, req)=>{
     console.log(`new websocket client connected`);
 
     //determine if client is a customer or a restaurant
@@ -94,7 +105,7 @@ wss.on('connection', (ws, req)=>{
         }
     });
 
-})
+}) */
 
 
 //Setting the view engine as ejs. The following is unnecessary as angular will handle the frontend
@@ -801,6 +812,7 @@ async function capture_payment(paymentId){
 
 } 
 
+/*
 function broadcastNewOrder(order) {
     if (restaurantClient.readyState === WebSocket.OPEN){
         restaurantClient.send(JSON.stringify(order));
@@ -811,7 +823,7 @@ function notifyCustomer(orderUpdate) {
     if (customerClient.readyState === WebSocket.OPEN){
         customerClient.send(JSON.stringify(orderUpdate));
     }
-}
+} */
 
 
 
@@ -823,8 +835,8 @@ function notifyCustomer(orderUpdate) {
     
 
 
-const PORT = 3000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
     console.log(`Server listening on port ${PORT} !`);
 });
 
