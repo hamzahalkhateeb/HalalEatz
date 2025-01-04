@@ -12,12 +12,27 @@
                 <div class="completedorders"></div>
             </div>
             <div class="content">
-                <!--
-                --div for new orders
-                --div for accepted orders
-                --div for ready to pick up orders
-                --div for completed orders
-                -->
+                <div class="noOrdersYet" *ngIf="!ordersRetrieved"><h2> There are no orders yet !</h2></div>
+                <div class="orders" *ngIf="ordersRetrieved">
+                    <div class="orderItems" *ngFor="let order of ordersRetrieved" >
+                        <div class="orderRow">
+                            <div class="orderID">{{order.id}}</div>
+                            <div class="itemsList" *ngFor="let item of order.items">
+                                <div class="orderQuantity">X{{item.quantity}}</div>
+                                <div class="OrderName">{{item.name}}</div>
+                                <div class="price">${{item.quantity * item.unit_amount.value}}</div>
+                            </div>
+                            <div class="orderStatus">{{order.status}}</div>
+                            <div class="orderProgressBtn"><button>Next Stage</button></div>
+                            <div class="timePlace">{{order.createdAt}}</div>
+                            <div class="lastMod">{{order.updatedAt}}</div>
+                        </div>
+                    </div>
+
+                </div>
+                    
+
+                
             </div>
 
         </div>

@@ -56,31 +56,37 @@ const server = request.createServer(app);
 const wss = new WebSocket.Server({server});
 
 //active websocket clients
-let restaurantClient! = any;
-let customerClient! = any;
+let restaurantClient = [];
+let customerClient = [];
 
 wss.on('connection', (ws, req)=>{
     console.log(`new websocket client connected`);
 
     //determine if client is a customer or a restaurant
-    const userRole = req.url.includes('restaurant') ? 'restaurant' : 'buyer';
-    if (userRole === 'restaurant'){
-        restaurantClient = ws;
-    } else {
-        customerClient = ws;
-    }
+    
 
 
     //listen for incoming messages
     ws.on('message', (message)=>{
         console.log('recevied: ', message);
+        const parsedMessage = JSON.parse(message);
+        const userType = JSON.parse(message.clientType);
+        const userId = JSON.parse(message.userId);
+
+        if(userType === "restaurant"){
+            restaurantClient.push(ws);
+            console.log('restaurant client connected');
+        } else {
+            customerClient.push(ws);
+            console.log('customer client connected');
+        }
 
     });
 
 
     //handle websocket closure
     ws.on('close', ()=>{
-        wconsole.log('client disconneted from websocket');
+        console.log('client disconneted from websocket');
         if (userRole === 'restaurant'){
             restaurantClient = null;
         } else {
@@ -687,9 +693,8 @@ app.post('/getOrders', async (req, res) =>{
         const restaurant = await Restaurant.findOne({where : {userId : userId}});
         const orders = await Order.findAll({where : {restaurantId : restaurant.id}});
 
-        const plainOrders = orders.map(order => order.toJSON());
-
-        res.status(200).json({success: true, message: "orders loaded successfully, sending them now", orders : plainOrders});
+        
+        res.status(200).json({success: true, message: "orders loaded successfully, sending them now", orders : orders});
 
     } catch {
 
@@ -818,7 +823,7 @@ function notifyCustomer(orderUpdate) {
     
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT} !`);
 });
