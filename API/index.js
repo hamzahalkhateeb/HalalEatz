@@ -24,7 +24,12 @@ const app= express();
 const  request  = require("http");
 const server = request.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:4200",
+        methods: ["GET", "POST"]
+    }
+});
 
 
 
