@@ -21,7 +21,7 @@ const server = request.createServer(app);
 const { Server } = require("socket.io");
 
 
-//////something weird is goin
+//////hehehehehehehehehehehehe
 
 const io = new Server(server, {
     cors: {
