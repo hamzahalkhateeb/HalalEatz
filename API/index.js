@@ -1,66 +1,55 @@
 
 //import different apps and frameworks necessary for your application
-const express = require("express");
+require('dotenv').config();
 const {sequelize, models } = require("./models"); //import all data object models
 const {User, Restaurant, Order, Menue} = models; //destructure the models object imported in the line above
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
 const { OAuth2Client } = require('google-auth-library');
-const CLIENT_ID = '490153988551-ennqdrg2knoqj3rm1encr5vq0f7tlh50.apps.googleusercontent.com';
+const CLIENT_ID = process.env.google_api_auth_key;
 const client = new OAuth2Client(CLIENT_ID);
 const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
-const paypal= require('@paypal/paypal-server-sdk');
-const { request } = require("http");
 const axios = require('axios');
-
-
-
-const { Client, Environment} = paypal;
-
-const paypalClient = new Client({
-    clientCredentialsAuthCredentials: {
-        oAuthClientId: 'AbpViNd7G_duDz8kbW7HY1KQD7rwqKLk1GZtMYrITXdUuVyLQM5rElh-9GF_D-0LMdYuZwBNbBzkhbBb',
-        oAuthClientSecret: 'EJtdgBjJGJ_62R06YXNJfyBw0xuuryQMv7Yyd4qiFquq1kkwuG7bnh2U-wMqOZHo_xcWTtPhS4ybbqzo' 
-    },
-    environment: Environment.Sandbox,
-    timeout: 0,
-    logging: {
-        logLevel: paypal.LogLevel.Info, // Log level (optional)
-        logRequest: {
-            logBody: true // Log request body (optional)
-        },
-        logResponse: {
-            logHeaders: true // Log response headers (optional)
-        }
-    }
-}); 
-
-const ordersController = new paypal.OrdersController(paypalClient);
-
-
-
-//assigning an express instance to an "app" object, basically making the express app
+const express = require("express");
 const app= express();
+const  request  = require("http");
+const server = request.createServer(app);
+const { Server } = require("socket.io");
 
-//Setting the view engine as ejs. The following is unnecessary as angular will handle the frontend
-app.set('view engine', 'ejs');
 
 
-//make the uploads file accesible via url routes so the images can be served
+
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:4200",
+        methods: ["GET", "POST"]
+    }
+});
+
+
+io.on('connect', (socket) => {
+    console.log("a user connected");
+
+    socket.on("disconnect", () => {
+        console.log("a user disconnected");
+    })
+});
+
+
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
-//calling the use function to use cors and json data
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
 app.use(session({
-    secret: "secretfornow",
+    secret: process.env.session_secret,
     resave: false,
     saveUninitialized: false,
 }));
@@ -97,6 +86,8 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
     }
     
 }
+
+/////////////////////////////////////////////////////////////////////////////
 
 
 app.post('/login', async (req, res) => {
@@ -147,6 +138,8 @@ app.post('/login', async (req, res) => {
     
 });
 
+/////////////////////////////////////////////////////////////////////////////
+
 
 app.post('/logout', (req, res) =>{
     try{
@@ -161,6 +154,9 @@ app.post('/logout', (req, res) =>{
     
     
 });
+
+/////////////////////////////////////////////////////////////////////////////
+
 
 app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     //Restaurant.destroy({ where: {} });
@@ -246,6 +242,8 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
 
 });
+
+/////////////////////////////////////////////////////////////////////////////
 
 
 app.post('/submitMenue', upload.single('image'), async (req, res) => {
@@ -357,11 +355,13 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
 }}); 
 
 
+/////////////////////////////////////////////////////////////////////////////
+
 
 app.post('/getCloseRestaurants', async (req, res) => {
     const Ulong = parseFloat(req.body.long);
     const Ulat = parseFloat(req.body.lat);
-    //lat: -34.782893, long: 138.628749
+    
 
 
     const query = `
@@ -399,6 +399,8 @@ app.post('/getCloseRestaurants', async (req, res) => {
 
 });
 
+
+/////////////////////////////////////////////////////////////////////////////
 
 
 app.post('/LoadRestaurantAdminPackage', async (req, res) => {
@@ -453,6 +455,10 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
 
 });
 
+
+/////////////////////////////////////////////////////////////////////////////
+
+
 app.post('/deleteItem', async (req, res) => {
     const menueid = req.body.menueId;
     const type = `${req.body.type}s`;
@@ -490,6 +496,10 @@ app.post('/deleteItem', async (req, res) => {
     }
 });
 
+
+/////////////////////////////////////////////////////////////////////////////
+
+
 app.post('/deleteRestaurant', async (req, res) => {
     
 
@@ -519,6 +529,10 @@ app.post('/deleteRestaurant', async (req, res) => {
     }
 
 });
+
+
+/////////////////////////////////////////////////////////////////////////////
+
 
 app.post('/placeOrder', async (req, res) => {
     
@@ -587,7 +601,7 @@ app.post('/placeOrder', async (req, res) => {
 
 });
 
-
+/////////////////////////////////////////////////////////////////////////////
 
 
 app.post('/capturePayment', async (req, res)=>{
@@ -635,6 +649,33 @@ app.post('/capturePayment', async (req, res)=>{
 }); 
 
 
+/////////////////////////////////////////////////////////////////////////////
+
+
+app.post('/getOrders', async (req, res) =>{
+    
+    const userId = req.body.userId;
+
+    try {
+        const restaurant = await Restaurant.findOne({where : {userId : userId}});
+        const orders = await Order.findAll({where : {restaurantId : restaurant.id}});
+
+        
+        res.status(200).json({success: true, message: "orders loaded successfully, sending them now", orders : orders});
+
+    } catch {
+
+        res.status(500).json({success: false, message: "error, something went wrong"});
+
+    }
+
+
+});
+
+
+/////////////////////////////////////////////////////////////////////////////
+
+
 async function createOrder(purchase_units, restaurantId, userId, orderId){
     let access_token = await generateAccess_Token();
 
@@ -667,14 +708,17 @@ async function createOrder(purchase_units, restaurantId, userId, orderId){
     return response.data.links.find(link => link.rel === "approve").href;
 };
 
+/////////////////////////////////////////////////////////////////////////////
+
+
 async function generateAccess_Token(){
     const response = await axios({
         url: "https://api-m.sandbox.paypal.com/v1/oauth2/token",
         method: 'POST',
         data: 'grant_type=client_credentials',
         auth: {
-            username: 'AbpViNd7G_duDz8kbW7HY1KQD7rwqKLk1GZtMYrITXdUuVyLQM5rElh-9GF_D-0LMdYuZwBNbBzkhbBb',
-            password: 'EJtdgBjJGJ_62R06YXNJfyBw0xuuryQMv7Yyd4qiFquq1kkwuG7bnh2U-wMqOZHo_xcWTtPhS4ybbqzo'
+            username: process.env.paypal_accessToken_auth_username,
+            password: process.env.paypal_accessToken_auth_password,
         }
     })
 
@@ -682,9 +726,10 @@ async function generateAccess_Token(){
     return response.data.access_token;
 }
 
+
+/////////////////////////////////////////////////////////////////////////////
+
 const processedPayments = new Set();
-
-
 
 async function capture_payment(paymentId){
     
@@ -728,8 +773,11 @@ async function capture_payment(paymentId){
 
     }
 
-    
 } 
+
+
+
+
 
 
 
@@ -740,7 +788,7 @@ async function capture_payment(paymentId){
 
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server listening on port ${PORT} !`);
 });
 

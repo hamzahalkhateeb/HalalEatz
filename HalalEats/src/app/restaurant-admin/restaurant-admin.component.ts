@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import {io, Socket} from 'socket.io-client';
 
 
 
@@ -18,11 +19,7 @@ export class RestaurantAdminComponent implements OnInit {
 
   @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
 
-
-
-  //declare all data variable that you need!
-  //a list of orders
-  //a list meals, drinks and deserts
+  
   currentuserId = -1;
 
   mealsArray: any;
@@ -44,47 +41,12 @@ export class RestaurantAdminComponent implements OnInit {
     imgPath: "",
   };
 
-  /*mealsPackage: Array<{
-    type: '',
-    name: '',
-    description: '',
-    price: 0,
-    halal: false,
-    vegan: false,
-    vegetarian: false,
-    glutenFree: false,
-    lactoseFree: false,
-    imgPath: "",
+  ordersRetrieved: any[] = [];
+  ordersParsed : any[] = [];
 
-  }> = [];
 
-  drinksPackage: Array<{
-  type: '',
-  name: '',
-  description: '',
-  price: 0,
-  halal: false,
-  vegan: false,
-  vegetarian: false,
-  glutenFree: false,
-  lactoseFree: false,
-  imgPath: "",
+  private socket! : Socket;
 
-  }> = [];
-
-  desertsPackage: Array<{
-  type: '',
-  name: '',
-  description: '',
-  price: 0,
-  halal: false,
-  vegan: false,
-  vegetarian: false,
-  glutenFree: false,
-  lactoseFree: false,
-  imgPath: "",
-
-  }> = []; */
 
 
   selectedFile: File | null = null;
@@ -92,12 +54,30 @@ export class RestaurantAdminComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute ) {}
   ngOnInit(): void {
 
+   
+
     this.route.queryParams.subscribe(params => {
       this.currentuserId = params['userId']; });
 
-      console.log(`${this.currentuserId} -------------------------------------------------------------------------------`);
+    console.log(`${this.currentuserId} -------------------------------------------------------------------------------`);
     this.LoadRestaurantAdminPackage(this.currentuserId);
+    this.getOrders();
+
+      // you can also add the follow into io http://localhost:3000/socket.io/socket.io.js
+    const socket = io("http://localhost:3000");
+
+    socket.on("connect", () =>{
+      console.log("front end connected to back end");
+    });
+
+    
+
   }
+
+  
+
+
+
 
   LoadRestaurantAdminPackage(userId:any)  {
     this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {Id : userId, userType: 'admin'})
@@ -208,4 +188,32 @@ export class RestaurantAdminComponent implements OnInit {
     
   }
 
+  getOrders(): void{
+    console.log
+
+    this.http.post('http://localhost:3000/getOrders', {userId: this.currentuserId})
+    .subscribe({
+      next: (data: any) =>{
+        if (data.success){
+
+          this.ordersRetrieved = data.orders;
+
+          this.ordersRetrieved.forEach(order =>{
+            order.items = JSON.parse(order.items);
+          });
+
+
+
+        } else {
+          alert(data.message)
+        }
+      }, error: (error: any) =>{
+        console.error('error: ', error);
+      }
+    });
+  }
+
+
+
+  
 }
