@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { environment } from '../../environments/environment';
 
 
 
@@ -28,7 +29,7 @@ export class ListingFormComponent implements OnInit{
     
     predictions: google.maps.places.AutocompletePrediction[] = [];
 
-    apikey = 'AIzaSyDbzLtJqttwnCZpCkzS7iaxLRN2kjcr8n8';
+    apikey = environment.googleMaps_api_key;
     private autocompleteService!: google.maps.places.AutocompleteService;
     
 
