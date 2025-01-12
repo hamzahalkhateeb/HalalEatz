@@ -1,13 +1,14 @@
 
 //import different apps and frameworks necessary for your application
-
+require('dotenv').config();
 const {sequelize, models } = require("./models"); //import all data object models
 const {User, Restaurant, Order, Menue} = models; //destructure the models object imported in the line above
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
 const { OAuth2Client } = require('google-auth-library');
-const CLIENT_ID = '490153988551-ennqdrg2knoqj3rm1encr5vq0f7tlh50.apps.googleusercontent.com';
+const CLIENT_ID = process.env.google_api_auth_key;
+
 const client = new OAuth2Client(CLIENT_ID);
 const session = require('express-session');
 const path = require('path'); 
@@ -15,9 +16,6 @@ const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
 const paypal= require('@paypal/paypal-server-sdk');
 const axios = require('axios');
-const WebSocket = require('ws');
-
-
 
 const express = require("express");
 const app= express();
@@ -36,10 +34,11 @@ const io = new Server(server, {
 
 const { Client, Environment} = paypal;
 
+//might delete this later!
 const paypalClient = new Client({
     clientCredentialsAuthCredentials: {
-        oAuthClientId: 'AbpViNd7G_duDz8kbW7HY1KQD7rwqKLk1GZtMYrITXdUuVyLQM5rElh-9GF_D-0LMdYuZwBNbBzkhbBb',
-        oAuthClientSecret: 'EJtdgBjJGJ_62R06YXNJfyBw0xuuryQMv7Yyd4qiFquq1kkwuG7bnh2U-wMqOZHo_xcWTtPhS4ybbqzo' 
+        oAuthClientId: process.env.paypal_oauth_ClientId,
+        oAuthClientSecret: process.env.paypal_oauth_ClientSecret
     },
     environment: Environment.Sandbox,
     timeout: 0,
@@ -127,7 +126,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
 app.use(session({
-    secret: "secretfornow",
+    secret: process.env.session_secret,
     resave: false,
     saveUninitialized: false,
 }));
@@ -428,7 +427,7 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
 app.post('/getCloseRestaurants', async (req, res) => {
     const Ulong = parseFloat(req.body.long);
     const Ulat = parseFloat(req.body.lat);
-    //lat: -34.782893, long: 138.628749
+    
 
 
     const query = `
@@ -760,8 +759,8 @@ async function generateAccess_Token(){
         method: 'POST',
         data: 'grant_type=client_credentials',
         auth: {
-            username: 'AbpViNd7G_duDz8kbW7HY1KQD7rwqKLk1GZtMYrITXdUuVyLQM5rElh-9GF_D-0LMdYuZwBNbBzkhbBb',
-            password: 'EJtdgBjJGJ_62R06YXNJfyBw0xuuryQMv7Yyd4qiFquq1kkwuG7bnh2U-wMqOZHo_xcWTtPhS4ybbqzo'
+            username: process.env.paypal_accessToken_auth_username,
+            password: process.env.paypal_accessToken_auth_password,
         }
     })
 
@@ -817,18 +816,7 @@ async function capture_payment(paymentId){
 
 } 
 
-/*
-function broadcastNewOrder(order) {
-    if (restaurantClient.readyState === WebSocket.OPEN){
-        restaurantClient.send(JSON.stringify(order));
-    }
-}
 
-function notifyCustomer(orderUpdate) {
-    if (customerClient.readyState === WebSocket.OPEN){
-        customerClient.send(JSON.stringify(orderUpdate));
-    }
-} */
 
 
 
