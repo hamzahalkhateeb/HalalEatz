@@ -8,51 +8,27 @@ const multer=require("multer"); //multer is important for uploading files, which
 const bodyParser = require('body-parser');
 const { OAuth2Client } = require('google-auth-library');
 const CLIENT_ID = process.env.google_api_auth_key;
-
 const client = new OAuth2Client(CLIENT_ID);
 const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
-const paypal= require('@paypal/paypal-server-sdk');
 const axios = require('axios');
-
 const express = require("express");
 const app= express();
 const  request  = require("http");
 const server = request.createServer(app);
 const { Server } = require("socket.io");
+
+
+
+
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:4200",
         methods: ["GET", "POST"]
     }
 });
-
-
-
-
-const { Client, Environment} = paypal;
-
-//might delete this later!
-const paypalClient = new Client({
-    clientCredentialsAuthCredentials: {
-        oAuthClientId: process.env.paypal_oauth_ClientId,
-        oAuthClientSecret: process.env.paypal_oauth_ClientSecret
-    },
-    environment: Environment.Sandbox,
-    timeout: 0,
-    logging: {
-        logLevel: paypal.LogLevel.Info, // Log level (optional)
-        logRequest: {
-            logBody: true // Log request body (optional)
-        },
-        logResponse: {
-            logHeaders: true // Log response headers (optional)
-        }
-    }
-}); 
-
 
 
 io.on('connect', (socket) => {
@@ -65,62 +41,9 @@ io.on('connect', (socket) => {
 
 
 
-
-
-//initilize websocket server
-//const wss = new WebSocket.Server({server});
-
-//active websocket clients
-let restaurantClient = [];
-let customerClient = [];
-
-/*wss.on('connection', (ws, req)=>{
-    console.log(`new websocket client connected`);
-
-    //determine if client is a customer or a restaurant
-    
-
-
-    //listen for incoming messages
-    ws.on('message', (message)=>{
-        console.log('recevied: ', message);
-        const parsedMessage = JSON.parse(message);
-        const userType = JSON.parse(message.clientType);
-        const userId = JSON.parse(message.userId);
-
-        if(userType === "restaurant"){
-            restaurantClient.push(ws);
-            console.log('restaurant client connected');
-        } else {
-            customerClient.push(ws);
-            console.log('customer client connected');
-        }
-
-    });
-
-
-    //handle websocket closure
-    ws.on('close', ()=>{
-        console.log('client disconneted from websocket');
-        if (userRole === 'restaurant'){
-            restaurantClient = null;
-        } else {
-            customerClient = null;
-        }
-    });
-
-}) */
-
-
-//Setting the view engine as ejs. The following is unnecessary as angular will handle the frontend
-app.set('view engine', 'ejs');
-
-
-//make the uploads file accesible via url routes so the images can be served
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
-//calling the use function to use cors and json data
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
@@ -163,6 +86,8 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
     }
     
 }
+
+/////////////////////////////////////////////////////////////////////////////
 
 
 app.post('/login', async (req, res) => {
@@ -213,6 +138,8 @@ app.post('/login', async (req, res) => {
     
 });
 
+/////////////////////////////////////////////////////////////////////////////
+
 
 app.post('/logout', (req, res) =>{
     try{
@@ -227,6 +154,9 @@ app.post('/logout', (req, res) =>{
     
     
 });
+
+/////////////////////////////////////////////////////////////////////////////
+
 
 app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     //Restaurant.destroy({ where: {} });
@@ -312,6 +242,8 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
 
 });
+
+/////////////////////////////////////////////////////////////////////////////
 
 
 app.post('/submitMenue', upload.single('image'), async (req, res) => {
@@ -423,6 +355,8 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
 }}); 
 
 
+/////////////////////////////////////////////////////////////////////////////
+
 
 app.post('/getCloseRestaurants', async (req, res) => {
     const Ulong = parseFloat(req.body.long);
@@ -465,6 +399,8 @@ app.post('/getCloseRestaurants', async (req, res) => {
 
 });
 
+
+/////////////////////////////////////////////////////////////////////////////
 
 
 app.post('/LoadRestaurantAdminPackage', async (req, res) => {
@@ -519,6 +455,10 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
 
 });
 
+
+/////////////////////////////////////////////////////////////////////////////
+
+
 app.post('/deleteItem', async (req, res) => {
     const menueid = req.body.menueId;
     const type = `${req.body.type}s`;
@@ -556,6 +496,10 @@ app.post('/deleteItem', async (req, res) => {
     }
 });
 
+
+/////////////////////////////////////////////////////////////////////////////
+
+
 app.post('/deleteRestaurant', async (req, res) => {
     
 
@@ -585,6 +529,10 @@ app.post('/deleteRestaurant', async (req, res) => {
     }
 
 });
+
+
+/////////////////////////////////////////////////////////////////////////////
+
 
 app.post('/placeOrder', async (req, res) => {
     
@@ -653,7 +601,7 @@ app.post('/placeOrder', async (req, res) => {
 
 });
 
-
+/////////////////////////////////////////////////////////////////////////////
 
 
 app.post('/capturePayment', async (req, res)=>{
@@ -700,6 +648,10 @@ app.post('/capturePayment', async (req, res)=>{
     
 }); 
 
+
+/////////////////////////////////////////////////////////////////////////////
+
+
 app.post('/getOrders', async (req, res) =>{
     
     const userId = req.body.userId;
@@ -719,6 +671,9 @@ app.post('/getOrders', async (req, res) =>{
 
 
 });
+
+
+/////////////////////////////////////////////////////////////////////////////
 
 
 async function createOrder(purchase_units, restaurantId, userId, orderId){
@@ -753,6 +708,9 @@ async function createOrder(purchase_units, restaurantId, userId, orderId){
     return response.data.links.find(link => link.rel === "approve").href;
 };
 
+/////////////////////////////////////////////////////////////////////////////
+
+
 async function generateAccess_Token(){
     const response = await axios({
         url: "https://api-m.sandbox.paypal.com/v1/oauth2/token",
@@ -768,9 +726,10 @@ async function generateAccess_Token(){
     return response.data.access_token;
 }
 
+
+/////////////////////////////////////////////////////////////////////////////
+
 const processedPayments = new Set();
-
-
 
 async function capture_payment(paymentId){
     
