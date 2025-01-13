@@ -21,7 +21,8 @@ const server = request.createServer(app);
 const { Server } = require("socket.io");
 
 
-//////hehehehehehehehehehehehe
+
+
 
 const io = new Server(server, {
     cors: {
@@ -30,12 +31,29 @@ const io = new Server(server, {
     }
 });
 
-
+const activeSockets =  new Map();
 io.on('connect', (socket) => {
     console.log("a user connected");
 
+
+
+
+    socket.on('restaurantConnected', (restaurantId) => {
+        activeSockets.set(restaurantId, socket.id);
+
+        console.log(`****inside SOCKET IO  restaurant id: ${restaurantId} datatype: ${typeof(restaurantId)}`);
+        console.log(`added restaurant to active sockets: ${restaurantId}`);
+    });
+
+
     socket.on("disconnect", () => {
         console.log("a user disconnected");
+        activeSockets.forEach((value, key) =>{
+            if (value === socket.id) {
+                activeSockets.delete(key);
+            }
+        })
+        
     })
 });
 
@@ -606,23 +624,44 @@ app.post('/placeOrder', async (req, res) => {
 
 app.post('/capturePayment', async (req, res)=>{
 
-    console.log(`Capture paymenty function called!!`);
+    console.log(`1- Capture paymenty function called!!`);
     const token = req.body.token;
 
     const orderId = req.body.orderId;
     
 
     const order = await Order.findOne({where : {id: orderId}});
+    const restaurant = await Restaurant.findOne({where : {id : order.restaurantId}});
+    const restaurantOwnerId = restaurant.userId;
+    console.log(`2- order retrieved`)
 
 
     try{
         let response = await capture_payment(token);
 
+        console.log(`3- response from capture FUNCTION!: ${response}`);
         
         if (response.status === "COMPLETED"){
             order.status = 'paid';
             await order.save();
+            console.log(`4- response was complete, order status changed to paid and carried on!, restaurantId`);
+            const restaurantId = order.restaurantId;
 
+            console.log(`****inside capture payment restaurant id: ${restaurantOwnerId} datatype: ${typeof(restaurantOwnerId)}`);
+            const restaurantSocketId = activeSockets.get(String(restaurantOwnerId));
+            console.log(`4.5- restaurantsocket id = ${restaurantSocketId}`);
+            
+            
+
+            if(restaurantSocketId){
+                console.log(`5- found the socketid, will attempt to retrive socket object and emit after this`);
+                const restaurantsSocketObj = io.sockets.sockets.get(restaurantSocketId);
+ /*error =>>>>*/restaurantsSocketObj.emit('orderPaid&Placed', {orderJSON: json.stringify(order), message: 'Order received and paid!'});
+                console.log(`6- object found and emitted!`);
+            } else {
+                console.log(`5- did not find socket id forwhatever reason`);
+            }
+            
             res.status(201).json({success: true, message: "payment successfull, you will be redirected to shortly!", response: response, redirectUrl: '/dashboard'});
 
         } else if (response.status = "already complete") {

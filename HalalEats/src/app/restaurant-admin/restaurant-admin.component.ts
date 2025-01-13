@@ -63,11 +63,17 @@ export class RestaurantAdminComponent implements OnInit {
     this.LoadRestaurantAdminPackage(this.currentuserId);
     this.getOrders();
 
-      // you can also add the follow into io http://localhost:3000/socket.io/socket.io.js
+      
     const socket = io("http://localhost:3000");
 
     socket.on("connect", () =>{
+      socket.emit('restaurantConnected', this.currentuserId);
       console.log("front end connected to back end");
+    });
+
+    socket.on('orderPaid&Placed', (data) => {
+      console.log('New Order Placed:', data);
+      alert(data.message);
     });
 
     
