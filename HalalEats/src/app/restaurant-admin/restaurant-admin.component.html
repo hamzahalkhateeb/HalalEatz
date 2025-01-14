@@ -23,7 +23,7 @@
                                 <div class="price">${{item.quantity * item.unit_amount.value}}</div>
                             </div>
                             <div class="orderStatus">{{order.status}}</div>
-                            <div class="orderProgressBtn"><button>Next Stage</button></div>
+                            <div class="orderProgressBtn"><button (click)="advanceOrder(order.id)">Next Stage</button></div>
                             <div class="timePlace">{{order.createdAt}}</div>
                             <div class="lastMod">{{order.updatedAt}}</div>
                         </div>

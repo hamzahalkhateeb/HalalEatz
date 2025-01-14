@@ -22,6 +22,8 @@ export class RestaurantAdminComponent implements OnInit {
   
   currentuserId = -1;
 
+  //orderStatus = ["submitted and "]
+
   mealsArray: any;
   drinksArray: any;
   desertsArray: any;
@@ -43,7 +45,7 @@ export class RestaurantAdminComponent implements OnInit {
 
   ordersRetrieved: any[] = [];
   
-
+  orderStatus = ['submitted, unpaid', 'paid', 'accepted & being prepared', 'ready to collect!'];
 
   private socket! : Socket;
 
@@ -79,7 +81,7 @@ export class RestaurantAdminComponent implements OnInit {
       let orderReceived = JSON.parse(data.orderJSON);
       orderReceived.items = JSON.parse(orderReceived.items);
       
-      const sameOrder = this.ordersRetrieved.find(order => order.id === orderReceived.id)
+      const sameOrder = this.ordersRetrieved.find(order => order.id === orderReceived.id);
 
       if(sameOrder){
         console.log("order receiced via socket, however it is already in the orders array!");
@@ -99,13 +101,7 @@ export class RestaurantAdminComponent implements OnInit {
 
   }
 
-  ngOnDestroy(): void {
-
-    if(this.socket) {
-      this.socket.disconnect();
-    } 
-
-  }
+  
 
   
 
@@ -246,7 +242,28 @@ export class RestaurantAdminComponent implements OnInit {
     });
   }
 
+  advanceOrder(orderId: any): void{
+    this.http.post('http://localhost:3000/advanceOrder', {orderId: orderId})
+    .subscribe({
+      next:(data: any) =>{
+        if (data.success){
+          const order = this.ordersRetrieved.find(order => order.id === orderId);
+          for(let i = 0; i < this.orderStatus.length; i++){
+            if (order.status === this.orderStatus[i] && i != this.orderStatus.length - 1){
+               order.status = this.orderStatus[i + 1];
+               break;
+               
+            }
+          }
+        } else {
+          alert(data.message);
+        }
+      }, error: (error: any) => {
+        console.error('error: ', error);
+      }
+    })
 
+  }
 
   
 }

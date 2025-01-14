@@ -742,7 +742,68 @@ app.post('/getcxOrders', async (req, res) => {
 
 
 /////////////////////////////////////////////////////////////////////////////
+app.post('/advanceOrder', async (req, res) =>{
 
+    const orderStatus = ['submitted, unpaid', 'paid', 'accepted & being prepared', 'ready to collect!'];
+    const orderId = req.body.orderId;
+    console.log(`retrieved the order id: ${orderId}`);
+
+    const order = await Order.findOne({where : {id: orderId}});
+    console.log(`found order object with matching id: ${order}`);
+
+    try{
+        for(let i = 0; i< orderStatus.length; i++){
+            if (order.status === orderStatus[i] && i != orderStatus.length - 1){
+                order.status = orderStatus[i + 1];
+                break;
+               
+            }
+        }
+        await order.save();
+
+        const userId = order.customerId;
+        console.log(`user id for socket: ${userId}`);
+           
+        const userSocketId = activeSockets.get(String(userId));
+        console.log(`user socket id for socket: ${userSocketId}`);
+        
+        
+        
+        if(userSocketId ){
+            console.log(`socket id exists: ${userSocketId}`);
+            const customerSocketObj = io.sockets.sockets.get(userSocketId);
+            console.log(`socket object exists: ${customerSocketObj}`);
+
+            if (customerSocketObj.connected){
+               console.log(`socket objet is connected, emitting next!`);
+                customerSocketObj.emit('orderProgressed', {orderStatus: order.status, orderId: order.id, message: 'Order progressed!'});
+                
+            } else {
+                console.log("customer socket not connected");
+            }
+
+        } else {
+            console.log(`5- did not find customer socket id forwhatever reason`);
+        }
+
+
+        console.log(`order status saved successfully!`);
+
+        res.status(200).json({success: true, message: "order advanced successfully!"});
+
+
+    } catch {
+        res.status(500).json({success: false, message:"order was unable to be progressed!"});
+
+    }
+
+    
+
+
+});
+
+
+/////////////////////////////////////////////////////////////////////////////
 
 async function createOrder(purchase_units, restaurantId, userId, orderId){
     let access_token = await generateAccess_Token();

@@ -21,6 +21,8 @@ export class DashBoardComponent implements OnInit {
   
   cxOrders: any[] = [];
 
+  private socket! : Socket;
+
   restaurantPackage: Array<{
        id: number;
        name: string;
@@ -64,8 +66,20 @@ export class DashBoardComponent implements OnInit {
       console.log("cx front end connected to back end");
     });
 
+    socket.on('orderProgressed', (data) => {
+      console.log(`order progressed!`);
+
+      const order = this.cxOrders.find(order => order.id === data.orderId);
+
+      order.status = data.orderStatus;
+      
+
+    })
+
 
   }
+
+  
 
 
   logout(response: any): void{
@@ -146,7 +160,7 @@ export class DashBoardComponent implements OnInit {
           });
 
         } else {
-          alert(data.message)
+          alert(data.message);
         }
       }, error: (error: any)=>{
         console.error('error: ', error);
