@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, PLATFORM_ID, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, ViewChild, ElementRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -42,7 +42,7 @@ export class RestaurantAdminComponent implements OnInit {
   };
 
   ordersRetrieved: any[] = [];
-  ordersParsed : any[] = [];
+  
 
 
   private socket! : Socket;
@@ -51,7 +51,7 @@ export class RestaurantAdminComponent implements OnInit {
 
   selectedFile: File | null = null;
 
-  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute ) {}
+  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef ) {}
   ngOnInit(): void {
 
    
@@ -62,6 +62,7 @@ export class RestaurantAdminComponent implements OnInit {
     console.log(`${this.currentuserId} -------------------------------------------------------------------------------`);
     this.LoadRestaurantAdminPackage(this.currentuserId);
     this.getOrders();
+    
 
       
     const socket = io("http://localhost:3000");
@@ -72,11 +73,38 @@ export class RestaurantAdminComponent implements OnInit {
     });
 
     socket.on('orderPaid&Placed', (data) => {
-      console.log('New Order Placed:', data);
+      console.log('New Order Placed:', data.orderJSON);
       alert(data.message);
+
+      let orderReceived = JSON.parse(data.orderJSON);
+      orderReceived.items = JSON.parse(orderReceived.items);
+      
+      const sameOrder = this.ordersRetrieved.find(order => order.id === orderReceived.id)
+
+      if(sameOrder){
+        console.log("order receiced via socket, however it is already in the orders array!");
+      } else {
+        this.ordersRetrieved = this.ordersRetrieved.concat(orderReceived);
+        this.cdr.detectChanges();
+
+        
+      }
+
+      
+
+    
+
     });
 
     
+
+  }
+
+  ngOnDestroy(): void {
+
+    if(this.socket) {
+      this.socket.disconnect();
+    } 
 
   }
 
