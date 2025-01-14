@@ -31,6 +31,26 @@
         </div>
        
     </div>
+    <div class="noOrders" *ngIf="!cxOrders"><h2>You have not placed any orders yet!</h2></div>
+    <div class="cxOrdersContainer" *ngIf="cxOrders">
+        <div class="cxOrders" *ngFor="let order of cxOrders">
+            <div class="cxOrderItems" *ngFor="let order of cxOrders">
+                <div class="orderRow">
+                    <div class="orderID">{{order.id}}</div>
+                    <div class="itemsList" *ngFor="let item of order.items">
+                        <div class="orderQuantity">X{{item.quantity}}</div>
+                        <div class="OrderName">{{item.name}}</div>
+                        <div class="price">${{item.quantity * item.unit_amount.value}}</div>
+                    </div>
+                    <div class="orderStatus">{{order.status}}</div>
+                    <div class="timePlace">{{order.createdAt}}</div>
+                    <div class="lastMod">{{order.updatedAt}}</div>
+                </div>
+            </div>
+            <span style="display: block; width: 100%; border-top: 1px solid black;"></span>
+        </div>
+        
+    </div>
 
 </body>
 

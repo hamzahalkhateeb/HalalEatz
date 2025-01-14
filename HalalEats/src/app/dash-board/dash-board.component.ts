@@ -18,6 +18,7 @@ export class DashBoardComponent implements OnInit {
   
   currentUserId!: number;
   
+  cxOrders: any[] = [];
 
   restaurantPackage: Array<{
        id: number;
@@ -49,12 +50,16 @@ export class DashBoardComponent implements OnInit {
             this.getCloseRestaurants();
           }
         )
-
-
-
       }
 
     }
+
+
+    this.getCxOrders();
+
+
+
+
   }
 
 
@@ -115,15 +120,35 @@ export class DashBoardComponent implements OnInit {
       }
     });}
 
-    
 
-    restaurantPage(restaurantId: number, currentUserId: number): void {
+  restaurantPage(restaurantId: number, currentUserId: number): void {
 
-      console.log("restaurantPage is being clicked___________________________________");
-      this.router.navigate(['/restaurantPage', restaurantId], {
-        queryParams: { restaurantId: restaurantId, currentUserId: currentUserId}
-      });
-    }
+    console.log("restaurantPage is being clicked___________________________________");
+    this.router.navigate(['/restaurantPage', restaurantId], {
+      queryParams: { restaurantId: restaurantId, currentUserId: currentUserId}
+    });
+  }
+
+  getCxOrders(): void{
+    this.http.post('http://localhost:3000/getcxOrders', {userId: this.currentUserId})
+    .subscribe({
+      next: (data: any) => {
+        if (data.success){
+          this.cxOrders = data.orders;
+
+          this.cxOrders.forEach(order => {
+            order.items = JSON.parse(order.items);
+          });
+
+        } else {
+          alert(data.message)
+        }
+      }, error: (error: any)=>{
+        console.error('error: ', error);
+      }
+    });
+
+  }
   
   
   }

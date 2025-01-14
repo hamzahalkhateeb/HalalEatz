@@ -719,6 +719,22 @@ app.post('/getOrders', async (req, res) =>{
 
 
 /////////////////////////////////////////////////////////////////////////////
+app.post('/getcxOrders', async (req, res) => {
+
+    const userId = req.body.userId;
+    try {
+        const orders = await Order.findAll({where: {customerId : userId}});
+
+        res.status(200).json({success: true, message: "orders for this customer have been loaded successfully", orders: orders});
+    }catch{
+        res.status(500).json({success:false, message: "error retrieving orders for this customer!"});
+    }
+
+
+});
+
+
+/////////////////////////////////////////////////////////////////////////////
 
 
 async function createOrder(purchase_units, restaurantId, userId, orderId){
@@ -819,6 +835,9 @@ async function capture_payment(paymentId){
     }
 
 } 
+
+/////////////////////////////////////////////////////////////////////////////////
+
 
 
 

@@ -223,7 +223,7 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   getOrders(): void{
-    console.log
+    
 
     this.http.post('http://localhost:3000/getOrders', {userId: this.currentuserId})
     .subscribe({
