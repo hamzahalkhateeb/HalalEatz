@@ -45,6 +45,13 @@ io.on('connect', (socket) => {
         console.log(`added restaurant to active sockets: ${restaurantId}`);
     });
 
+    socket.on('customerConnected', (userId) => {
+        activeSockets.set(userId, socket.id);
+
+        console.log(`****inside SOCKET IO  customer id: ${userId} datatype: ${typeof(userId)}`);
+        console.log(`added customer to active sockets: ${userId}`);
+    });
+
 
     socket.on("disconnect", () => {
         console.log("a user disconnected");

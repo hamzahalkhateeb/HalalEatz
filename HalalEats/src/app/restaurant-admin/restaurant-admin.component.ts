@@ -69,7 +69,7 @@ export class RestaurantAdminComponent implements OnInit {
 
     socket.on("connect", () =>{
       socket.emit('restaurantConnected', this.currentuserId);
-      console.log("front end connected to back end");
+      console.log("restaurant front end connected to back end");
     });
 
     socket.on('orderPaid&Placed', (data) => {
@@ -87,7 +87,6 @@ export class RestaurantAdminComponent implements OnInit {
         this.ordersRetrieved = this.ordersRetrieved.concat(orderReceived);
         this.cdr.detectChanges();
 
-        
       }
 
       

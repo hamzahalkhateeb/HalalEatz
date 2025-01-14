@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListingFormComponent } from '../listing-form/listing-form.component';
+import {io, Socket} from 'socket.io-client';
 
 @Component({
   selector: 'app-dash-board',
@@ -54,10 +55,14 @@ export class DashBoardComponent implements OnInit {
 
     }
 
-
     this.getCxOrders();
 
+    const socket = io("http://localhost:3000");
 
+    socket.on("connect", () =>{
+      socket.emit('customerConnected', this.currentUserId);
+      console.log("cx front end connected to back end");
+    });
 
 
   }
