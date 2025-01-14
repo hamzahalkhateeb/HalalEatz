@@ -633,31 +633,37 @@ app.post('/capturePayment', async (req, res)=>{
     const order = await Order.findOne({where : {id: orderId}});
     const restaurant = await Restaurant.findOne({where : {id : order.restaurantId}});
     const restaurantOwnerId = restaurant.userId;
-    console.log(`2- order retrieved`)
-
+    
 
     try{
         let response = await capture_payment(token);
 
-        console.log(`3- response from capture FUNCTION!: ${response}`);
+        
         
         if (response.status === "COMPLETED"){
             order.status = 'paid';
             await order.save();
-            console.log(`4- response was complete, order status changed to paid and carried on!, restaurantId`);
+            
             const restaurantId = order.restaurantId;
 
-            console.log(`****inside capture payment restaurant id: ${restaurantOwnerId} datatype: ${typeof(restaurantOwnerId)}`);
+           
             const restaurantSocketId = activeSockets.get(String(restaurantOwnerId));
-            console.log(`4.5- restaurantsocket id = ${restaurantSocketId}`);
+            
             
             
 
-            if(restaurantSocketId){
-                console.log(`5- found the socketid, will attempt to retrive socket object and emit after this`);
+            if(restaurantSocketId ){
+               
                 const restaurantsSocketObj = io.sockets.sockets.get(restaurantSocketId);
- /*error =>>>>*/restaurantsSocketObj.emit('orderPaid&Placed', {orderJSON: json.stringify(order), message: 'Order received and paid!'});
-                console.log(`6- object found and emitted!`);
+                
+                if (restaurantsSocketObj.connected){
+                   
+                    restaurantsSocketObj.emit('orderPaid&Placed', {orderJSON: JSON.stringify(order), message: 'Order received and paid!'});
+                    
+                } else {
+                    console.log("socket not connected");
+                }
+ 
             } else {
                 console.log(`5- did not find socket id forwhatever reason`);
             }
