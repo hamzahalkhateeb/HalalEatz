@@ -33,7 +33,7 @@
     </div>
     <div class="noOrders" *ngIf="!cxOrders"><h2>You have not placed any orders yet!</h2></div>
     <div class="cxOrdersContainer" *ngIf="cxOrders">
-        <div class="cxOrders" *ngFor="let order of cxOrders">
+        
             <div class="cxOrderItems" *ngFor="let order of cxOrders">
                 <div class="orderRow">
                     <div class="orderID">{{order.id}}</div>
@@ -48,7 +48,7 @@
                 </div>
             </div>
             <span style="display: block; width: 100%; border-top: 1px solid black;"></span>
-        </div>
+        
         
     </div>
 

@@ -46,7 +46,7 @@ io.on('connect', (socket) => {
     });
 
     socket.on('customerConnected', (userId) => {
-        activeSockets.set(userId, socket.id);
+        activeSockets.set(String(userId), socket.id);
 
         console.log(`****inside SOCKET IO  customer id: ${userId} datatype: ${typeof(userId)}`);
         console.log(`added customer to active sockets: ${userId}`);
