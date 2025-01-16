@@ -197,52 +197,9 @@ export class ListingFormComponent implements OnInit{
     
     }
 
-    //////////////////////////// to be added to restaurant admin later
+    
 
-    /* submitMenueItem(response: any): void{
-      
-      //get a reference for the div that has all the input fields needed
-      const itemDiv = this.itemContainer.nativeElement;
-
-      //assign the values in html input fields into menuitem object fields
-      this.menueItem.type= (itemDiv.querySelector(`[name='itemType']`) as HTMLInputElement).value;
-      this.menueItem.name= (itemDiv.querySelector(`[name='itemName']`) as HTMLInputElement).value;
-      this.menueItem.price= parseFloat((itemDiv.querySelector(`[name='itemPrice']`) as HTMLInputElement).value);
-      this.menueItem.halal= (itemDiv.querySelector(`[name='halal']`) as HTMLInputElement).checked;
-      this.menueItem.vegan= (itemDiv.querySelector(`[name='vegan']`) as HTMLInputElement).checked;
-      this.menueItem.vegetarian= (itemDiv.querySelector(`[name='vegetarian']`) as HTMLInputElement).checked;
-      this.menueItem.glutenFree= (itemDiv.querySelector(`[name='glutenFree']`) as HTMLInputElement).checked;
-      this.menueItem.lactoseFree= (itemDiv.querySelector(`[name='lactoseFree']`) as HTMLInputElement).checked;
-      this.menueItem.description= (itemDiv.querySelector(`[name='itemDescription']`) as HTMLInputElement).value;
-   
-      
-      //declare an empty formdata variable
-      const menueitemFormData = new FormData();
-
-      //append all the needed data to said variable
-      menueitemFormData.append("menueItem", JSON.stringify(this.menueItem));
-      menueitemFormData.append("image", this.selectedFile!, this.selectedFile!.name);
-      menueitemFormData.append("resName", this.resInfo.name);
-      menueitemFormData.append("resLocation", this.resInfo.location);
-
-
-      this.http.post('http://localhost:3000/submitMenue', menueitemFormData)
-        .subscribe({
-          next: (data: any) => {
-            if (data.success){
-              alert(data.message);
-              this.router.navigateByUrl(data.redirectUrl);
-            } else {
-              console.log("unexpected error: ", data);
-            }
-          },
-          error: (error: any) => {
-            console.error('Error: ', error);
-          }
-        });
-
-      
-    } */
+    
     
     
   }

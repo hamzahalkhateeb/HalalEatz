@@ -24,16 +24,22 @@ const { Server } = require("socket.io");
 
 
 app.use(session({
-    
     secret: process.env.session_secret,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: true,
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60
+        secure: false,
+        httpOnly: false,
+        maxAge: 86400000,
+        sameSite: 'lax'
     }
-}));
+})
+);
+
+app.use((req, res, next) => {
+    console.log(`Cookies: ${req.cookies}`);
+    next();
+});
 
 
 
@@ -84,7 +90,10 @@ io.on('connect', (socket) => {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:4200',
+    credentials: true
+}));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
@@ -156,10 +165,19 @@ app.post('/login', async (req, res) => {
             });
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
+            //console.log(`inside log in after creating user: ${req.session.userId}`);
+            
+            //console.log(`inside log in after creating user: ${req.sessionID}`);
+        
+
+
             res.status(201).json({success: true, message: "You have signed up successfully!", user, redirectUrl: "/dashboard"});
         } else {
-            req.session.userId = user.id;
-            req.session.isLoggedIn = true;
+            //req.session.userId = user.id;
+            //req.session.isLoggedIn = true;
+            //console.log(`inside log in: ${req.session.userId}`);
+            
+            //console.log(`inside log in: ${req.sessionID}`);
             if (user.accountType == 1){
                 res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', userId: user.id});
             } else {
@@ -443,6 +461,12 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
 
     const type = req.body.userType;
     
+    
+    const sessionUserId = req.session.userId;
+    const sessionID = req.sessionID;
+    console.log(`inside loading restaurant package user id: ${sessionUserId}`);
+    console.log(`inside loading restaurant package session id: ${sessionID}`);
+
 
     if (type === "admin"){
         const userId = req.body.Id;
@@ -459,7 +483,7 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
             return res.json({success:false, message: "There are no items in your menue, please add items through the  menue tab"});
             } else {
             
-            return res.json({success: true, message: "menue retrieval successfull!", menue});
+            return res.json({success: true, message: "menue retrieval successfull!", menue, sessionUserId: sessionUserId});
             }
         } catch (error){
             res.status(500).json({success: false, message: "something went wrong, internal server error"});
@@ -917,7 +941,14 @@ async function capture_payment(paymentId){
 
 /////////////////////////////////////////////////////////////////////////////////
 
+function isAuthenticated(req, res, next) {
+    if (req.session.userId){
+        return next();
+    } else {
 
+        res.status(401).json({success: false, message: "Unauthorized access, please log in", redirectUrl: "/login"});
+    }
+}
 
 
 

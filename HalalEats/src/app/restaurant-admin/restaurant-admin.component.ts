@@ -22,7 +22,7 @@ export class RestaurantAdminComponent implements OnInit {
   
   currentuserId = -1;
 
-  //orderStatus = ["submitted and "]
+ 
 
   mealsArray: any;
   drinksArray: any;
@@ -109,11 +109,14 @@ export class RestaurantAdminComponent implements OnInit {
 
 
   LoadRestaurantAdminPackage(userId:any)  {
-    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {Id : userId, userType: 'admin'})
+    console.log('Cookies before request:', document.cookie);
+    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {Id : userId, userType: 'admin'}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
           
+          alert(`this session user id issssssssssssssssssssssssss: ${data.sessionUserId}`);
+
           this.menue2 = JSON.parse(data.menue);
           
           this.mealsArray  = this.menue2.meals.map((mealString: string) => JSON.parse(mealString));
