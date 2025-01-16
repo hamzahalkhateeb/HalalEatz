@@ -51,12 +51,15 @@ export class DashBoardComponent implements OnInit {
              this.longitude = position.coords.longitude;
             console.log(`lat: ${this.latitude}, long: ${this.longitude}`);
             this.getCloseRestaurants();
+            console.log('get closer restaurants caled in front end');
           }
         )
+      } else {
+        console.log('get restaurants request not sent');
       }
 
     }
-
+    this.getCloseRestaurants();
     this.getCxOrders();
 
     const socket = io("http://localhost:3000");

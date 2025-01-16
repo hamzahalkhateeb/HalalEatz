@@ -23,6 +23,21 @@ const { Server } = require("socket.io");
 
 
 
+app.use(session({
+    
+    secret: process.env.session_secret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: true,
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60
+    }
+}));
+
+
+
+
 
 const io = new Server(server, {
     cors: {
@@ -73,11 +88,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
-app.use(session({
-    secret: process.env.session_secret,
-    resave: false,
-    saveUninitialized: false,
-}));
+
 
 
 
@@ -387,7 +398,7 @@ app.post('/getCloseRestaurants', async (req, res) => {
     const Ulong = parseFloat(req.body.long);
     const Ulat = parseFloat(req.body.lat);
     
-
+    console.log(`load restaurants called from user`);
 
     const query = `
         SELECT
