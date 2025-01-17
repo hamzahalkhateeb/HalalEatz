@@ -1,3 +1,4 @@
+declare var google: any;
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -12,9 +13,7 @@ import { ListingFormComponent } from '../listing-form/listing-form.component';
   standalone: true,
   imports: [
     CommonModule, 
-    
-    
-  ],
+    ],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.css'
 })
@@ -27,8 +26,22 @@ export class LogInComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)){
       (window as any)['handleCredentialResponse'] = this.handleCredentialResponse.bind(this),
       (window as any)['OpenListingForm'] = this.OpenListingForm.bind(this);
-      
     }
+
+    google.accounts.id.initialize({
+      client_id: ,
+      callback: (resp: any)=>{
+
+      }
+    });
+
+    google.accounts.id.renderButton(document.getElementById("Googlebtn"), {
+      theme: 'filled_blue',
+      size: 'large',
+      shape: 'rectangle',
+      width: 350,
+    });
+
   }
 
   handleCredentialResponse(response: any): void {
