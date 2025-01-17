@@ -4,6 +4,7 @@ import { HttpClient, } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ListingFormComponent } from '../listing-form/listing-form.component';
+import { environment } from '../../environments/environment';
 
 
 
@@ -29,17 +30,17 @@ export class LogInComponent implements OnInit {
     }
 
     google.accounts.id.initialize({
-      client_id: ,
-      callback: (resp: any)=>{
-
-      }
+      client_id: environment.google_Oauth2_key,
+      callback: (res: any)=>this.handleCredentialResponse(res)
     });
 
-    google.accounts.id.renderButton(document.getElementById("Googlebtn"), {
-      theme: 'filled_blue',
+    google.accounts.id.renderButton(document.getElementById("googlebtn"), {
+      theme: 'filled_black',
       size: 'large',
-      shape: 'rectangle',
+      shape: 'pill',
       width: 350,
+      
+      
     });
 
   }
