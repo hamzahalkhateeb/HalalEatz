@@ -105,7 +105,7 @@ export class DashBoardComponent implements OnInit {
 
   getCloseRestaurants(): void{
     console.log(`get close restauratns function called, it sent the following data: lat: ${this.latitude}, long: ${this.longitude} `);
-    this.http.post('http://localhost:3000/getCloseRestaurants', { long: this.longitude, lat: this.latitude })
+    this.http.post('http://localhost:3000/getCloseRestaurants', { long: this.longitude, lat: this.latitude }, {withCredentials: true})
     .subscribe({
       next: (data: any) => {
         if(data.success){
@@ -152,7 +152,7 @@ export class DashBoardComponent implements OnInit {
   }
 
   getCxOrders(): void{
-    this.http.post('http://localhost:3000/getcxOrders', {userId: this.currentUserId})
+    this.http.post('http://localhost:3000/getcxOrders', {userId: this.currentUserId}, {withCredentials: true})
     .subscribe({
       next: (data: any) => {
         if (data.success){

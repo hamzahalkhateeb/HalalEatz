@@ -19,25 +19,28 @@ const app= express();
 const  request  = require("http");
 const server = request.createServer(app);
 const { Server } = require("socket.io");
-
+const cookieParser = require('cookie-parser');
 
 
 
 app.use(session({
+    name: "express_session_cookie",
     secret: process.env.session_secret,
     resave: false,
     saveUninitialized: false,
     cookie: {
         secure: false,
-        httpOnly: false,
+        httpOnly: true,
         maxAge: 86400000,
-        sameSite: 'lax'
+        sameSite: 'none'
     }
 })
 );
 
+app.use(cookieParser());
+
 app.use((req, res, next) => {
-    console.log(`Cookies: ${req.cookies}`);
+    console.log(`rawWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW Cookies:, `, req.headers.cookie);
     next();
 });
 
