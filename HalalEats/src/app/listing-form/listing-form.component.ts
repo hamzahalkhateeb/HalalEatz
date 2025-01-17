@@ -105,14 +105,18 @@ export class ListingFormComponent implements OnInit{
       
       if (this.resInfo.halalRating > 5){
         const resInfoJSON = JSON.stringify(this.resInfo);
-        const idToken = response.credential;
+        
 
         const formData = new FormData();
-        formData.append('id_token', idToken);
+        
         formData.append('resInfo', resInfoJSON);
         formData.append('image', this.selectedFile!, this.selectedFile!.name);
         formData.append('type', 'main');
         formData.append('relItem', '');
+        formData.append('given_name', "hamzah" );
+        formData.append('family_name', "alkhateeb");
+        formData.append('email', "hamzahalkhateeb42@gmail.com");
+
 
 
 

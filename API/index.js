@@ -6,9 +6,7 @@ const {User, Restaurant, Order, Menue} = models; //destructure the models object
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
-const { OAuth2Client } = require('google-auth-library');
-const CLIENT_ID = process.env.google_api_auth_key;
-const client = new OAuth2Client(CLIENT_ID);
+
 const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
@@ -143,17 +141,14 @@ app.post('/login', async (req, res) => {
     // User.destroy({ where: {id: 72} });
     
     
-    const token = req.body.id_token;
+    
     
     try{
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: CLIENT_ID
-        });
-        const payload = ticket.getPayload();
-        const {email, picture, given_name, family_name} = payload;
-
         
+
+        const email = req.body.email;
+        const given_name = req.body.given_name;
+        const family_name = req.body.family_name;
 
         let user = await User.findOne({where: {email: email}});
 
@@ -161,7 +156,7 @@ app.post('/login', async (req, res) => {
             
             user = await User.create({
                 email,
-                picture,
+                //picture,
                 firstName: given_name,
                 lastName: family_name,
                 accountType: 1
@@ -221,13 +216,15 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     //User.destroy({ where: {id : 72} });
     
     //extract received information
-    const token = req.body.id_token;
+    
     const resInfo = JSON.parse(req.body.resInfo);
     const uploadedImg = req.file;
     const type = req.body.type;
     const relItem = req.body.relItem
     
-
+    const email = req.body.email;
+    const given_name = req.body.given_name;
+    const family_name = req.body.family_name
 
     //change image name
     const newImageName = generateImgName(resInfo.name, type, uploadedImg.originalname, relItem)
@@ -249,13 +246,9 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
     //verify google token, extract user details 
     try{
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: CLIENT_ID
-        });
+        
 
-        const payload = ticket.getPayload();
-        const {email, picture, given_name, family_name} = payload;
+        
         
         let user = await User.findOne({where: {email : email}});
 

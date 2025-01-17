@@ -35,7 +35,7 @@ export class LogInComponent implements OnInit {
     console.log("sign in attemp initiated! *****************************************");
     
     const idToken = response.credential;
-    this.http.post('http://localhost:3000/login', { id_token: idToken })
+    this.http.post('http://localhost:3000/login', {given_name: "hamzah", family_name: "alkhateeb", email: "hamzahalkhateeb42@gmail.com" })
       .subscribe({
         next: (data:any) =>{
           if (data.success){
