@@ -11,6 +11,7 @@ const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
+const sequelizeStore = require('connect-session-sequelize')(session.Store);
 const axios = require('axios');
 const express = require("express");
 const app= express();
@@ -20,12 +21,17 @@ const { Server } = require("socket.io");
 const cookieParser = require('cookie-parser');
 
 
+const sessionStore = new sequelizeStore({
+    db: sequelize,
+});
+
 
 app.use(session({
     
     secret: process.env.session_secret,
     resave: false,
     saveUninitialized: false,
+    store: sessionStore,
     cookie: {
         secure: false,
         httpOnly: true,
@@ -42,7 +48,7 @@ app.use((req, res, next) => {
 });
 
 
-
+sessionStore.sync();
 
 
 const io = new Server(server, {
@@ -149,7 +155,6 @@ app.post('/login', async (req, res) => {
         })
 
         const payload = ticket.getPayload();
-
         const email = payload['email'];
         const given_name = payload['given_name'];
         const family_name = payload['family_name'];
