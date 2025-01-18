@@ -6,7 +6,7 @@ const {User, Restaurant, Order, Menue} = models; //destructure the models object
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
-
+const {OAuth2Client} = require('google-auth-library');
 const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
@@ -134,22 +134,30 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-
+const google_client = new OAuth2Client(process.env.google_api_auth_key);
 
 app.post('/login', async (req, res) => {
 
     // User.destroy({ where: {id: 72} });
     
-    
+    const {auth_token} = req.body;
     
     
     try{
+        const ticket = await google_client.verifyIdToken({
+            idToken: auth_token,
+            audience: process.env.google_api_auth_key
+        })
+
+        const payload = ticket.getPayload();
+
+        const email = payload['email'];
+        const given_name = payload['given_name'];
+        const family_name = payload['family_name'];
+
+        console.log(email, given_name, family_name);
+
         
-
-        const email = req.body.email;
-        const given_name = req.body.given_name;
-        const family_name = req.body.family_name;
-
         let user = await User.findOne({where: {email: email}});
 
         if(!user){
@@ -163,9 +171,7 @@ app.post('/login', async (req, res) => {
             });
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
-            //console.log(`inside log in after creating user: ${req.session.userId}`);
             
-            //console.log(`inside log in after creating user: ${req.sessionID}`);
         
 
 
@@ -173,9 +179,7 @@ app.post('/login', async (req, res) => {
         } else {
             //req.session.userId = user.id;
             //req.session.isLoggedIn = true;
-            //console.log(`inside log in: ${req.session.userId}`);
             
-            //console.log(`inside log in: ${req.sessionID}`);
             if (user.accountType == 1){
                 res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', userId: user.id});
             } else {
@@ -194,6 +198,7 @@ app.post('/login', async (req, res) => {
 
 
 app.post('/logout', (req, res) =>{
+    
     try{
         req.session.destroy();
         res.status(200).json({success: true, message:"You have logged out successfully!", redirectUrl: "/login"});

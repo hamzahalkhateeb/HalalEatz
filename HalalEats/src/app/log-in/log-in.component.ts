@@ -55,8 +55,8 @@ export class LogInComponent implements OnInit {
 
   sendCredentialsToBackend(response: any): void {
 
-    console.log('BGZKXISW$T%RTGKMB$ H%GVR#$%J^YGV)VOF#J$%^OHMNB GVLP$)%RSXCv  to back end the log in details!');
-    /*console.log("sign in attemp initiated! *****************************************");
+    console.log('sin in attempt initiated: to back end the log in details!');
+    console.log("sign in attemp initiated! *****************************************");
     
     const auth_token = response.credential;
     this.http.post('http://localhost:3000/login', {auth_token})
@@ -74,7 +74,7 @@ export class LogInComponent implements OnInit {
         error: (error: any) =>{
           console.error('Error: ', error);
         }
-      });*/
+      });
   }
 
   

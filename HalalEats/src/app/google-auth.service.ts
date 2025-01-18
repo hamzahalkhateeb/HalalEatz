@@ -51,6 +51,8 @@ export class GoogleAuthService {
 
   signOut(): void {
     google.accounts.id.disableAutoSelect();
+    
+    //idk add more logic here
     console.log('Logged out');
   }
 
