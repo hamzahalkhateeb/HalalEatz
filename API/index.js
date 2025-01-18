@@ -22,7 +22,7 @@ const cookieParser = require('cookie-parser');
 
 
 app.use(session({
-    name: "express_session_cookie",
+    
     secret: process.env.session_secret,
     resave: false,
     saveUninitialized: false,
@@ -32,8 +32,7 @@ app.use(session({
         maxAge: 86400000,
         sameSite: 'none'
     }
-})
-);
+}));
 
 app.use(cookieParser());
 

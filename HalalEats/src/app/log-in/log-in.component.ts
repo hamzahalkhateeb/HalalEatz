@@ -59,7 +59,7 @@ export class LogInComponent implements OnInit {
     console.log("sign in attemp initiated! *****************************************");
     
     const auth_token = response.credential;
-    this.http.post('http://localhost:3000/login', {auth_token})
+    this.http.post('http://localhost:3000/login', {auth_token}, {withCredentials: true})
       .subscribe({
         next: (data:any) =>{
           if (data.success){
