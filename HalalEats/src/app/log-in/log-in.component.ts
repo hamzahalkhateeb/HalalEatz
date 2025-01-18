@@ -1,12 +1,10 @@
 declare var google: any;
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { HttpClient, } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ListingFormComponent } from '../listing-form/listing-form.component';
-import { environment } from '../../environments/environment';
-
-
+import { Subscription } from 'rxjs';
+import { GoogleAuthService } from '../google-auth.service';
 
 
 @Component({
@@ -21,35 +19,47 @@ import { environment } from '../../environments/environment';
 
 export class LogInComponent implements OnInit {
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router) {}
+  private credentialSubscription!: Subscription;
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private gooogleAuthService: GoogleAuthService) {}
 
   ngOnInit(): void {
+
     if (isPlatformBrowser(this.platformId)){
-      (window as any)['handleCredentialResponse'] = this.handleCredentialResponse.bind(this),
       (window as any)['OpenListingForm'] = this.OpenListingForm.bind(this);
     }
 
-    google.accounts.id.initialize({
-      client_id: environment.google_Oauth2_key,
-      callback: (res: any)=>this.handleCredentialResponse(res)
-    });
+    this.gooogleAuthService.initilizeGoogleAuth();
+    this.gooogleAuthService.renderGoogleBtn('googlebtn');
 
-    google.accounts.id.renderButton(document.getElementById("googlebtn"), {
-      theme: 'filled_black',
-      size: 'large',
-      shape: 'pill',
-      width: 350,
-      
-      
-    });
+    this.credentialSubscription = this.gooogleAuthService
+     .getCredentialResponse()
+     .subscribe((response) => {
+      if (response) {
+        console.log('Received credentiuals in the ccomponent:', response);
+        this.sendCredentialsToBackend(response);
+      }
+     })
+    
+
+     //more initialization functions here!
+
+
 
   }
 
-  handleCredentialResponse(response: any): void {
-    console.log("sign in attemp initiated! *****************************************");
+  ngOnDestroy(): void{
+    if (this.credentialSubscription){
+      this.credentialSubscription.unsubscribe();
+    }
+  }
+
+  sendCredentialsToBackend(response: any): void {
+
+    console.log('BGZKXISW$T%RTGKMB$ H%GVR#$%J^YGV)VOF#J$%^OHMNB GVLP$)%RSXCv  to back end the log in details!');
+    /*console.log("sign in attemp initiated! *****************************************");
     
-    const idToken = response.credential;
-    this.http.post('http://localhost:3000/login', {given_name: "hamzah", family_name: "alkhateeb", email: "hamzahalkhateeb42@gmail.com" })
+    const auth_token = response.credential;
+    this.http.post('http://localhost:3000/login', {auth_token})
       .subscribe({
         next: (data:any) =>{
           if (data.success){
@@ -64,8 +74,10 @@ export class LogInComponent implements OnInit {
         error: (error: any) =>{
           console.error('Error: ', error);
         }
-      });
+      });*/
   }
+
+  
 
   OpenListingForm(response: any): void{
     console.log("Listing form requested!");
