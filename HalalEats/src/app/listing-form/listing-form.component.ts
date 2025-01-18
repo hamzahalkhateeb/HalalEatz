@@ -1,6 +1,6 @@
 /// <reference types="@types/google.maps" />
 import { Component , OnInit, Inject, Injectable,  PLATFORM_ID, NgZone, ViewChild, ElementRef, Renderer2, QueryList, ViewChildren } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators'
 import { HttpClient, } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { environment } from '../../environments/environment';
+import { GoogleAuthService } from '../google-auth.service';
 
 
 
@@ -83,7 +84,11 @@ export class ListingFormComponent implements OnInit{
     
     selectedFile: File | null = null;
 
-    constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private ngZone: NgZone, private renderer: Renderer2) {}
+    private credentialSubscription!: Subscription;
+
+    
+
+    constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private ngZone: NgZone, private renderer: Renderer2, private googleAuthService: GoogleAuthService) {}
 
     ngOnInit(): void {
       if (isPlatformBrowser(this.platformId)){
@@ -92,7 +97,26 @@ export class ListingFormComponent implements OnInit{
       }
 
       this.autocompleteService = new google.maps.places.AutocompleteService();
+
+      this.googleAuthService.initilizeGoogleAuth();
+      this.googleAuthService.renderGoogleBtn('googlebtn');
+
+      this.credentialSubscription = this.googleAuthService
+     .getCredentialResponse()
+     .subscribe((response) => {
+      if (response) {
+        console.log('Received credentiuals in the ccomponent:', response);
+        this.handleFormSubmission(response);
+      }
+     })
+
     }
+
+    ngOnDestroy(): void {
+      if (this.credentialSubscription) {
+          this.credentialSubscription.unsubscribe();
+      }
+  }
 
     onFileSelected(event: any) {
       this.selectedFile = event.target.files[0] as File;
@@ -109,13 +133,12 @@ export class ListingFormComponent implements OnInit{
 
         const formData = new FormData();
         
+        formData.append('auth_token', response.credential);
         formData.append('resInfo', resInfoJSON);
         formData.append('image', this.selectedFile!, this.selectedFile!.name);
         formData.append('type', 'main');
         formData.append('relItem', '');
-        formData.append('given_name', "hamzah" );
-        formData.append('family_name', "alkhateeb");
-        formData.append('email', "hamzahalkhateeb42@gmail.com");
+        
 
 
 
@@ -189,6 +212,9 @@ export class ListingFormComponent implements OnInit{
   }
 
     
+ 
+
+
 
     updateHalalRating(event: any) {
     if (event.target.checked){

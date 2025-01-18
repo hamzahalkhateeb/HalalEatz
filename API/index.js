@@ -220,16 +220,28 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     //Menue.destroy({ where: {} });
     //User.destroy({ where: {id : 72} });
     
-    //extract received information
+    const auth_token = req.body.auth_token;
+
+    
+    const ticket = await google_client.verifyIdToken({
+        idToken: auth_token,
+        audience: process.env.google_api_auth_key
+    })
+
+    const payload = ticket.getPayload();
+
+    
+
+
     
     const resInfo = JSON.parse(req.body.resInfo);
     const uploadedImg = req.file;
     const type = req.body.type;
     const relItem = req.body.relItem
-    
-    const email = req.body.email;
-    const given_name = req.body.given_name;
-    const family_name = req.body.family_name
+    const email = payload['email'];
+    const given_name = payload['given_name'];
+    const family_name = payload['family_name'];
+
 
     //change image name
     const newImageName = generateImgName(resInfo.name, type, uploadedImg.originalname, relItem)
@@ -249,7 +261,6 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     
     
 
-    //verify google token, extract user details 
     try{
         
 
