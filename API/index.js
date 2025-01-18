@@ -23,6 +23,7 @@ const cookieParser = require('cookie-parser');
 
 const sessionStore = new sequelizeStore({
     db: sequelize,
+    logging: console.log
 });
 
 
@@ -100,6 +101,7 @@ app.use(cors({
     origin: 'http://localhost:4200',
     credentials: true
 }));
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
@@ -175,6 +177,7 @@ app.post('/login', async (req, res) => {
             });
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
+            req.session.save();
             
         
 
