@@ -6,13 +6,12 @@ const {User, Restaurant, Order, Menue} = models; //destructure the models object
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
-const { OAuth2Client } = require('google-auth-library');
-const CLIENT_ID = process.env.google_api_auth_key;
-const client = new OAuth2Client(CLIENT_ID);
+const {OAuth2Client} = require('google-auth-library');
 const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
+const sequelizeStore = require('connect-session-sequelize')(session.Store);
 const axios = require('axios');
 const express = require("express");
 const app= express();
@@ -22,20 +21,25 @@ const { Server } = require("socket.io");
 const cookieParser = require('cookie-parser');
 
 
+const sessionStore = new sequelizeStore({
+    db: sequelize,
+    logging: console.log
+});
+
 
 app.use(session({
-    name: "express_session_cookie",
+    
     secret: process.env.session_secret,
     resave: false,
     saveUninitialized: false,
+    store: sessionStore,
     cookie: {
         secure: false,
         httpOnly: true,
         maxAge: 86400000,
         sameSite: 'none'
     }
-})
-);
+}));
 
 app.use(cookieParser());
 
@@ -45,7 +49,7 @@ app.use((req, res, next) => {
 });
 
 
-
+sessionStore.sync();
 
 
 const io = new Server(server, {
@@ -97,6 +101,7 @@ app.use(cors({
     origin: 'http://localhost:4200',
     credentials: true
 }));
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
@@ -136,41 +141,44 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-
+const google_client = new OAuth2Client(process.env.google_api_auth_key);
 
 app.post('/login', async (req, res) => {
 
     // User.destroy({ where: {id: 72} });
     
+    const {auth_token} = req.body;
     
-    const token = req.body.id_token;
     
     try{
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: CLIENT_ID
-        });
+        const ticket = await google_client.verifyIdToken({
+            idToken: auth_token,
+            audience: process.env.google_api_auth_key
+        })
+
         const payload = ticket.getPayload();
-        const {email, picture, given_name, family_name} = payload;
+        const email = payload['email'];
+        const given_name = payload['given_name'];
+        const family_name = payload['family_name'];
+
+        console.log(email, given_name, family_name);
 
         
-
         let user = await User.findOne({where: {email: email}});
 
         if(!user){
             
             user = await User.create({
                 email,
-                picture,
+                //picture,
                 firstName: given_name,
                 lastName: family_name,
                 accountType: 1
             });
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
-            //console.log(`inside log in after creating user: ${req.session.userId}`);
+            req.session.save();
             
-            //console.log(`inside log in after creating user: ${req.sessionID}`);
         
 
 
@@ -178,9 +186,7 @@ app.post('/login', async (req, res) => {
         } else {
             //req.session.userId = user.id;
             //req.session.isLoggedIn = true;
-            //console.log(`inside log in: ${req.session.userId}`);
             
-            //console.log(`inside log in: ${req.sessionID}`);
             if (user.accountType == 1){
                 res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', userId: user.id});
             } else {
@@ -199,6 +205,7 @@ app.post('/login', async (req, res) => {
 
 
 app.post('/logout', (req, res) =>{
+    
     try{
         req.session.destroy();
         res.status(200).json({success: true, message:"You have logged out successfully!", redirectUrl: "/login"});
@@ -220,13 +227,27 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     //Menue.destroy({ where: {} });
     //User.destroy({ where: {id : 72} });
     
-    //extract received information
-    const token = req.body.id_token;
+    const auth_token = req.body.auth_token;
+
+    
+    const ticket = await google_client.verifyIdToken({
+        idToken: auth_token,
+        audience: process.env.google_api_auth_key
+    })
+
+    const payload = ticket.getPayload();
+
+    
+
+
+    
     const resInfo = JSON.parse(req.body.resInfo);
     const uploadedImg = req.file;
     const type = req.body.type;
     const relItem = req.body.relItem
-    
+    const email = payload['email'];
+    const given_name = payload['given_name'];
+    const family_name = payload['family_name'];
 
 
     //change image name
@@ -247,15 +268,10 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     
     
 
-    //verify google token, extract user details 
     try{
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: CLIENT_ID
-        });
+        
 
-        const payload = ticket.getPayload();
-        const {email, picture, given_name, family_name} = payload;
+        
         
         let user = await User.findOne({where: {email : email}});
 
