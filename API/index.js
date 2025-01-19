@@ -38,7 +38,7 @@ app.use(session({
         secure: false,
         httpOnly: true,
         maxAge: 1000 * 60 * 3,
-        sameSite: 'none'
+        sameSite: 'strict'
     }
 }));
 
@@ -796,8 +796,11 @@ app.post('/getOrders', async (req, res) =>{
 
 /////////////////////////////////////////////////////////////////////////////
 app.post('/getcxOrders', async (req, res) => {
-
+    const sessionUserId= req.session.userId
     const userId = req.body.userId;
+
+    console.log(`front end userId: ${userId}, and session user id: ${sessionUserId}`);
+
     try {
         const orders = await Order.findAll({where: {customerId : userId}});
 

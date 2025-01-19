@@ -60,7 +60,7 @@ export class DashBoardComponent implements OnInit {
 
     }
     this.getCloseRestaurants();
-    //this.getCxOrders();
+    this.getCxOrders();
 
     const socket = io("http://localhost:3000");
 
