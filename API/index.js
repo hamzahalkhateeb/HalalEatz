@@ -2,7 +2,7 @@
 //import different apps and frameworks necessary for your application
 require('dotenv').config();
 const {sequelize, models } = require("./models"); //import all data object models
-const {User, Restaurant, Order, Menue} = models; //destructure the models object imported in the line above
+const {User, Restaurant, Order, Menue, SessionModel} = models; //destructure the models object imported in the line above
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
@@ -19,6 +19,7 @@ const  request  = require("http");
 const server = request.createServer(app);
 const { Server } = require("socket.io");
 const cookieParser = require('cookie-parser');
+const { Session } = require('express-session');
 
 
 const sessionStore = new sequelizeStore({
@@ -28,7 +29,7 @@ const sessionStore = new sequelizeStore({
 
 
 app.use(session({
-    
+    name: 'express-session-id',
     secret: process.env.session_secret,
     resave: false,
     saveUninitialized: false,
@@ -36,17 +37,17 @@ app.use(session({
     cookie: {
         secure: false,
         httpOnly: true,
-        maxAge: 86400000,
+        maxAge: 1000 * 60 * 3,
         sameSite: 'none'
     }
 }));
 
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-    console.log(`rawWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW Cookies:, `, req.headers.cookie);
+/*app.use((req, res, next) => {
+    //console.log(`rawWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW Cookies:, `, req.headers.cookie);
     next();
-});
+});*/
 
 
 sessionStore.sync();
@@ -99,6 +100,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(cors({
     origin: 'http://localhost:4200',
+    methods: ['GET, POST, PUT, DELETE'],
     credentials: true
 }));
 
@@ -160,6 +162,7 @@ app.post('/login', async (req, res) => {
         const email = payload['email'];
         const given_name = payload['given_name'];
         const family_name = payload['family_name'];
+        const picture = payload['picture'];
 
         console.log(email, given_name, family_name);
 
@@ -170,7 +173,7 @@ app.post('/login', async (req, res) => {
             
             user = await User.create({
                 email,
-                //picture,
+                picture,
                 firstName: given_name,
                 lastName: family_name,
                 accountType: 1
@@ -184,8 +187,13 @@ app.post('/login', async (req, res) => {
 
             res.status(201).json({success: true, message: "You have signed up successfully!", user, redirectUrl: "/dashboard"});
         } else {
-            //req.session.userId = user.id;
-            //req.session.isLoggedIn = true;
+            req.session.userId = user.id;
+            req.session.isLoggedIn = true;
+            req.session.save();
+            console.log(`user already exists, created a session and saved it, check workbench to see if it is saved!`);
+
+            console.log('session user id in log in route', req.session.userId);
+            console.log('session id in the log in route', req.session.sid);
             
             if (user.accountType == 1){
                 res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', userId: user.id});
@@ -208,6 +216,7 @@ app.post('/logout', (req, res) =>{
     
     try{
         req.session.destroy();
+        
         res.status(200).json({success: true, message:"You have logged out successfully!", redirectUrl: "/login"});
 
     } catch(err){
@@ -432,6 +441,12 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
 
 
 app.post('/getCloseRestaurants', async (req, res) => {
+
+    console.log(`get closer restaurants called, here is the current session id: ${req.session.sid}`);
+
+    console.log(`get close restaurants called, here is the user id in it: ${req.session.userId}`);
+
+    console.log(`get close restaurants called, here is the cookie received: ${req.cookies['express-session-id']}`);
     const Ulong = parseFloat(req.body.long);
     const Ulat = parseFloat(req.body.lat);
     
