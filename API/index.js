@@ -687,9 +687,36 @@ app.post('/placeOrder', async (req, res) => {
         
     try{
 
-        console.log('about to call create order end point!');
-        const paymentURL = await createOrder(purchase_units, restaurantId, userId, orderId); //this will send to the front end and front end will call /CapturePayment end point below
+        
+        
 
+        let access_token = await generateAccess_Token();
+
+        
+        console.log(`2- (create order function): access token used by the create order function: `, access_token);
+        
+        const response = await axios({
+            url: 'https://api-m.sandbox.paypal.com/v2/checkout/orders',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + access_token
+            },
+            data: JSON.stringify({
+                intent: 'CAPTURE',
+                purchase_units: purchase_units,
+                application_context: {
+                    return_url : `http://localhost:4200/succesfullPayment?orderId=${orderId}`,
+                    cancel_url : `http://localhost:4200/restaurantPage/${restaurantId}?restaurantId=${restaurantId}&${userId}=userId`,
+                    shipping_preference: 'NO_SHIPPING',
+                    user_action: 'PAY_NOW',
+                    brand_name: 'Halal Eatz'
+                }
+            }) 
+        })
+        console.log("2- (inside create order function): order id: ", response.data);
+
+        paymentURL =  response.data.links.find(link => link.rel === "approve").href;
         
         await transaction.commit();
         console.log('just commited the order!');
@@ -888,7 +915,7 @@ app.post('/advanceOrder', async (req, res) =>{
 
 
 /////////////////////////////////////////////////////////////////////////////
-
+/* for testing purposes
 async function createOrder(purchase_units, restaurantId, userId, orderId){
 
     console.log('createOrder called!');
@@ -923,7 +950,7 @@ async function createOrder(purchase_units, restaurantId, userId, orderId){
 
     
     return response.data.links.find(link => link.rel === "approve").href;
-};
+}; */
 
 /////////////////////////////////////////////////////////////////////////////
 
