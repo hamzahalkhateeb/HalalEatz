@@ -567,7 +567,7 @@ app.post('/placeOrder', async (req, res) => {
     const restaurantId = Number(req.body.restaurantId);
     const status = req.body.status;
     const totalPrice = req.body.totalPrice;
-    
+    console.log('place order function called');
 
     
 
@@ -581,10 +581,10 @@ app.post('/placeOrder', async (req, res) => {
        }, { transaction });
 
     const restaurantObjetc = await Restaurant.findOne({where : {id : restaurantId}});
-    console.log('found restaurant object : ', restaurantObjetc.userId);
+    console.log('7- found restaurant object : ', restaurantObjetc.userId);
 
     const restaurantOwner = await User.findOne({where: {id : restaurantObjetc.userId}});
-    console.log('found restaurant owner and his email is the following: ', restaurantOwner.email);
+    console.log('6- found restaurant owner and his email is the following: ', restaurantOwner.email);
 
     const payeeEmail = restaurantOwner.email;
 
@@ -612,6 +612,8 @@ app.post('/placeOrder', async (req, res) => {
     
         
     try{
+
+        console.log('about to trigger create order function!');
         const paymentURL = await createOrder(purchase_units, restaurantId, userId, orderId); //this will send to the front end and front end will call /CapturePayment end point below
 
         
@@ -619,6 +621,7 @@ app.post('/placeOrder', async (req, res) => {
                 
         res.status(201).json({success: true, message: "payment captured, proceeding to completion now!", redirectUrl: paymentURL});
     } catch {
+        console.log('order did not complete, rolling back and deleting it');
         await transaction.rollback();
         res.status(500).json({success: false, message: 'error, something went wrong'});
     }
@@ -806,6 +809,9 @@ app.post('/advanceOrder', async (req, res) =>{
 /////////////////////////////////////////////////////////////////////////////
 
 async function createOrder(purchase_units, restaurantId, userId, orderId){
+
+    console.log('create order endpoint called!');
+
     let access_token = await generateAccess_Token();
 
     
@@ -861,6 +867,8 @@ async function generateAccess_Token(){
 const processedPayments = new Set();
 
 async function capture_payment(paymentId){
+
+    console.log('capture payment function called');
     
     if (processedPayments.has(paymentId)){
         console.log('payment already captured, cancelling capture payment function');

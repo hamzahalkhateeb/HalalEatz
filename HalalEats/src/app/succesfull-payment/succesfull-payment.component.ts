@@ -1,8 +1,11 @@
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
+
 
 @Component({
   selector: 'app-succesfull-payment',
@@ -16,11 +19,16 @@ export class SuccesfullPaymentComponent implements OnInit{
   token! : any;
   payerId!: any;
   orderId!: any;
-  
+  private isCapturedSubject = new BehaviorSubject<boolean>(false);
+  isCaptured$ = this.isCapturedSubject.asObservable();
+
 
   constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
+
+    console.log("successfully paym,ent page loaded!!!!");
+
     this.route.queryParams.subscribe(params => {
       this.token = params['token'];
       this.payerId = params['payerId'];
@@ -38,8 +46,7 @@ export class SuccesfullPaymentComponent implements OnInit{
           next:(data: any)=>{
             if (data.success){
               console.log(` ${data.message}`);
-            
-              this.router.navigateByUrl('/dashboard');
+              this.isCapturedSubject.next(true);
             } else{
               alert(data.message);
             }
@@ -53,12 +60,15 @@ export class SuccesfullPaymentComponent implements OnInit{
 
     });
 
-   
-
-
   }
 
+  toDashboard(): void {
 
+    console.log('proceed btn clicked')
+    this.router.navigateByUrl('/dashboard');
     
+  }
 
 }
+
+
