@@ -3,3 +3,7 @@
 <div *ngIf="token">
     {{token}}
 </div>
+
+<div class="navigateBtn">
+    <button (click)="toDashboard()" *ngIf="(isCaptured$ | async)">Proceed</button>
+</div>
