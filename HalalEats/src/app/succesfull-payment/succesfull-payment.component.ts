@@ -26,8 +26,8 @@ export class SuccesfullPaymentComponent implements OnInit{
       this.payerId = params['payerId'];
       this.orderId = params['orderId'];
       
-      console.log(`paymentId aka token: ${this.token}`);
-      console.log(`orderId: ${this.orderId}`);
+      console.log(`paymentId aka token in successful payment page: ${this.token}`);
+      console.log(`orderId in successfil payment page: ${this.orderId}`);
     
       if(this.token && this.orderId){
         console.log(`paymentId aka token: ${this.token}`);

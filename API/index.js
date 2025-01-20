@@ -630,6 +630,9 @@ app.post('/deleteRestaurant', async (req, res) => {
 
 app.post('/placeOrder', async (req, res) => {
     
+
+    console.log('place order request placed!');
+
     //Order.destroy({ where: {} });
     const items = (req.body.orderArray);
     const userId = Number(req.body.userId);
@@ -650,12 +653,14 @@ app.post('/placeOrder', async (req, res) => {
        }, { transaction });
 
     const restaurantObjetc = await Restaurant.findOne({where : {id : restaurantId}});
-    console.log('found restaurant object : ', restaurantObjetc.userId);
+    console.log('7- found restaurant object : ', restaurantObjetc.userId);
 
     const restaurantOwner = await User.findOne({where: {id : restaurantObjetc.userId}});
-    console.log('found restaurant owner and his email is the following: ', restaurantOwner.email);
+    console.log('7- found restaurant owner and his email is the following: ', restaurantOwner.email);
 
     const payeeEmail = restaurantOwner.email;
+
+    console.log(`7- where the money is going to: ${payeeEmail}`);
 
     const orderId = order.id;
     console.log(`ORDER ID JUST CREATED!**###**##***###*3##*********####*####*********####******** ${orderId}`);
@@ -681,10 +686,13 @@ app.post('/placeOrder', async (req, res) => {
     
         
     try{
+
+        console.log('about to call create order end point!');
         const paymentURL = await createOrder(purchase_units, restaurantId, userId, orderId); //this will send to the front end and front end will call /CapturePayment end point below
 
         
         await transaction.commit();
+        console.log('just commited the order!');
                 
         res.status(201).json({success: true, message: "payment captured, proceeding to completion now!", redirectUrl: paymentURL});
     } catch {
@@ -700,15 +708,19 @@ app.post('/placeOrder', async (req, res) => {
 
 app.post('/capturePayment', async (req, res)=>{
 
-    console.log(`1- Capture paymenty function called!!`);
+    console.log(`1- Capture payment ENDPOINT called!!`);
     const token = req.body.token;
 
     const orderId = req.body.orderId;
     
+    console.log(`2- order id in capture payment route: ${orderId}, and token received: ${token}`);
 
     const order = await Order.findOne({where : {id: orderId}});
+    console.log(`3- found order: ${order}`);
+
     const restaurant = await Restaurant.findOne({where : {id : order.restaurantId}});
     const restaurantOwnerId = restaurant.userId;
+    console.log(`3- found restaurant: ${restaurant}`);
     
 
     try{
@@ -878,6 +890,10 @@ app.post('/advanceOrder', async (req, res) =>{
 /////////////////////////////////////////////////////////////////////////////
 
 async function createOrder(purchase_units, restaurantId, userId, orderId){
+
+    console.log('createOrder called!');
+    const sessionUserId = req.session.userId;
+
     let access_token = await generateAccess_Token();
 
     
@@ -948,7 +964,7 @@ async function capture_payment(paymentId){
         console.log(`capture payment FUNCTION called!`);
     
 
-        console.log(`3- access token passed to capture payment: ${access_token}`); 
+        console.log(`3- access token generated: ${access_token}`); 
 
         console.log(`3-  id passed to the capture function: ${paymentId}`);
     
@@ -967,6 +983,8 @@ async function capture_payment(paymentId){
         if(response.data.status === 'COMPLETED'){
             processedPayments.add(paymentId);
             console.log('first time capturing, payment id addedd to process payments set');
+        } else {
+            console.log('response status: ',response.data.status);
         }
     
         console.log(response.data); 
