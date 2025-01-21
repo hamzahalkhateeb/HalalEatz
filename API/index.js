@@ -496,7 +496,7 @@ app.post('/getCloseRestaurants', async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/LoadRestaurantAdminPackage', async (req, res) => {
+app.post('/LoadRestaurantAdminPackage', isAuthenticated, async (req, res) => {
 
     const type = req.body.userType;
     
@@ -633,7 +633,7 @@ app.post('/deleteRestaurant', async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/placeOrder', async (req, res) => {
+app.post('/placeOrder', isAuthenticated, async (req, res) => {
     
 
     console.log('place order request placed!');
@@ -841,14 +841,14 @@ app.post('/getOrders', async (req, res) =>{
 
 
 /////////////////////////////////////////////////////////////////////////////
-app.post('/getcxOrders', async (req, res) => {
+app.post('/getcxOrders', isAuthenticated, async (req, res) => {
     const sessionUserId= req.session.userId
-    const userId = req.body.userId;
+    //const userId = req.body.userId;
 
     console.log(`front end userId: ${userId}, and session user id: ${sessionUserId}`);
 
     try {
-        const orders = await Order.findAll({where: {customerId : userId}});
+        const orders = await Order.findAll({where: {customerId : sessionUserId}});
 
         res.status(200).json({success: true, message: "orders for this customer have been loaded successfully", orders: orders});
     }catch{

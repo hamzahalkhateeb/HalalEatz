@@ -60,6 +60,7 @@ export class DashBoardComponent implements OnInit {
 
     }
     this.getCloseRestaurants();
+    console.log("about to call get cx orders");
     this.getCxOrders();
 
     const socket = io("http://localhost:3000");
@@ -152,7 +153,8 @@ export class DashBoardComponent implements OnInit {
   }
 
   getCxOrders(): void{
-    this.http.post('http://localhost:3000/getcxOrders', /*{userId: this.currentUserId},*/ {withCredentials: true})
+    console.log("inside get cx orders!");
+    this.http.post('http://localhost:3000/getcxOrders', {userId: 'variablePlaceHolder'}, {withCredentials: true})
     .subscribe({
       next: (data: any) => {
         if (data.success){
