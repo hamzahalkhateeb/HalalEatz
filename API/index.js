@@ -508,11 +508,11 @@ app.post('/LoadRestaurantAdminPackage', isAuthenticated, async (req, res) => {
 
 
     if (type === "admin"){
-        const userId = req.body.Id;
-
+        //const userId = req.body.Id;
+        console.log("user type is admin, using the session user id to as the user: ", sessionUserId);
 
         try{
-            let restaurant = await Restaurant.findOne({where : {UserId : userId}});
+            let restaurant = await Restaurant.findOne({where : {UserId : sessionUserId}});
 
 
             let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurant.id}}));
@@ -819,9 +819,9 @@ app.post('/capturePayment', async (req, res)=>{
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/getOrders', async (req, res) =>{
+app.post('/getOrders', isAuthenticated, async (req, res) =>{
     
-    const userId = req.body.userId;
+    const userId = req.session.userId;
 
     try {
         const restaurant = await Restaurant.findOne({where : {userId : userId}});
@@ -843,7 +843,7 @@ app.post('/getOrders', async (req, res) =>{
 /////////////////////////////////////////////////////////////////////////////
 app.post('/getcxOrders', isAuthenticated, async (req, res) => {
     const sessionUserId= req.session.userId
-    //const userId = req.body.userId;
+    
 
     console.log(`front end userId: ${userId}, and session user id: ${sessionUserId}`);
 

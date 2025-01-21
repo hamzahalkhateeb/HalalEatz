@@ -58,21 +58,18 @@ export class RestaurantAdminComponent implements OnInit {
 
    
 
-    this.route.queryParams.subscribe(params => {
-      this.currentuserId = params['userId']; });
-
-    console.log(`${this.currentuserId} -------------------------------------------------------------------------------`);
-    this.LoadRestaurantAdminPackage(this.currentuserId);
+    
+    this.LoadRestaurantAdminPackage();
     this.getOrders();
     
 
       
     const socket = io("http://localhost:3000");
 
-    socket.on("connect", () =>{
+    /*socket.on("connect", () =>{
       socket.emit('restaurantConnected', this.currentuserId);
       console.log("restaurant front end connected to back end");
-    });
+    });*/
 
     socket.on('orderPaid&Placed', (data) => {
       console.log('New Order Placed:', data.orderJSON);
@@ -108,9 +105,9 @@ export class RestaurantAdminComponent implements OnInit {
 
 
 
-  LoadRestaurantAdminPackage(userId:any)  {
+  LoadRestaurantAdminPackage(): void  {
     console.log('Cookies before request:', document.cookie);
-    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {Id : userId, userType: 'admin'}, {withCredentials: true})
+    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {userType: 'admin'}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
@@ -223,7 +220,7 @@ export class RestaurantAdminComponent implements OnInit {
   getOrders(): void{
     
 
-    this.http.post('http://localhost:3000/getOrders', {userId: this.currentuserId})
+    this.http.post('http://localhost:3000/getOrders', {userId: 'variablePlaceHolder'}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){

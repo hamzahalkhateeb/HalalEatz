@@ -14,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class RestaurantPageComponent implements OnInit {
 
   restaurantId!: number;
-  //currentUserId!: number;
+  
   menue!: any;
   menueId!: any;
   mealsArray: any;
@@ -37,7 +37,7 @@ export class RestaurantPageComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.restaurantId = params['restaurantId'];
-      //this.currentUserId = params['currentUserId'];
+      
     });
 
 
@@ -124,7 +124,7 @@ export class RestaurantPageComponent implements OnInit {
 
   checkout(totalPrice: number){
 
-    //console.log(`user id: ${this.currentUserId}`);
+    
     console.log(`restaurant id: ${this.restaurantId}`);
     console.log(JSON.stringify(this.orderArray));
 
@@ -141,7 +141,7 @@ export class RestaurantPageComponent implements OnInit {
     console.log(totalPrice.toFixed(2));
     console.log(this.orderArray);
 
-    this.http.post(`http://localhost:3000/placeOrder`, {/*userId: this.currentUserId,*/ restaurantId: this.restaurantId, status: 'submitted, unpaid', orderArray: JSON.stringify(this.orderArray), totalPrice: totalPrice.toFixed(2)}, {withCredentials: true})
+    this.http.post(`http://localhost:3000/placeOrder`, { restaurantId: this.restaurantId, status: 'submitted, unpaid', orderArray: JSON.stringify(this.orderArray), totalPrice: totalPrice.toFixed(2)}, {withCredentials: true})
     .subscribe({
       next:(data: any)=>{
         if (data.success && data.redirectUrl){
