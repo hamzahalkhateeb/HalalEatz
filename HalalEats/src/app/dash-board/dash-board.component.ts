@@ -17,7 +17,7 @@ export class DashBoardComponent implements OnInit {
   longitude = 0;
   latitude = 0;
   
-  currentUserId!: number;
+  //currentUserId!: number;
   
   cxOrders: any[] = [];
 
@@ -41,8 +41,8 @@ export class DashBoardComponent implements OnInit {
     if(isPlatformBrowser(this.platformId)){
       (window as any)['logout'] = this.logout.bind(this);
       
-      this.currentUserId = Number(this.route.snapshot.queryParamMap.get('userId'));
-      console.log(`current userID: ${this.currentUserId}`);
+      //this.currentUserId = Number(this.route.snapshot.queryParamMap.get('userId'));
+      //console.log(`current userID: ${this.currentUserId}`);
 
       if(navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -65,7 +65,7 @@ export class DashBoardComponent implements OnInit {
     const socket = io("http://localhost:3000");
 
     socket.on("connect", () =>{
-      socket.emit('customerConnected', this.currentUserId);
+      socket.emit('customerConnected', 'variablePlaceHolder');
       console.log("cx front end connected to back end");
     });
 
@@ -143,16 +143,16 @@ export class DashBoardComponent implements OnInit {
     });}
 
 
-  restaurantPage(restaurantId: number, currentUserId: number): void {
+  restaurantPage(restaurantId: number, /*currentUserId: number*/): void {
 
     console.log("restaurantPage is being clicked___________________________________");
     this.router.navigate(['/restaurantPage', restaurantId], {
-      queryParams: { restaurantId: restaurantId, currentUserId: currentUserId}
+      queryParams: { restaurantId: restaurantId, /*currentUserId: currentUserId*/}
     });
   }
 
   getCxOrders(): void{
-    this.http.post('http://localhost:3000/getcxOrders', {userId: this.currentUserId}, {withCredentials: true})
+    this.http.post('http://localhost:3000/getcxOrders', /*{userId: this.currentUserId},*/ {withCredentials: true})
     .subscribe({
       next: (data: any) => {
         if (data.success){

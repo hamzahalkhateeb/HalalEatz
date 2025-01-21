@@ -64,7 +64,8 @@ export class LogInComponent implements OnInit {
         next: (data:any) =>{
           if (data.success){
             alert(data.message);
-            const rurl = `${data.redirectUrl}?userId=${data.userId}`;
+            //?userId=${data.userId}
+            const rurl = `${data.redirectUrl}`;
             this.router.navigateByUrl(rurl);
           } else {
             console.log("unexpected json format! ", data);

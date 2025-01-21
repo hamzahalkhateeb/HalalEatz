@@ -74,7 +74,8 @@ io.on('connect', (socket) => {
         console.log(`added restaurant to active sockets: ${restaurantId}`);
     });
 
-    socket.on('customerConnected', (userId) => {
+    /*socket.on('customerConnected', (variablePlaceHolder) => {
+        let userId = req.session.userId
         activeSockets.set(String(userId), socket.id);
 
         console.log(`****inside SOCKET IO  customer id: ${userId} datatype: ${typeof(userId)}`);
@@ -90,7 +91,7 @@ io.on('connect', (socket) => {
             }
         })
         
-    })
+    })*/
 });
 
 
@@ -181,24 +182,27 @@ app.post('/login', async (req, res) => {
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
             req.session.save();
+
+            console.log("just saved a session after logging in, here is the user id associated with it: ", req.session.userId);
+            console.log('session id in the log in route sessionID', req.sessionID);
             
         
 
 
-            res.status(201).json({success: true, message: "You have signed up successfully!", user, redirectUrl: "/dashboard"});
+            res.status(201).json({success: true, message: "You have signed up successfully!", /*user,*/ redirectUrl: "/dashboard"});
         } else {
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
             req.session.save();
-            console.log(`user already exists, created a session and saved it, check workbench to see if it is saved!`);
+            console.log("just saved a session after logging in, here is the user id associated with it: ", req.session.userId);
 
             console.log('session user id in log in route', req.session.userId);
-            console.log('session id in the log in route', req.session.sid);
+            console.log('session id in the log in route sessionID', req.sessionID);
             
             if (user.accountType == 1){
-                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', userId: user.id});
+                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', /*userId: user.id*/});
             } else {
-                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/restaurantAdmin', userId: user.id});
+                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/restaurantAdmin', /*userId: user.id*/});
             }
             
         }
@@ -442,11 +446,12 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
 
 app.post('/getCloseRestaurants', async (req, res) => {
 
-    console.log(`get closer restaurants called, here is the current session id: ${req.session.sid}`);
+    
 
     console.log(`get close restaurants called, here is the user id in it: ${req.session.userId}`);
+    console.log('session id in the log in route sessionID', req.sessionID);
 
-    console.log(`get close restaurants called, here is the cookie received: ${req.cookies['express-session-id']}`);
+    
     const Ulong = parseFloat(req.body.long);
     const Ulat = parseFloat(req.body.lat);
     
@@ -635,12 +640,14 @@ app.post('/placeOrder', async (req, res) => {
 
     //Order.destroy({ where: {} });
     const items = (req.body.orderArray);
-    const userId = Number(req.body.userId);
+    const userId = req.session.userId;
+    console.log("got place order request, here is the user id retrieved from session id, ", req.session.userId);
+    console.log('place order req sessionID:, ', req.sessionID);
     const restaurantId = Number(req.body.restaurantId);
     const status = req.body.status;
     const totalPrice = req.body.totalPrice;
     
-
+    
     
 
     const transaction = await sequelize.transaction();
