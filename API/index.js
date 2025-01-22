@@ -71,17 +71,15 @@ io.on('connect', (socket) => {
 
     socket.on('restaurantConnected', () => {
         const session = socket.request.session;
+        activeSockets.set(String(session.userId), socket.id);
         console.log("restaurant connected!");
-        
-        activeSockets.set(session.userId, socket.id);
     });
 
-    /*socket.on('customerConnected', (variablePlaceHolder) => {
-        let userId = req.session.userId
-        activeSockets.set(String(userId), socket.id);
+    socket.on('customerConnected', () => {
+        const session = socket.request.session;
+        activeSockets.set(String(session.userId), socket.id);
+        console.log("customer connected!");
 
-        console.log(`****inside SOCKET IO  customer id: ${userId} datatype: ${typeof(userId)}`);
-        console.log(`added customer to active sockets: ${userId}`);
     });
 
 
@@ -93,7 +91,7 @@ io.on('connect', (socket) => {
             }
         })
         
-    })*/
+    })
 });
 
 
@@ -861,7 +859,7 @@ app.post('/getcxOrders', isAuthenticated, async (req, res) => {
     const sessionUserId= req.session.userId
     
 
-    console.log(`front end userId: ${userId}, and session user id: ${sessionUserId}`);
+    console.log(`front end userId: ${sessionUserId}, and session user id: ${sessionUserId}`);
 
     try {
         const orders = await Order.findAll({where: {customerId : sessionUserId}});

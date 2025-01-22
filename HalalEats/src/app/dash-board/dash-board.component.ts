@@ -62,12 +62,14 @@ export class DashBoardComponent implements OnInit {
     console.log("about to call get cx orders");
     this.getCxOrders();
 
-    const socket = io("http://localhost:3000");
+    const socket = io("http://localhost:3000", {
+      withCredentials: true
+    });
 
 
     // connect to backend >>>>
     socket.on("connect", () =>{
-      socket.emit('customerConnected', 'variablePlaceHolder');
+      socket.emit('customerConnected');
       console.log("cx front end connected to back end");
     });
 
