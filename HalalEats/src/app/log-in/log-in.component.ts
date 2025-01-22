@@ -41,7 +41,7 @@ export class LogInComponent implements OnInit {
      })
     
 
-     //more initialization functions here!
+     
 
 
 
@@ -52,6 +52,7 @@ export class LogInComponent implements OnInit {
       this.credentialSubscription.unsubscribe();
     }
   }
+
 
   sendCredentialsToBackend(response: any): void {
 
@@ -64,9 +65,8 @@ export class LogInComponent implements OnInit {
         next: (data:any) =>{
           if (data.success){
             alert(data.message);
-            //?userId=${data.userId}
-            const rurl = `${data.redirectUrl}`;
-            this.router.navigateByUrl(rurl);
+            
+            this.router.navigateByUrl(data.redirectUrl);
           } else {
             console.log("unexpected json format! ", data);
           }

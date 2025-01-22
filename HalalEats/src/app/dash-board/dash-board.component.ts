@@ -17,7 +17,7 @@ export class DashBoardComponent implements OnInit {
   longitude = 0;
   latitude = 0;
   
-  //currentUserId!: number;
+  
   
   cxOrders: any[] = [];
 
@@ -87,7 +87,7 @@ export class DashBoardComponent implements OnInit {
 
   logout(response: any): void{
     console.log("logout attempt initiated!");
-    this.http.post('http://localhost:3000/logout', { id_token: response.credential })
+    this.http.post('http://localhost:3000/logout', { id_token: response.credential }, {withCredentials: true})
       .subscribe({
         next: (data: any) => {
           if(data.success){

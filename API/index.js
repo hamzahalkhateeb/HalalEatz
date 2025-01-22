@@ -189,7 +189,7 @@ app.post('/login', async (req, res) => {
         
 
 
-            res.status(201).json({success: true, message: "You have signed up successfully!", /*user,*/ redirectUrl: "/dashboard"});
+            res.status(201).json({success: true, message: "You have signed up successfully!",  redirectUrl: "/dashboard"});
         } else {
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
@@ -200,9 +200,9 @@ app.post('/login', async (req, res) => {
             console.log('session id in the log in route sessionID', req.sessionID);
             
             if (user.accountType == 1){
-                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', /*userId: user.id*/});
+                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', });
             } else {
-                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/restaurantAdmin', /*userId: user.id*/});
+                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/restaurantAdmin'});
             }
             
         }
@@ -295,6 +295,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
             });
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
+            req.session.save();
 
             
             let restaurant = await Restaurant.create({
@@ -313,9 +314,9 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
             
             
-            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", userId: user.id, redirectUrl: "/restaurantAdmin"});
+            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", /*userId: user.id,*/ redirectUrl: "/restaurantAdmin"});
         } else {
-            res.status(200).json({success: false, message: "The email is already associated with another account, please use an email that is specifically for your restaurant!", user, redirectUrl: "/listing-form"});
+            res.status(200).json({success: false, message: "The email is already associated with another account, please use an email that is specifically for your restaurant!", /*user,*/ redirectUrl: "/listing-form"});
         }
         
 
@@ -332,7 +333,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/submitMenue', upload.single('image'), async (req, res) => {
+app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, res) => {
     //Menue.destroy({ where: {} });
     
     
@@ -343,7 +344,7 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
         
         
         const image = req.file;
-        const userId = parseInt(req.body.userId);
+        const userId = req.session.userId;
         
         
         
@@ -558,7 +559,7 @@ app.post('/LoadRestaurantAdminPackage', isAuthenticated, async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/deleteItem', async (req, res) => {
+app.post('/deleteItem', isAuthenticated, async (req, res) => {
     const menueid = req.body.menueId;
     const type = `${req.body.type}s`;
     const itemName = req.body.itemName;
@@ -599,10 +600,10 @@ app.post('/deleteItem', async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/deleteRestaurant', async (req, res) => {
+app.post('/deleteRestaurant', isAuthenticated, async (req, res) => {
     
 
-    const userId = req.body.userId;
+    const userId = req.session.userId;
     
 
     let user = await User.findOne({where : {id : userId}});
@@ -860,7 +861,7 @@ app.post('/getcxOrders', isAuthenticated, async (req, res) => {
 
 
 /////////////////////////////////////////////////////////////////////////////
-app.post('/advanceOrder', async (req, res) =>{
+app.post('/advanceOrder', isAuthenticated, async (req, res) =>{
 
     const orderStatus = ['submitted, unpaid', 'paid', 'accepted & being prepared', 'ready to collect!'];
     const orderId = req.body.orderId;
