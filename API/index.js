@@ -28,7 +28,7 @@ const sessionStore = new sequelizeStore({
 });
 
 
-app.use(session({
+const sessionMiddleWare = session({
     name: 'express-session-id',
     secret: process.env.session_secret,
     resave: false,
@@ -40,15 +40,11 @@ app.use(session({
         maxAge: 1000 * 60 * 3,
         sameSite: 'strict'
     }
-}));
+});
+
+app.use(sessionMiddleWare);
 
 app.use(cookieParser());
-
-/*app.use((req, res, next) => {
-    //console.log(`rawWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW Cookies:, `, req.headers.cookie);
-    next();
-});*/
-
 
 sessionStore.sync();
 
@@ -56,9 +52,15 @@ sessionStore.sync();
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:4200",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
+        credentials: true,
     }
 });
+
+io.use((socket, next) => {
+    sessionMiddleWare(socket.request, socket.request.res || {}, next);
+  });
+
 
 const activeSockets =  new Map();
 io.on('connect', (socket) => {
@@ -67,11 +69,11 @@ io.on('connect', (socket) => {
 
 
 
-    socket.on('restaurantConnected', (restaurantId) => {
-        activeSockets.set(restaurantId, socket.id);
-
-        console.log(`****inside SOCKET IO  restaurant id: ${restaurantId} datatype: ${typeof(restaurantId)}`);
-        console.log(`added restaurant to active sockets: ${restaurantId}`);
+    socket.on('restaurantConnected', () => {
+        const session = socket.request.session;
+        console.log("restaurant connected!");
+        
+        activeSockets.set(session.userId, socket.id);
     });
 
     /*socket.on('customerConnected', (variablePlaceHolder) => {
@@ -215,7 +217,20 @@ app.post('/login', async (req, res) => {
 
 /////////////////////////////////////////////////////////////////////////////
 
+app.post('/getSesUserId', isAuthenticated, async (req, res) => {
+    try{
+        const userId = req.session.userId;
 
+        res.status(200).json({success: true, userId: userId, message: "successfully retreieved userId"});
+
+    } catch {
+        res.status(500).json({success: false, message: "unable to retreive user id" });
+    }
+    
+});
+
+
+//////////////////////////////////////////////////////////////////////////////
 app.post('/logout', (req, res) =>{
     
     try{

@@ -20,7 +20,7 @@ export class RestaurantAdminComponent implements OnInit {
   @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
 
   
-  
+  //sessionUserId! : any;
 
  
 
@@ -63,15 +63,18 @@ export class RestaurantAdminComponent implements OnInit {
     this.getOrders();
     
 
-      
-    const socket = io("http://localhost:3000");
+    
+    const socket = io("http://localhost:3000", {
+      withCredentials: true,
+    });
 
     //connect to socket in back end  >>>
 
-    /*socket.on("connect", () =>{
-      socket.emit('restaurantConnected', this.currentuserId);
+    socket.on("connect", () =>{
+      //somehow include current cookies with the request
+      socket.emit('restaurantConnected');
       console.log("restaurant front end connected to back end");
-    });*/
+    });
 
 
     //listen for orders from back end   <<<<<<
