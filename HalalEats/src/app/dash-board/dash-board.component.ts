@@ -17,7 +17,7 @@ export class DashBoardComponent implements OnInit {
   longitude = 0;
   latitude = 0;
   
-  currentUserId!: number;
+  
   
   cxOrders: any[] = [];
 
@@ -41,8 +41,7 @@ export class DashBoardComponent implements OnInit {
     if(isPlatformBrowser(this.platformId)){
       (window as any)['logout'] = this.logout.bind(this);
       
-      this.currentUserId = Number(this.route.snapshot.queryParamMap.get('userId'));
-      console.log(`current userID: ${this.currentUserId}`);
+      
 
       if(navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -51,23 +50,30 @@ export class DashBoardComponent implements OnInit {
              this.longitude = position.coords.longitude;
             console.log(`lat: ${this.latitude}, long: ${this.longitude}`);
             this.getCloseRestaurants();
+            console.log('get closer restaurants caled in front end');
           }
         )
+      } else {
+        console.log('get restaurants request not sent');
       }
 
     }
-
+    this.getCloseRestaurants();
+    console.log("about to call get cx orders");
     this.getCxOrders();
 
-    this.getCloseRestaurants();
+    const socket = io("http://localhost:3000", {
+      withCredentials: true
+    });
 
-    const socket = io("http://localhost:3000");
 
+    // connect to backend >>>>
     socket.on("connect", () =>{
-      socket.emit('customerConnected', this.currentUserId);
+      socket.emit('customerConnected');
       console.log("cx front end connected to back end");
     });
 
+    //listen for order updates from backend <<<
     socket.on('orderProgressed', (data) => {
       console.log(`order progressed!`);
 
@@ -86,7 +92,7 @@ export class DashBoardComponent implements OnInit {
 
   logout(response: any): void{
     console.log("logout attempt initiated!");
-    this.http.post('http://localhost:3000/logout', { id_token: response.credential })
+    this.http.post('http://localhost:3000/logout', { id_token: response.credential }, {withCredentials: true})
       .subscribe({
         next: (data: any) => {
           if(data.success){
@@ -104,7 +110,7 @@ export class DashBoardComponent implements OnInit {
 
   getCloseRestaurants(): void{
     console.log(`get close restauratns function called, it sent the following data: lat: ${this.latitude}, long: ${this.longitude} `);
-    this.http.post('http://localhost:3000/getCloseRestaurants', { long: this.longitude, lat: this.latitude })
+    this.http.post('http://localhost:3000/getCloseRestaurants', { long: this.longitude, lat: this.latitude }, {withCredentials: true})
     .subscribe({
       next: (data: any) => {
         if(data.success){
@@ -142,16 +148,17 @@ export class DashBoardComponent implements OnInit {
     });}
 
 
-  restaurantPage(restaurantId: number, currentUserId: number): void {
+  restaurantPage(restaurantId: number, ): void {
 
     console.log("restaurantPage is being clicked___________________________________");
     this.router.navigate(['/restaurantPage', restaurantId], {
-      queryParams: { restaurantId: restaurantId, currentUserId: currentUserId}
+      queryParams: { restaurantId: restaurantId}
     });
   }
 
   getCxOrders(): void{
-    this.http.post('http://localhost:3000/getcxOrders', {userId: this.currentUserId})
+    console.log("inside get cx orders!");
+    this.http.post('http://localhost:3000/getcxOrders', {userId: 'variablePlaceHolder'}, {withCredentials: true})
     .subscribe({
       next: (data: any) => {
         if (data.success){

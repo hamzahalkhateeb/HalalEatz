@@ -2,34 +2,65 @@
 //import different apps and frameworks necessary for your application
 require('dotenv').config();
 const {sequelize, models } = require("./models"); //import all data object models
-const {User, Restaurant, Order, Menue} = models; //destructure the models object imported in the line above
+const {User, Restaurant, Order, Menue, SessionModel} = models; //destructure the models object imported in the line above
 const cors=require("cors"); //grants security authorization for the front end app to interact with the backend app
 const multer=require("multer"); //multer is important for uploading files, which will be necessary when uploading images to the database
 const bodyParser = require('body-parser');
-const { OAuth2Client } = require('google-auth-library');
-const CLIENT_ID = process.env.google_api_auth_key;
-const client = new OAuth2Client(CLIENT_ID);
+const {OAuth2Client} = require('google-auth-library');
 const session = require('express-session');
 const path = require('path'); 
 const fs = require('fs');
 const { Op, QueryTypes, Sequelize } = require("sequelize");
+const sequelizeStore = require('connect-session-sequelize')(session.Store);
 const axios = require('axios');
 const express = require("express");
 const app= express();
 const  request  = require("http");
 const server = request.createServer(app);
 const { Server } = require("socket.io");
+const cookieParser = require('cookie-parser');
+const { Session } = require('express-session');
 
 
+const sessionStore = new sequelizeStore({
+    db: sequelize,
+    logging: console.log
+});
 
+
+const sessionMiddleWare = session({
+    name: 'express-session-id',
+    secret: process.env.session_secret,
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore,
+    cookie: {
+        secure: false,
+        httpOnly: true,
+        maxAge: 1000 * 60 * 3,
+        sameSite: 'strict'
+    }
+});
+
+app.use(sessionMiddleWare);
+
+app.use(cookieParser());
+
+sessionStore.sync();
 
 
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:4200",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
+        credentials: true,
     }
 });
+
+io.use((socket, next) => {
+    sessionMiddleWare(socket.request, socket.request.res || {}, next);
+  });
+
 
 const activeSockets =  new Map();
 io.on('connect', (socket) => {
@@ -38,18 +69,17 @@ io.on('connect', (socket) => {
 
 
 
-    socket.on('restaurantConnected', (restaurantId) => {
-        activeSockets.set(restaurantId, socket.id);
-
-        console.log(`****inside SOCKET IO  restaurant id: ${restaurantId} datatype: ${typeof(restaurantId)}`);
-        console.log(`added restaurant to active sockets: ${restaurantId}`);
+    socket.on('restaurantConnected', () => {
+        const session = socket.request.session;
+        activeSockets.set(String(session.userId), socket.id);
+        console.log("restaurant connected!");
     });
 
-    socket.on('customerConnected', (userId) => {
-        activeSockets.set(String(userId), socket.id);
+    socket.on('customerConnected', () => {
+        const session = socket.request.session;
+        activeSockets.set(String(session.userId), socket.id);
+        console.log("customer connected!");
 
-        console.log(`****inside SOCKET IO  customer id: ${userId} datatype: ${typeof(userId)}`);
-        console.log(`added customer to active sockets: ${userId}`);
     });
 
 
@@ -69,15 +99,16 @@ io.on('connect', (socket) => {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:4200',
+    methods: ['GET, POST, PUT, DELETE'],
+    credentials: true
+}));
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
-app.use(session({
-    secret: process.env.session_secret,
-    resave: false,
-    saveUninitialized: false,
-}));
+
 
 
 
@@ -113,25 +144,30 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-
+const google_client = new OAuth2Client(process.env.google_api_auth_key);
 
 app.post('/login', async (req, res) => {
 
     // User.destroy({ where: {id: 72} });
     
+    const {auth_token} = req.body;
     
-    const token = req.body.id_token;
     
     try{
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: CLIENT_ID
-        });
+        const ticket = await google_client.verifyIdToken({
+            idToken: auth_token,
+            audience: process.env.google_api_auth_key
+        })
+
         const payload = ticket.getPayload();
-        const {email, picture, given_name, family_name} = payload;
+        const email = payload['email'];
+        const given_name = payload['given_name'];
+        const family_name = payload['family_name'];
+        const picture = payload['picture'];
+
+        console.log(email, given_name, family_name);
 
         
-
         let user = await User.findOne({where: {email: email}});
 
         if(!user){
@@ -145,14 +181,28 @@ app.post('/login', async (req, res) => {
             });
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
-            res.status(201).json({success: true, message: "You have signed up successfully!", user, redirectUrl: "/dashboard"});
+            req.session.save();
+
+            console.log("just saved a session after logging in, here is the user id associated with it: ", req.session.userId);
+            console.log('session id in the log in route sessionID', req.sessionID);
+            
+        
+
+
+            res.status(201).json({success: true, message: "You have signed up successfully!",  redirectUrl: "/dashboard"});
         } else {
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
+            req.session.save();
+            console.log("just saved a session after logging in, here is the user id associated with it: ", req.session.userId);
+
+            console.log('session user id in log in route', req.session.userId);
+            console.log('session id in the log in route sessionID', req.sessionID);
+            
             if (user.accountType == 1){
-                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', userId: user.id});
+                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/dashboard', });
             } else {
-                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/restaurantAdmin', userId: user.id});
+                res.status(200).json({success: true, message: "You have logged in successfully!", redirectUrl: '/restaurantAdmin'});
             }
             
         }
@@ -165,10 +215,25 @@ app.post('/login', async (req, res) => {
 
 /////////////////////////////////////////////////////////////////////////////
 
+app.post('/getSesUserId', isAuthenticated, async (req, res) => {
+    try{
+        const userId = req.session.userId;
 
+        res.status(200).json({success: true, userId: userId, message: "successfully retreieved userId"});
+
+    } catch {
+        res.status(500).json({success: false, message: "unable to retreive user id" });
+    }
+    
+});
+
+
+//////////////////////////////////////////////////////////////////////////////
 app.post('/logout', (req, res) =>{
+    
     try{
         req.session.destroy();
+        
         res.status(200).json({success: true, message:"You have logged out successfully!", redirectUrl: "/login"});
 
     } catch(err){
@@ -188,13 +253,27 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     //Menue.destroy({ where: {} });
     //User.destroy({ where: {id : 72} });
     
-    //extract received information
-    const token = req.body.id_token;
+    const auth_token = req.body.auth_token;
+
+    
+    const ticket = await google_client.verifyIdToken({
+        idToken: auth_token,
+        audience: process.env.google_api_auth_key
+    })
+
+    const payload = ticket.getPayload();
+
+    
+
+
+    
     const resInfo = JSON.parse(req.body.resInfo);
     const uploadedImg = req.file;
     const type = req.body.type;
     const relItem = req.body.relItem
-    
+    const email = payload['email'];
+    const given_name = payload['given_name'];
+    const family_name = payload['family_name'];
 
 
     //change image name
@@ -215,15 +294,10 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     
     
 
-    //verify google token, extract user details 
     try{
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: CLIENT_ID
-        });
+        
 
-        const payload = ticket.getPayload();
-        const {email, picture, given_name, family_name} = payload;
+        
         
         let user = await User.findOne({where: {email : email}});
 
@@ -234,6 +308,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
             });
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
+            req.session.save();
 
             
             let restaurant = await Restaurant.create({
@@ -252,9 +327,9 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
             
             
-            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", userId: user.id, redirectUrl: "/restaurantAdmin"});
+            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", /*userId: user.id,*/ redirectUrl: "/restaurantAdmin"});
         } else {
-            res.status(200).json({success: false, message: "The email is already associated with another account, please use an email that is specifically for your restaurant!", user, redirectUrl: "/listing-form"});
+            res.status(200).json({success: false, message: "The email is already associated with another account, please use an email that is specifically for your restaurant!", /*user,*/ redirectUrl: "/listing-form"});
         }
         
 
@@ -271,7 +346,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/submitMenue', upload.single('image'), async (req, res) => {
+app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, res) => {
     //Menue.destroy({ where: {} });
     
     
@@ -282,7 +357,7 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
         
         
         const image = req.file;
-        const userId = parseInt(req.body.userId);
+        const userId = req.session.userId;
         
         
         
@@ -384,10 +459,17 @@ app.post('/submitMenue', upload.single('image'), async (req, res) => {
 
 
 app.post('/getCloseRestaurants', async (req, res) => {
+
+    
+
+    console.log(`get close restaurants called, here is the user id in it: ${req.session.userId}`);
+    console.log('session id in the log in route sessionID', req.sessionID);
+
+    
     const Ulong = parseFloat(req.body.long);
     const Ulat = parseFloat(req.body.lat);
     
-
+    console.log(`load restaurants called from user`);
 
     const query = `
         SELECT
@@ -428,17 +510,23 @@ app.post('/getCloseRestaurants', async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/LoadRestaurantAdminPackage', async (req, res) => {
+app.post('/LoadRestaurantAdminPackage', isAuthenticated, async (req, res) => {
 
     const type = req.body.userType;
     
+    
+    const sessionUserId = req.session.userId;
+    const sessionID = req.sessionID;
+    console.log(`inside loading restaurant package user id: ${sessionUserId}`);
+    console.log(`inside loading restaurant package session id: ${sessionID}`);
+
 
     if (type === "admin"){
-        const userId = req.body.Id;
-
+        //const userId = req.body.Id;
+        console.log("user type is admin, using the session user id to as the user: ", sessionUserId);
 
         try{
-            let restaurant = await Restaurant.findOne({where : {UserId : userId}});
+            let restaurant = await Restaurant.findOne({where : {UserId : sessionUserId}});
 
 
             let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurant.id}}));
@@ -448,7 +536,7 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
             return res.json({success:false, message: "There are no items in your menue, please add items through the  menue tab"});
             } else {
             
-            return res.json({success: true, message: "menue retrieval successfull!", menue});
+            return res.json({success: true, message: "menue retrieval successfull!", menue, sessionUserId: sessionUserId});
             }
         } catch (error){
             res.status(500).json({success: false, message: "something went wrong, internal server error"});
@@ -484,7 +572,7 @@ app.post('/LoadRestaurantAdminPackage', async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/deleteItem', async (req, res) => {
+app.post('/deleteItem', isAuthenticated, async (req, res) => {
     const menueid = req.body.menueId;
     const type = `${req.body.type}s`;
     const itemName = req.body.itemName;
@@ -525,10 +613,10 @@ app.post('/deleteItem', async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/deleteRestaurant', async (req, res) => {
+app.post('/deleteRestaurant', isAuthenticated, async (req, res) => {
     
 
-    const userId = req.body.userId;
+    const userId = req.session.userId;
     
 
     let user = await User.findOne({where : {id : userId}});
@@ -559,16 +647,21 @@ app.post('/deleteRestaurant', async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/placeOrder', async (req, res) => {
+app.post('/placeOrder', isAuthenticated, async (req, res) => {
     
+
+    console.log('place order request placed!');
+
     //Order.destroy({ where: {} });
     const items = (req.body.orderArray);
-    const userId = Number(req.body.userId);
+    const userId = req.session.userId;
+    console.log("got place order request, here is the user id retrieved from session id, ", req.session.userId);
+    console.log('place order req sessionID:, ', req.sessionID);
     const restaurantId = Number(req.body.restaurantId);
     const status = req.body.status;
     const totalPrice = req.body.totalPrice;
-    console.log('place order function called');
-
+    
+    
     
 
     const transaction = await sequelize.transaction();
@@ -584,9 +677,11 @@ app.post('/placeOrder', async (req, res) => {
     console.log('7- found restaurant object : ', restaurantObjetc.userId);
 
     const restaurantOwner = await User.findOne({where: {id : restaurantObjetc.userId}});
-    console.log('6- found restaurant owner and his email is the following: ', restaurantOwner.email);
+    console.log('7- found restaurant owner and his email is the following: ', restaurantOwner.email);
 
     const payeeEmail = restaurantOwner.email;
+
+    console.log(`7- where the money is going to: ${payeeEmail}`);
 
     const orderId = order.id;
     console.log(`ORDER ID JUST CREATED!**###**##***###*3##*********####*####*********####******** ${orderId}`);
@@ -613,11 +708,39 @@ app.post('/placeOrder', async (req, res) => {
         
     try{
 
-        console.log('about to trigger create order function!');
-        const paymentURL = await createOrder(purchase_units, restaurantId, userId, orderId); //this will send to the front end and front end will call /CapturePayment end point below
+        
+        
+
+        let access_token = await generateAccess_Token();
 
         
+        console.log(`2- (create order function): access token used by the create order function: `, access_token);
+        
+        const response = await axios({
+            url: 'https://api-m.sandbox.paypal.com/v2/checkout/orders',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + access_token
+            },
+            data: JSON.stringify({
+                intent: 'CAPTURE',
+                purchase_units: purchase_units,
+                application_context: {
+                    return_url : `http://localhost:4200/succesfullPayment?orderId=${orderId}`,
+                    cancel_url : `http://localhost:4200/restaurantPage/${restaurantId}?restaurantId=${restaurantId}&${userId}=userId`,
+                    shipping_preference: 'NO_SHIPPING',
+                    user_action: 'PAY_NOW',
+                    brand_name: 'Halal Eatz'
+                }
+            }) 
+        })
+        console.log("2- (inside create order function): order id: ", response.data);
+
+        paymentURL =  response.data.links.find(link => link.rel === "approve").href;
+        
         await transaction.commit();
+        console.log('just commited the order!');
                 
         res.status(201).json({success: true, message: "payment captured, proceeding to completion now!", redirectUrl: paymentURL});
     } catch {
@@ -634,15 +757,19 @@ app.post('/placeOrder', async (req, res) => {
 
 app.post('/capturePayment', async (req, res)=>{
 
-    console.log(`1- Capture paymenty function called!!`);
+    console.log(`1- Capture payment ENDPOINT called!!`);
     const token = req.body.token;
 
     const orderId = req.body.orderId;
     
+    console.log(`2- order id in capture payment route: ${orderId}, and token received: ${token}`);
 
     const order = await Order.findOne({where : {id: orderId}});
+    console.log(`3- found order: ${order}`);
+
     const restaurant = await Restaurant.findOne({where : {id : order.restaurantId}});
     const restaurantOwnerId = restaurant.userId;
+    console.log(`3- found restaurant: ${restaurant}`);
     
 
     try{
@@ -707,9 +834,9 @@ app.post('/capturePayment', async (req, res)=>{
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/getOrders', async (req, res) =>{
+app.post('/getOrders', isAuthenticated, async (req, res) =>{
     
-    const userId = req.body.userId;
+    const userId = req.session.userId;
 
     try {
         const restaurant = await Restaurant.findOne({where : {userId : userId}});
@@ -729,11 +856,14 @@ app.post('/getOrders', async (req, res) =>{
 
 
 /////////////////////////////////////////////////////////////////////////////
-app.post('/getcxOrders', async (req, res) => {
+app.post('/getcxOrders', isAuthenticated, async (req, res) => {
+    const sessionUserId= req.session.userId
+    
 
-    const userId = req.body.userId;
+    console.log(`front end userId: ${sessionUserId}, and session user id: ${sessionUserId}`);
+
     try {
-        const orders = await Order.findAll({where: {customerId : userId}});
+        const orders = await Order.findAll({where: {customerId : sessionUserId}});
 
         res.status(200).json({success: true, message: "orders for this customer have been loaded successfully", orders: orders});
     }catch{
@@ -745,7 +875,7 @@ app.post('/getcxOrders', async (req, res) => {
 
 
 /////////////////////////////////////////////////////////////////////////////
-app.post('/advanceOrder', async (req, res) =>{
+app.post('/advanceOrder', isAuthenticated, async (req, res) =>{
 
     const orderStatus = ['submitted, unpaid', 'paid', 'accepted & being prepared', 'ready to collect!'];
     const orderId = req.body.orderId;
@@ -807,10 +937,15 @@ app.post('/advanceOrder', async (req, res) =>{
 
 
 /////////////////////////////////////////////////////////////////////////////
-
+/* for testing purposes
 async function createOrder(purchase_units, restaurantId, userId, orderId){
 
+<<<<<<< HEAD
     console.log('create order endpoint called!');
+=======
+    console.log('createOrder called!');
+    const sessionUserId = req.session.userId;
+>>>>>>> cred
 
     let access_token = await generateAccess_Token();
 
@@ -841,7 +976,7 @@ async function createOrder(purchase_units, restaurantId, userId, orderId){
 
     
     return response.data.links.find(link => link.rel === "approve").href;
-};
+}; */
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -884,7 +1019,7 @@ async function capture_payment(paymentId){
         console.log(`capture payment FUNCTION called!`);
     
 
-        console.log(`3- access token passed to capture payment: ${access_token}`); 
+        console.log(`3- access token generated: ${access_token}`); 
 
         console.log(`3-  id passed to the capture function: ${paymentId}`);
     
@@ -903,6 +1038,8 @@ async function capture_payment(paymentId){
         if(response.data.status === 'COMPLETED'){
             processedPayments.add(paymentId);
             console.log('first time capturing, payment id addedd to process payments set');
+        } else {
+            console.log('response status: ',response.data.status);
         }
     
         console.log(response.data); 
@@ -914,7 +1051,14 @@ async function capture_payment(paymentId){
 
 /////////////////////////////////////////////////////////////////////////////////
 
+function isAuthenticated(req, res, next) {
+    if (req.session.userId){
+        return next();
+    } else {
 
+        res.status(401).json({success: false, message: "Unauthorized access, please log in", redirectUrl: "/login"});
+    }
+}
 
 
 

@@ -20,9 +20,9 @@ export class RestaurantAdminComponent implements OnInit {
   @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
 
   
-  currentuserId = -1;
+  //sessionUserId! : any;
 
-  //orderStatus = ["submitted and "]
+ 
 
   mealsArray: any;
   drinksArray: any;
@@ -58,21 +58,26 @@ export class RestaurantAdminComponent implements OnInit {
 
    
 
-    this.route.queryParams.subscribe(params => {
-      this.currentuserId = params['userId']; });
-
-    console.log(`${this.currentuserId} -------------------------------------------------------------------------------`);
-    this.LoadRestaurantAdminPackage(this.currentuserId);
+    
+    this.LoadRestaurantAdminPackage();
     this.getOrders();
     
 
-      
-    const socket = io("http://localhost:3000");
+    
+    const socket = io("http://localhost:3000", {
+      withCredentials: true,
+    });
+
+    //connect to socket in back end  >>>
 
     socket.on("connect", () =>{
-      socket.emit('restaurantConnected', this.currentuserId);
+      //somehow include current cookies with the request
+      socket.emit('restaurantConnected');
       console.log("restaurant front end connected to back end");
     });
+
+
+    //listen for orders from back end   <<<<<<
 
     socket.on('orderPaid&Placed', (data) => {
       console.log('New Order Placed:', data.orderJSON);
@@ -108,12 +113,15 @@ export class RestaurantAdminComponent implements OnInit {
 
 
 
-  LoadRestaurantAdminPackage(userId:any)  {
-    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {Id : userId, userType: 'admin'})
+  LoadRestaurantAdminPackage(): void  {
+    console.log('Cookies before request:', document.cookie);
+    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {userType: 'admin'}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
           
+          alert(`this session user id issssssssssssssssssssssssss: ${data.sessionUserId}`);
+
           this.menue2 = JSON.parse(data.menue);
           
           this.mealsArray  = this.menue2.meals.map((mealString: string) => JSON.parse(mealString));
@@ -161,16 +169,16 @@ export class RestaurantAdminComponent implements OnInit {
     //append all the needed data to said variable
     menueitemFormData.append("menueItem", JSON.stringify(this.menueItem));
     menueitemFormData.append("image", this.selectedFile!, this.selectedFile!.name);
-    menueitemFormData.append("userId", this.currentuserId.toString());
+    
     
 
 
-    this.http.post('http://localhost:3000/submitMenue', menueitemFormData)
+    this.http.post('http://localhost:3000/submitMenue', menueitemFormData, {withCredentials: true})
       .subscribe({
         next: (data: any) => {
           if (data.success){
             alert(data.message);
-            //this.router.navigateByUrl(data.redirectUrl);
+            
           } else {
             console.log("unexpected error: ", data);
           }
@@ -200,8 +208,7 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   deleteRestaurant(): void{
-    console.log(this.currentuserId);
-    this.http.post('http://localhost:3000/deleteRestaurant', {userId: this.currentuserId})
+    this.http.post('http://localhost:3000/deleteRestaurant', {userId: 'variablePlaceHolder'}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
@@ -220,7 +227,7 @@ export class RestaurantAdminComponent implements OnInit {
   getOrders(): void{
     
 
-    this.http.post('http://localhost:3000/getOrders', {userId: this.currentuserId})
+    this.http.post('http://localhost:3000/getOrders', {userId: 'variablePlaceHolder'}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
@@ -243,7 +250,7 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   advanceOrder(orderId: any): void{
-    this.http.post('http://localhost:3000/advanceOrder', {orderId: orderId})
+    this.http.post('http://localhost:3000/advanceOrder', {orderId: orderId}, {withCredentials: true})
     .subscribe({
       next:(data: any) =>{
         if (data.success){

@@ -1,9 +1,10 @@
-import { BehaviorSubject, Subscription } from 'rxjs';
+
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 
 
@@ -22,7 +23,6 @@ export class SuccesfullPaymentComponent implements OnInit{
   private isCapturedSubject = new BehaviorSubject<boolean>(false);
   isCaptured$ = this.isCapturedSubject.asObservable();
 
-
   constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -34,8 +34,8 @@ export class SuccesfullPaymentComponent implements OnInit{
       this.payerId = params['payerId'];
       this.orderId = params['orderId'];
       
-      console.log(`paymentId aka token: ${this.token}`);
-      console.log(`orderId: ${this.orderId}`);
+      console.log(`paymentId aka token in successful payment page: ${this.token}`);
+      console.log(`orderId in successfil payment page: ${this.orderId}`);
     
       if(this.token && this.orderId){
         console.log(`paymentId aka token: ${this.token}`);
@@ -69,6 +69,10 @@ export class SuccesfullPaymentComponent implements OnInit{
     
   }
 
-}
+    
+    
+  }
+
+
 
 
