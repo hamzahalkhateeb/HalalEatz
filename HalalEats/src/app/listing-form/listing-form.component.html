@@ -2,7 +2,7 @@
 
     <div class="container1" #container1>
         <h1 class="containerTitle">Halal Eligibility Checklist</h1>
-        <div *ngFor="let question of halalQuestions; let i = index" class="quesBox">
+        <div #quesBox *ngFor="let question of halalQuestions; let i = index" class="quesBox">
             <input type="checkbox" class="form-check-input" id="questions{{i}}" (change)="updateHalalRating($event)">
             <label class="quesText"  for="question{{i}}">{{ question }}</label>
         </div>

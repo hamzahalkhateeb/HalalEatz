@@ -28,6 +28,8 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
     @ViewChild('resForm') resForm= NgForm
     @ViewChild('container1') containerRef!: ElementRef;
+    @ViewChildren('quesBox') quesBoxes!: QueryList<ElementRef>;
+    
 
     
     predictions: google.maps.places.AutocompletePrediction[] = [];
@@ -119,8 +121,22 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
 
       //fade in container 1
       const container1 = this.containerRef.nativeElement;
-      this.FadeInElement(container1);
       
+      this.FadeInElement(container1)
+      .then(async ()=> {
+        const quesArray = this.quesBoxes.toArray();
+        for(let i = 0; i < quesArray.length; i++){
+          let element = quesArray[i].nativeElement;
+          await this.FadeInElement(element);
+          
+        }
+        
+      });
+      
+
+      
+      
+     
 
 
     }
@@ -238,18 +254,25 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
 
     }
 
-    async FadeInElement(element: any) {
+
+
+    async FadeInElement(element: any): Promise<void> {
       let opacity = 0;
+      
 
-      const interval = setInterval(() => {
-        opacity+= 0.025;
-        element.style.opacity = opacity.toString();
-
-        if (opacity >= 1) {
-          clearInterval(interval);
-        }
-        
-      }, 25);
+      return new Promise((resolve) => {
+        const interval = setInterval(() => {
+          opacity+= 0.1;
+          element.style.opacity = opacity.toString();
+  
+          if (opacity >= 1) {
+            clearInterval(interval);
+            resolve();
+          }
+          
+        }, 25);
+      });
+      
     }
     
 

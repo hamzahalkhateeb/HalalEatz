@@ -32,7 +32,7 @@ html, body {
     height: 80%;
     border-radius: 9px;
     z-index: 5;
-    transition: opacity 1s ease;
+    transition: opacity 2s ease;
   }
 
   .containerTitle{
@@ -50,6 +50,13 @@ html, body {
     width: 100%;
     margin-top: 5%;
     transition: opacity 1s ease;
+    border-radius: 5px;
+  }
+
+  .quesBox:hover{
+    transition: 0.7s ease;
+    transform: scale(1.05);
+    background-color: #6EC071;
   }
   .form-check-input{
     margin-left: 20px;
@@ -118,6 +125,7 @@ html, body {
   .nextBtn:hover {
     transition: all 0.3s ease;
     transform: scale(1.1);
+    
   }
   
   
