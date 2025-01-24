@@ -1,5 +1,5 @@
 /// <reference types="@types/google.maps" />
-import { Component , OnInit, Inject, Injectable,  PLATFORM_ID, NgZone, ViewChild, ElementRef, Renderer2, QueryList, ViewChildren } from '@angular/core';
+import { Component , OnInit, AfterViewInit, Inject, Injectable,  PLATFORM_ID, NgZone, ViewChild, ElementRef, Renderer2, QueryList, ViewChildren, OnDestroy, viewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators'
 import { HttpClient, } from '@angular/common/http';
@@ -9,6 +9,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { GoogleAuthService } from '../google-auth.service';
+import { After } from 'v8';
 
 
 
@@ -21,11 +22,12 @@ import { GoogleAuthService } from '../google-auth.service';
 })
 
 
-export class ListingFormComponent implements OnInit{
+export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     //view children for listing the restaurant!
     @ViewChild('resLocationInput', {static: true}) resLocation!: ElementRef<HTMLInputElement>;
     @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
     @ViewChild('resForm') resForm= NgForm
+    @ViewChild('container1') containerRef!: ElementRef;
 
     
     predictions: google.maps.places.AutocompletePrediction[] = [];
@@ -35,16 +37,17 @@ export class ListingFormComponent implements OnInit{
     
 
     halalQuestions: string[] = [
-      'My restaurant sells halal chicken',
-      'My restaurant sells hand-slaughtered chicken',
-      'My restaurant sells halal beef',
-      'My restaurant sells halal lamb',
-      'My restaurant DOES NOT sell pork products',
-      'My restaurant DOES NOT sell products that contain animal gelatin',
-      'My restaurant DOES NOT sells alcoholic beverages',
-      'My meat supplier is a recognised halal certified body',
+      'My restaurant sells halal chicken.',
+      'My restaurant sells hand-slaughtered chicken.',
+      'My restaurant sells halal beef.',
+      'My restaurant sells halal lamb.',
+      'My restaurant DOES NOT sell pork products.',
+      'My restaurant DOES NOT sell products that contain animal derived gelatin.',
+      'My meat supplier is a recognised halal certified body.',
       'All my ingredients are sourced from halal-certified suppliers?',
-      'My restaurant ensures that NO alcoholic products are used in the cooking process'
+      'My restaurant DOES NOT sells alcoholic beverages.',
+      'My restaurant ensures that NO alcoholic products are used in the cooking process.',
+      
       
     ];
 
@@ -98,7 +101,7 @@ export class ListingFormComponent implements OnInit{
 
       this.autocompleteService = new google.maps.places.AutocompleteService();
 
-      this.googleAuthService.initilizeGoogleAuth();
+      /*this.googleAuthService.initilizeGoogleAuth();
       this.googleAuthService.renderGoogleBtn('googlebtn');
 
       this.credentialSubscription = this.googleAuthService
@@ -108,7 +111,17 @@ export class ListingFormComponent implements OnInit{
         console.log('Received credentiuals in the ccomponent:', response);
         this.handleFormSubmission(response);
       }
-     })
+     })*/
+
+    }
+    
+    ngAfterViewInit(): void {
+
+      //fade in container 1
+      const container1 = this.containerRef.nativeElement;
+      this.FadeInElement(container1);
+      
+
 
     }
 
@@ -210,22 +223,34 @@ export class ListingFormComponent implements OnInit{
       }
   }
 
-    
- 
-
-
-
     updateHalalRating(event: any) {
-    if (event.target.checked){
-      this.resInfo.halalRating++;
-      
+      if (event.target.checked){
+        this.resInfo.halalRating++;
+        
 
-    }else{
-      this.resInfo.halalRating--;
-    }
-    
+      }else{
+        this.resInfo.halalRating--;
+      }
+  
     }
 
+    nextSection(click: any){
+
+    }
+
+    async FadeInElement(element: any) {
+      let opacity = 0;
+
+      const interval = setInterval(() => {
+        opacity+= 0.025;
+        element.style.opacity = opacity.toString();
+
+        if (opacity >= 1) {
+          clearInterval(interval);
+        }
+        
+      }, 25);
+    }
     
 
     
