@@ -11,122 +11,137 @@
         </div>
     </div>
     
-    <div class="container2">
-        <h1>List Your Restaurant!</h1>
-        <form #resForm="ngForm" >
-            <div class="form-group">
-                <label for="resName">Name</label>
-                <input type="text" class="form-control" id="resName" name="resName" [(ngModel)]="resInfo.name" required>
-                
+    <div class="container2" #container2>
+        
+        <h1 class="containerTitle">Enter your restaurant's details</h1>
+        <form #resForm="ngForm" class="resInfoForm">
+            <div class="overallInfo">
+
+                <div class="NameLocationImg" #NameLocationImg>
+                    <div class="Leftelement">
+                        <label for="resName">Restaurant Name</label>
+                        <input type="text" class="form-control" id="resName" name="resName" [(ngModel)]="resInfo.name" required>
+                        
+                    </div>
+                    
+            
+                    <div class="Leftelement">
+                        <label for="resLocation">Location</label>
+                        <input #resLocationInput type="text" class="form-control" id="resLocation" name="resLocation" [(ngModel)]="resInfo.location" (input)="onLocationChange($event)" required>
+                        <ul *ngIf="predictions && predictions.length > 0">
+                            <div *ngFor="let prediction of predictions" class="predicOption" (click)="selectPrediction(prediction)">
+                            {{ prediction.description }}
+                            </div>
+                        </ul>
+                    </div>
+    
+                    <div class="Leftelement">
+                        <label for="resPhoto">Cover Photo</label>
+                        <input type="file" class="form-control" id="resPhoto" name="resPhoto" (change)="onFileSelected($event)" accept="image/*" required>
+                    </div>
+    
+                </div>
+        
+                <div class="time-inputsS">
+                    <div class="checkbox">
+                        <label class="dayName">
+                            <input type="checkbox" [(ngModel)]="resInfo.days.monday.open" name="daysMondayOpen"> Monday
+                        </label>
+                    </div>
+                    <div class="time-inputs">
+                        <label for="resMondayOpeningTime">Open from</label>
+                        <input type="time" class="time-slot" id="resMondayOpeningTime" name="resMondayOpeningTime" [(ngModel)]="resInfo.days.monday.openingHours.start">
+                        <label for="resMondayClosingTime">until</label>
+                        <input type="time" class="time-slot" id="resMondayClosingTime" name="resMondayClosingTime" [(ngModel)]="resInfo.days.monday.openingHours.end">
+                    </div>
+        
+                    <div class="checkbox">
+                        <label class="dayName">
+                            <input type="checkbox" [(ngModel)]="resInfo.days.tuesday.open" name="daysTuesdayOpen"> Tuesday
+                        </label>
+                    </div>
+                    <div class="time-inputs">
+                        <label for="resTuesdayOpeningTime">Open from</label>
+                        <input type="time" class="time-slot" id="resTuesdayOpeningTime" name="resTuesdayOpeningTime" [(ngModel)]="resInfo.days.tuesday.openingHours.start">
+                        <label for="resTuesdayClosingTime">until</label>
+                        <input type="time" class="time-slot" id="resTuesdayClosingTime" name="resTuesdayClosingTime" [(ngModel)]="resInfo.days.tuesday.openingHours.end">
+                    </div>
+        
+                    <div class="checkbox">
+                        <label class="dayName">
+                            <input type="checkbox" [(ngModel)]="resInfo.days.wednesday.open" name="daysWednesdayOpen"> Wednesday
+                        </label>
+                    </div>
+                    <div class="time-inputs">
+                        <label for="resWednesdayOpeningTime">Open from</label>
+                        <input type="time" class="time-slot" id="resWednesdayOpeningTime" name="resWednesdayOpeningTime" [(ngModel)]="resInfo.days.wednesday.openingHours.start">
+                        <label for="resWednesdayClosingTime">until</label>
+                        <input type="time" class="time-slot" id="resWednesdayClosingTime" name="resWednesdayClosingTime" [(ngModel)]="resInfo.days.wednesday.openingHours.end">
+                    </div>
+        
+                    <div class="checkbox">
+                        <label class="dayName">
+                            <input type="checkbox" [(ngModel)]="resInfo.days.thursday.open" name="daysThursdayOpen"> Thursday
+                        </label>
+                    </div>
+                    <div class="time-inputs">
+                        <label for="resThursdayOpeningTime">Open from</label>
+                        <input type="time" class="time-slot" id="resThursdayOpeningTime" name="resThursdayOpeningTime" [(ngModel)]="resInfo.days.thursday.openingHours.start">
+                        <label for="resThursdayClosingTime">until</label>
+                        <input type="time" class="time-slot" id="resThursdayClosingTime" name="resThursdayClosingTime" [(ngModel)]="resInfo.days.thursday.openingHours.end">
+                    </div>
+        
+                    <div class="checkbox">
+                        <label class="dayName">
+                            <input type="checkbox" [(ngModel)]="resInfo.days.friday.open" name="daysFridayOpen"> Friday
+                        </label>
+                    </div>
+                    <div class="time-inputs">
+                        <label for="resFridayOpeningTime">Open from</label>
+                        <input type="time" class="time-slot" id="resFridayOpeningTime" name="resFridayOpeningTime" [(ngModel)]="resInfo.days.friday.openingHours.start">
+                        <label for="resFridayClosingTime">until</label>
+                        <input type="time" class="time-slot" id="resFridayClosingTime" name="resFridayClosingTime" [(ngModel)]="resInfo.days.friday.openingHours.end">
+                    </div>
+        
+                    <div class="checkbox">
+                        <label class="dayName">
+                            <input type="checkbox" [(ngModel)]="resInfo.days.saturday.open" name="daysSaturdayOpen"> Saturday
+                        </label>
+                    </div>
+                    <div class="time-inputs">
+                        <label for="resSaturdayOpeningTime">Open from</label>
+                        <input type="time" class="time-slot" id="resSaturdayOpeningTime" name="resSaturdayOpeningTime" [(ngModel)]="resInfo.days.saturday.openingHours.start">
+                        <label for="resSaturdayClosingTime">until</label>
+                        <input type="time" class="time-slot" id="resSaturdayClosingTime" name="resSaturdayClosingTime" [(ngModel)]="resInfo.days.saturday.openingHours.end">
+                    </div>
+        
+                    <div class="checkbox">
+                        <label class="dayName">
+                            <input type="checkbox" [(ngModel)]="resInfo.days.sunday.open" name="daysSundayOpen"> Sunday
+                        </label>
+                    </div>
+                    <div class="time-inputs">
+                        <label for="resSundayOpeningTime">Open from</label>
+                        <input type="time" class="time-slot" id="resSundayOpeningTime" name="resSundayOpeningTime" [(ngModel)]="resInfo.days.sunday.openingHours.start">
+                        <label for="resSundayClosingTime">until</label>
+                        <input type="time" class="time-slot" id="resSundayClosingTime" name="resSundayClosingTime" [(ngModel)]="resInfo.days.sunday.openingHours.end">
+                    </div>
+        
+                    
+                </div>
+
             </div>
             
     
-            <div class="form-group">
-                <label for="resLocation">Location</label>
-                <input #resLocationInput type="text" class="form-control" id="resLocation" name="resLocation" [(ngModel)]="resInfo.location" (input)="onLocationChange($event)" required>
-                <ul *ngIf="predictions && predictions.length > 0">
-                    <li *ngFor="let prediction of predictions" (click)="selectPrediction(prediction)">
-                      {{ prediction.description }}
-                    </li>
-                </ul>
-            </div>
-    
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="resInfo.days.monday.open" name="daysMondayOpen"> Monday
-                    </label>
-                </div>
-                <div class="time-inputs">
-                    <label for="resMondayOpeningTime">Opening Time</label>
-                    <input type="time" class="form-control" id="resMondayOpeningTime" name="resMondayOpeningTime" [(ngModel)]="resInfo.days.monday.openingHours.start">
-                    <label for="resMondayClosingTime">Closing Time</label>
-                    <input type="time" class="form-control" id="resMondayClosingTime" name="resMondayClosingTime" [(ngModel)]="resInfo.days.monday.openingHours.end">
-                </div>
-    
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="resInfo.days.tuesday.open" name="daysTuesdayOpen"> Tuesday
-                    </label>
-                </div>
-                <div class="time-inputs">
-                    <label for="resTuesdayOpeningTime">Opening Time</label>
-                    <input type="time" class="form-control" id="resTuesdayOpeningTime" name="resTuesdayOpeningTime" [(ngModel)]="resInfo.days.tuesday.openingHours.start">
-                    <label for="resTuesdayClosingTime">Closing Time</label>
-                    <input type="time" class="form-control" id="resTuesdayClosingTime" name="resTuesdayClosingTime" [(ngModel)]="resInfo.days.tuesday.openingHours.end">
-                </div>
-    
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="resInfo.days.wednesday.open" name="daysWednesdayOpen"> Wednesday
-                    </label>
-                </div>
-                <div class="time-inputs">
-                    <label for="resWednesdayOpeningTime">Opening Time</label>
-                    <input type="time" class="form-control" id="resWednesdayOpeningTime" name="resWednesdayOpeningTime" [(ngModel)]="resInfo.days.wednesday.openingHours.start">
-                    <label for="resWednesdayClosingTime">Closing Time</label>
-                    <input type="time" class="form-control" id="resWednesdayClosingTime" name="resWednesdayClosingTime" [(ngModel)]="resInfo.days.wednesday.openingHours.end">
-                </div>
-    
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="resInfo.days.thursday.open" name="daysThursdayOpen"> Thursday
-                    </label>
-                </div>
-                <div class="time-inputs">
-                    <label for="resThursdayOpeningTime">Opening Time</label>
-                    <input type="time" class="form-control" id="resThursdayOpeningTime" name="resThursdayOpeningTime" [(ngModel)]="resInfo.days.thursday.openingHours.start">
-                    <label for="resThursdayClosingTime">Closing Time</label>
-                    <input type="time" class="form-control" id="resThursdayClosingTime" name="resThursdayClosingTime" [(ngModel)]="resInfo.days.thursday.openingHours.end">
-                </div>
-    
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="resInfo.days.friday.open" name="daysFridayOpen"> Friday
-                    </label>
-                </div>
-                <div class="time-inputs">
-                    <label for="resFridayOpeningTime">Opening Time</label>
-                    <input type="time" class="form-control" id="resFridayOpeningTime" name="resFridayOpeningTime" [(ngModel)]="resInfo.days.friday.openingHours.start">
-                    <label for="resFridayClosingTime">Closing Time</label>
-                    <input type="time" class="form-control" id="resFridayClosingTime" name="resFridayClosingTime" [(ngModel)]="resInfo.days.friday.openingHours.end">
-                </div>
-    
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="resInfo.days.saturday.open" name="daysSaturdayOpen"> Saturday
-                    </label>
-                </div>
-                <div class="time-inputs">
-                    <label for="resSaturdayOpeningTime">Opening Time</label>
-                    <input type="time" class="form-control" id="resSaturdayOpeningTime" name="resSaturdayOpeningTime" [(ngModel)]="resInfo.days.saturday.openingHours.start">
-                    <label for="resSaturdayClosingTime">Closing Time</label>
-                    <input type="time" class="form-control" id="resSaturdayClosingTime" name="resSaturdayClosingTime" [(ngModel)]="resInfo.days.saturday.openingHours.end">
-                </div>
-    
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="resInfo.days.sunday.open" name="daysSundayOpen"> Sunday
-                    </label>
-                </div>
-                <div class="time-inputs">
-                    <label for="resSundayOpeningTime">Opening Time</label>
-                    <input type="time" class="form-control" id="resSundayOpeningTime" name="resSundayOpeningTime" [(ngModel)]="resInfo.days.sunday.openingHours.start">
-                    <label for="resSundayClosingTime">Closing Time</label>
-                    <input type="time" class="form-control" id="resSundayClosingTime" name="resSundayClosingTime" [(ngModel)]="resInfo.days.sunday.openingHours.end">
-                </div>
-    
-                
-            </div>
-    
-            <div class="form-group">
-                <label for="resPhoto">Cover Photo</label>
-                <input type="file" class="form-control" id="resPhoto" name="resPhoto" (change)="onFileSelected($event)" accept="image/*" required>
-            </div>
+            
             
             <hr>
-    
+            <div class="previousbtn">
+                <button (click)="previous($event)" class="nextBtn">Previous</button>
+            </div>
+            
             <div id="googlebtn" >
+                
     
     
             </div>

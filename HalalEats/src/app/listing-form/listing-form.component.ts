@@ -10,6 +10,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { GoogleAuthService } from '../google-auth.service';
 import { After } from 'v8';
+import { setTimeout } from 'timers';
 
 
 
@@ -27,7 +28,9 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     @ViewChild('resLocationInput', {static: true}) resLocation!: ElementRef<HTMLInputElement>;
     @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
     @ViewChild('resForm') resForm= NgForm
-    @ViewChild('container1') containerRef!: ElementRef;
+    @ViewChild('container1') container1Ref!: ElementRef;
+    @ViewChild('container2') container2Ref!: ElementRef;
+    @ViewChild('NameLocationImg') NameLocationImg!: ElementRef;
     @ViewChildren('quesBox') quesBoxes!: QueryList<ElementRef>;
     
 
@@ -103,7 +106,7 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
 
       this.autocompleteService = new google.maps.places.AutocompleteService();
 
-      /*this.googleAuthService.initilizeGoogleAuth();
+      this.googleAuthService.initilizeGoogleAuth();
       this.googleAuthService.renderGoogleBtn('googlebtn');
 
       this.credentialSubscription = this.googleAuthService
@@ -113,14 +116,14 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
         console.log('Received credentiuals in the ccomponent:', response);
         this.handleFormSubmission(response);
       }
-     })*/
+     })
 
     }
     
     ngAfterViewInit(): void {
 
       //fade in container 1
-      const container1 = this.containerRef.nativeElement;
+      const container1 = this.container1Ref.nativeElement;
       
       this.FadeInElement(container1)
       .then(async ()=> {
@@ -251,10 +254,49 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     }
 
     nextSection(click: any){
+      /*if (this.resInfo.halalRating < 7 ){
+        alert("your restaurant does not qualify to be listed on this site!");
+        this.router.navigateByUrl('/login');
+        return;
+      } else if (this.resInfo.halalRating >= 7){*/
+
+        console.log('event called');
+        const container1 = this.container1Ref.nativeElement;
+        const container2 = this.container2Ref.nativeElement;
+
+        container1.classList.add('hidden');
+        container2.classList.add('visible');
+
+        
+
+
+        
+       
+
+        
+        
+        
+
+
+
+        
+        
+        
+
+      //}
+      
 
     }
 
+    previous(click: any){
+      const container1 = this.container1Ref.nativeElement;
+      const container2 = this.container2Ref.nativeElement;
+      container2.classList.remove('visible');
+      container1.classList.remove('hidden');
+     
 
+
+    }
 
     async FadeInElement(element: any): Promise<void> {
       let opacity = 0;
@@ -273,6 +315,23 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
         }, 25);
       });
       
+    }
+
+    async FadeOutElement(element: any): Promise<void>{
+      let opacity = 1;
+
+      return new Promise((resolve) => {
+        const interval = setInterval(() => {
+          opacity -= 0.1;
+          element.style.opacity = opacity.toString();
+  
+          if (opacity <= 0) {
+            clearInterval(interval);
+            resolve();
+          }
+          
+        }, 25);
+      });
     }
     
 
