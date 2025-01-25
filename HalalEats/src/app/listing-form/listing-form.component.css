@@ -8,9 +8,8 @@ html, body {
   }
 
   .ParentContainer{
-    background-color: #80cfa7;
-    background: rgb(76,175,80);
-    background: radial-gradient(circle, rgba(76,175,80,1) 0%, rgba(128,207,167,1) 100%);
+    background: rgb(250,249,246);
+    background: linear-gradient(0deg, rgba(250,249,246,1) 0%, rgba(76,175,80,1) 50%);
     width: 100vw;
     height: 100vh;
     overflow-y: auto;
@@ -31,7 +30,7 @@ html, body {
     display: block;
     padding: 20px;
     background-repeat: no-repeat;
-    background-color: #4CAF50;
+    background-color: #f0e6e6;
     height: fit-content;
     border-radius: 9px;
     z-index: 5;
@@ -47,7 +46,10 @@ html, body {
     pointer-events: none !important;
   }
 
-
+label{
+  font-family: 'lato', sans-serif;
+  font-weight: bold;
+}
   .containerTitle{
     
     text-align: center;
@@ -69,7 +71,7 @@ html, body {
   .quesText:hover{
     transition: 0.7s ease;
     transform: scale(1.05);
-    background-color: #6EC071;
+    background-color: lightgray;
   }
   .form-check-input{
     margin-left: 20px;
@@ -96,14 +98,14 @@ html, body {
     position: absolute;
     padding: 20px;
     background-repeat: no-repeat;
-    height: 100vh;
+    height: fit-content;
     border-radius: 9px;
     z-index: 5;
-    background-color: lightcoral;
+    background-color: #faf9f6;
     display: block;
     flex-direction: column;
     z-index: 10;
-    width: 90%;
+    width: 70%;
   }
 
   .visible{
@@ -136,6 +138,10 @@ html, body {
   .NameLocationImg{
     position: relative;
     width: 25%;
+    background-color: #f0e6e6;
+    padding: 20px;
+    border-radius: 7px;
+    box-shadow: 7px 7px 8px 0px rgba(0,0,0,0.2);
   }
 
   .predicOption{
@@ -161,6 +167,14 @@ html, body {
   .time-inputs{
     padding: 3px;
     border-bottom: solid 1px;
+    margin-bottom: 20px;
+  }
+
+  .time-inputsS{
+    background-color: #f0e6e6;
+    padding: 20px;
+    border-radius: 7px;
+    box-shadow: 7px 7px 8px 0px rgba(0,0,0,0.2);
   }
 
   .time-slot{
@@ -228,4 +242,24 @@ html, body {
     justify-content: center;
   }
   
+
+  .warningText{
+    font-size: small;
+    color: red;
+    width: fit-content;
+    
+  }
   
+
+  .googlebtnWarning{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .warningTextDiv{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+    
+  }

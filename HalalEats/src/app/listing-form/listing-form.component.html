@@ -19,14 +19,14 @@
 
                 <div class="NameLocationImg" #NameLocationImg>
                     <div class="Leftelement">
-                        <label for="resName">Restaurant Name</label>
+                        <label for="resName">Restaurant Name *</label>
                         <input type="text" class="form-control" id="resName" name="resName" [(ngModel)]="resInfo.name" required>
                         
                     </div>
                     
             
                     <div class="Leftelement">
-                        <label for="resLocation">Location</label>
+                        <label for="resLocation">Location *</label>
                         <input #resLocationInput type="text" class="form-control" id="resLocation" name="resLocation" [(ngModel)]="resInfo.location" (input)="onLocationChange($event)" required>
                         <ul *ngIf="predictions && predictions.length > 0">
                             <div *ngFor="let prediction of predictions" class="predicOption" (click)="selectPrediction(prediction)">
@@ -36,7 +36,8 @@
                     </div>
     
                     <div class="Leftelement">
-                        <label for="resPhoto">Cover Photo</label>
+                        <label for="resPhoto">Cover Photo *</label>
+                        <label class="warningText">Please ensure your photo has 2.63:1 ratio or a 820x3120 resolution</label>
                         <input type="file" class="form-control" id="resPhoto" name="resPhoto" (change)="onFileSelected($event)" accept="image/*" required>
                     </div>
     
@@ -135,19 +136,28 @@
     
             
             
-            <hr>
+            
             <div class="previousbtn">
                 <button (click)="previous($event)" class="nextBtn">Previous</button>
+                
             </div>
-            
-            <div id="googlebtn" >
+            <div class="googlebtnWarning" >
+                <div class="warningTextDiv">
+                    <label class="warningText">Please use the same email for this account as the one linked to your PayPal payments.</label>
+
+                </div>
+
+                <div id="googlebtn" >
                 
     
     
+                </div>
+
             </div>
+            
     
         </form>
-        <hr>
+        
     
         
     
