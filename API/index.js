@@ -151,6 +151,8 @@ app.post('/login', async (req, res) => {
     // User.destroy({ where: {id: 72} });
     
     const {auth_token} = req.body;
+
+    
     
     
     try{
@@ -526,7 +528,7 @@ app.post('/getCloseRestaurants', async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/LoadRestaurantAdminPackage', isAuthenticated, async (req, res) => {
+app.post('/LoadRestaurantAdminPackage',  isAuthenticated, async (req, res) => {
 
     const type = req.body.userType;
     
@@ -1068,6 +1070,10 @@ async function capture_payment(paymentId){
 /////////////////////////////////////////////////////////////////////////////////
 
 function isAuthenticated(req, res, next) {
+    console.log("session checker function, current session id is: ", req.sessionID);
+    console.log("session checker function, current session user id is: ", req.userId);
+    console.log("session checker function, current session user id is: ", req.session.userId);
+
     if (req.session.userId){
         return next();
     } else {

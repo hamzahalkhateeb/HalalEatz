@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, PLATFORM_ID, ViewChild, ElementRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, ViewChild, ViewChildren, ElementRef, OnDestroy, ChangeDetectorRef, Renderer2, QueryList } from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule,  } from '@angular/common';
 import {io, Socket} from 'socket.io-client';
 
 
@@ -18,9 +18,9 @@ import {io, Socket} from 'socket.io-client';
 export class RestaurantAdminComponent implements OnInit {
 
   @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
-
+  @ViewChildren('collapsables') collapsables!: QueryList<ElementRef>;
   
-  //sessionUserId! : any;
+  
 
  
 
@@ -55,14 +55,20 @@ export class RestaurantAdminComponent implements OnInit {
 
   selectedFile: File | null = null;
 
-  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef ) {}
+  constructor(private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute, 
+    private cdr: ChangeDetectorRef,
+    private renderer: Renderer2,
+    private el: ElementRef
+    ) {}
   ngOnInit(): void {
 
    
 
     
     this.LoadRestaurantAdminPackage();
-    this.getOrders();
+    //this.getOrders();
     
 
     
@@ -109,14 +115,8 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   
-
-  
-
-
-
-
   LoadRestaurantAdminPackage(): void  {
-    console.log('Cookies before request:', document.cookie);
+    
     this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {userType: 'admin'}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
@@ -125,7 +125,7 @@ export class RestaurantAdminComponent implements OnInit {
           this.restaurantName= data.restaurantName;
           console.log(this.restaurantName, data.restaurantName);
           
-          alert(`this session user id issssssssssssssssssssssssss: ${data.sessionUserId}`);
+          
 
           this.menue2 = JSON.parse(data.menue);
           
@@ -282,7 +282,7 @@ export class RestaurantAdminComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           if(data.success){
-            alert(data.message);
+            
             this.router.navigateByUrl(data.redirectUrl);
           } else {
             console.log("unexpected json format! ", data);
@@ -292,6 +292,25 @@ export class RestaurantAdminComponent implements OnInit {
           console.error('Error: ', error);
         }
 });}
+
+
+  showDiv(DivId: any){
+
+    let closeDivs = ['ordersDiv','menueDiv','statsDiv','settingsDiv']
+    
+
+    this.collapsables.forEach((div)=>{
+
+      console.log(div.nativeElement.id);
+      
+    })
+
+
+
+    
+  }
+
+
 
   
 }

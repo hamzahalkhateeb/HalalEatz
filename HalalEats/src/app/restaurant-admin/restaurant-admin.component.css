@@ -18,6 +18,18 @@
     justify-content: space-between;
 }
 
+.resName{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'lato', sans-serif;
+    font-weight: bold;
+}
+
+.resNameHeading{
+    border-bottom: solid 1px;
+}
+
 .mainContent{
     display: flex;
     flex-direction: row;
@@ -125,4 +137,26 @@
     margin-bottom:20px;
     border-bottom: solid 1px;
 
+}
+
+.ordersContainer{
+    display: none;
+}
+
+.menueTab{
+    
+    background-color: blue;
+}
+.mealsContainer{
+    display: none;
+}
+.drinksContainer{
+    display: none;
+}
+.desertsContainer{
+    display: none;
+}
+
+.additemContent{
+    display: none;
 }
