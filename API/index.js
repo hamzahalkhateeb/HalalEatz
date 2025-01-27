@@ -251,7 +251,9 @@ app.post('/logout', (req, res) =>{
 app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     //Restaurant.destroy({ where: {} });
     //Menue.destroy({ where: {} });
-    //User.destroy({ where: {id : 72} });
+    //User.destroy({ where: {} });
+
+    console.log(`Listing restaurant called`);
     
     const auth_token = req.body.auth_token;
 
@@ -263,6 +265,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
     const payload = ticket.getPayload();
 
+    console.log(`user authenticated via google`);
     
 
 
@@ -274,7 +277,9 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     const email = payload['email'];
     const given_name = payload['given_name'];
     const family_name = payload['family_name'];
+    
 
+    console.log(`data extracted`);
 
     //change image name
     const newImageName = generateImgName(resInfo.name, type, uploadedImg.originalname, relItem)
@@ -292,25 +297,34 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     
     });
     
-    
+    console.log(`image renamed and saved! `);
+
 
     try{
-        
+        console.log(`attempting to find user`);
 
-        
-        
         let user = await User.findOne({where: {email : email}});
 
+        console.log(`could not find user!`, user);
+
         if (!user){
+            console.log(`user not found attempting to create one right now with the following details:`, email,  given_name, family_name);
             
             user = await User.create({
-                email, picture, firstName: given_name, lastName: family_name, accountType: 2, 
+                email: email, 
+                firstName: given_name, 
+                lastName: family_name, 
+                accountType: 2, 
             });
+
+            console.log(`user created`);
             req.session.userId = user.id;
             req.session.isLoggedIn = true;
             req.session.save();
+            console.log(`session created`);
+            console.log(`creating a restaurant object nowwith the following detailks: ${resInfo.name, resInfo.location, resInfo.lat, resInfo.lon, resInfo.halalRating, user.id}`);
 
-            
+
             let restaurant = await Restaurant.create({
                 
                 name: resInfo.name,
@@ -327,9 +341,11 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
             
             
-            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", /*userId: user.id,*/ redirectUrl: "/restaurantAdmin"});
+            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!",  redirectUrl: "/restaurantAdmin"});
         } else {
-            res.status(200).json({success: false, message: "The email is already associated with another account, please use an email that is specifically for your restaurant!", /*user,*/ redirectUrl: "/listing-form"});
+
+            console.log(`email already associated!!`);
+            res.status(200).json({success: false, message: "The email is already associated with another account, please use an email that is specifically for your restaurant!",  redirectUrl: "/listing-form"});
         }
         
 

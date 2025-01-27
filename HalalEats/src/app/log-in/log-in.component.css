@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 
+
+
 .logSection {
     display: flex;
     flex-direction: column;
@@ -12,9 +14,13 @@
 
 
  .logo{
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 5%;
+   width: 60%;
+   height: 50%;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   
+   
     
  }
 
@@ -34,6 +40,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    
 
  }
 .divider {
@@ -60,8 +67,9 @@
  button{
    padding: 9px 25px;
    padding-bottom: 9px;
+   color: white;
    width: 100%;
-   background-color: rgba(243, 159, 90, 1);
+   background-color: #334625;
    border: none;
    border-radius: 50px;
    cursor: pointer;
@@ -73,6 +81,22 @@
 }
 
 button:hover{
-   background-color: rgba(237, 130, 84, 0.8);
+   background-color: #9ebb8d;
+   color: black;
+   
+}
+
+.logoContainer{
+   width: 70%;
+   height: 50%;
+   
+}
+
+.logoimg{
+   width: 100%;
+   
+   object-fit: cover;
+   
+   
 }
 
