@@ -30,6 +30,8 @@ export class RestaurantAdminComponent implements OnInit {
   menue2: any;
   menueId: any;
 
+  restaurantName: any;
+
   menueItem = {
     type: '',
     name: '',
@@ -120,15 +122,17 @@ export class RestaurantAdminComponent implements OnInit {
       next: (data: any) =>{
         if (data.success){
           
+          this.restaurantName= data.restaurantName;
+          console.log(this.restaurantName, data.restaurantName);
+          
           alert(`this session user id issssssssssssssssssssssssss: ${data.sessionUserId}`);
 
           this.menue2 = JSON.parse(data.menue);
           
-          this.mealsArray  = this.menue2.meals.map((mealString: string) => JSON.parse(mealString));
-          this.drinksArray  = this.menue2.drinks.map((drinkString: string) => JSON.parse(drinkString));
-          this.desertsArray  = this.menue2.deserts.map((desertString: string)=> JSON.parse(desertString));
+          this.mealsArray  = this.menue2.meals.map((mealString: string) => JSON.parse(mealString)) || null;
+          this.drinksArray  = this.menue2.drinks.map((drinkString: string) => JSON.parse(drinkString)) || null;
+          this.desertsArray  = this.menue2.deserts.map((desertString: string)=> JSON.parse(desertString)) || null;
 
-          
           
 
         } else {
@@ -271,6 +275,23 @@ export class RestaurantAdminComponent implements OnInit {
     })
 
   }
+
+  logout(response: any): void{
+    console.log("logout attempt initiated!");
+    this.http.post('http://localhost:3000/logout', { id_token: response.credential }, {withCredentials: true})
+      .subscribe({
+        next: (data: any) => {
+          if(data.success){
+            alert(data.message);
+            this.router.navigateByUrl(data.redirectUrl);
+          } else {
+            console.log("unexpected json format! ", data);
+          }
+        },
+        error: (error: any) => {
+          console.error('Error: ', error);
+        }
+});}
 
   
 }

@@ -341,7 +341,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
             
             
-            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!",  redirectUrl: "/restaurantAdmin"});
+            res.status(201).json({success: true, message: "You have listed your restaurant successfully, please set up your menu to get up and running!", restaurantName: restaurant.name, redirectUrl: "/restaurantAdmin"});
         } else {
 
             console.log(`email already associated!!`);
@@ -549,10 +549,10 @@ app.post('/LoadRestaurantAdminPackage', isAuthenticated, async (req, res) => {
             
 
             if (!menue){
-            return res.json({success:false, message: "There are no items in your menue, please add items through the  menue tab"});
+            return res.json({success:false, message: "There are no items in your menue, please add items through the  menue tab", restaurantName: restaurant.name});
             } else {
             
-            return res.json({success: true, message: "menue retrieval successfull!", menue, sessionUserId: sessionUserId});
+            return res.json({success: true, message: "menue retrieval successfull!", menue, restaurantName: restaurant.name});
             }
         } catch (error){
             res.status(500).json({success: false, message: "something went wrong, internal server error"});
