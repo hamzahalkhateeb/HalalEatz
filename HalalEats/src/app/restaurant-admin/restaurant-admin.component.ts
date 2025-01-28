@@ -315,6 +315,10 @@ export class RestaurantAdminComponent implements OnInit {
     
   }
 
+  navBarDivs(){
+    
+  }
+
 
 
   
