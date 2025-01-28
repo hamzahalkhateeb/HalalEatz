@@ -328,7 +328,7 @@ export class RestaurantAdminComponent implements OnInit {
 
     this.MenueTabs.forEach((tab) =>{
       tab.nativeElement.style.backgroundColor = '#e4d0d0';
-      tab.nativeElement.style.backgroundShadow = '';
+      tab.nativeElement.style.boxShadow = 'none';
       tab.nativeElement.style.height = '50%';
     });
 
