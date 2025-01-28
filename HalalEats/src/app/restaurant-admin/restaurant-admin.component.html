@@ -16,33 +16,31 @@
 
     <div class="mainContent">
         <div class="sideBar">
-            <div class="orders"  (click)="showDiv('ordersDiv')">
+            <div class="orders tabs"  (click)="showDiv('ordersDiv')">
                 <label class="label">Orders</label>
                 
 
             </div>
-            <div class="menue"  (click)="showDiv('menueDiv')">
+            <div class="menue tabs"  (click)="showDiv('menueDiv')">
                 <label class="label">Menue</label>
         
             </div>
-            <div class="stats "  (click)="showDiv('statsDiv')">
+            <div class="stats tabs"  (click)="showDiv('statsDiv')">
                 <label class="label">Statistics and Trends</label>
                 
     
             </div>
-            <div class="settings"  (click)="showDiv('settingsDiv')">
+            <div class="settings tabs"  (click)="showDiv('settingsDiv')">
                 <label class="label">Settings</label>
                 
-                <div class="deleteresdiv">
-                    <button (click)="deleteRestaurant()" class="deletebtn">Delete restaurant</button>
-                </div>
+                
     
             </div>
         </div>
         
         <div class="contentB">
 
-            <div class="ordersContainer collapsables" id="ordersDiv">
+            <div #collapsables class="ordersContainer collapsables" id="ordersDiv">
                 <div class="noOrdersYet" *ngIf="!ordersRetrieved"><h2> There are no orders yet !</h2></div>
                 <div class="orders" *ngIf="ordersRetrieved">
                     <div class="orderItems" *ngFor="let order of ordersRetrieved" >
@@ -62,8 +60,27 @@
                 </div>
             </div>
 
-            <div class="menueTab collapsables" id="menueDiv">
-                <div class="mealsContainer collapsables2" *ngIf="mealsArray">
+            <div #collapsables class="menueTab collapsables" id="menueDiv">
+
+                <div class="navBar">
+                    <div class="navBarLabelDiv">
+                        <label class="navBarLabel">Meals Menue</label>
+                    </div>
+                    <div class="navBarLabel">
+                        <label class="navBarLabel">Drinks Menue</label>
+                    </div>
+                    <div class="navBarLabel">
+                        <label class="navBarLabel">Desserts Menue</label>
+                    </div>
+                    <div class="navBarLabel">
+                        <label class="navBarLabel">Add Menue Item</label>
+                    </div>
+
+                </div>
+                <div class="content">
+
+                </div>
+                <div class="mealsContainer" *ngIf="mealsArray">
                     <div class="mealsContent" *ngFor="let meal of mealsArray">
                         <div class="data">
                             <div class="Mname">{{meal.name}}</div>
@@ -84,8 +101,7 @@
     
                     </div>
                 </div>
-    
-                <div class="drinksContainer collapsables2" *ngIf="drinksArray">
+                <div class="drinksContainer " *ngIf="drinksArray">
         
                     <div class="drinksContent" *ngFor="let drink of drinksArray">
                         <div class="data">
@@ -109,12 +125,8 @@
         
         
                 </div>  
-                
-                
-                <div class="desertsContainer collapsables2" *ngIf="desertsArray">
-    
-    
-                    <div class="desertsContent" *ngFor="let desert of desertsArray">
+                <div class="desertsContainer " *ngIf="desertsArray">
+                <div class="desertsContent" *ngFor="let desert of desertsArray">
                         <div class="data">
                             <div class="Mname">{{desert.name}}</div>
                             <div class="Mdescription">{{desert.description}}</div>
@@ -132,14 +144,9 @@
                             <button (click)="deleteItem(desert.name, desert.description, desert.type)" class="deletebtn">Delete</button>
                         </div>
     
-                    </div>
-    
                 </div>
-    
-                        
-    
-    
-                <div class="additemContent collapsables2">
+                </div>
+                <div class="additemContent ">
                     <form #menueForm="ngForm" (ngSubmit)="submitMenueItem(menueForm)">
                         <div class="menu">
                             <div class="item" #itemContainer>
@@ -183,12 +190,14 @@
 
             </div>
 
-            <div class="stats collapsables" id="statsDiv">
+            <div #collapsables class="stats collapsables" id="statsDiv">
 
             </div>
 
-            <div class="settings collapsables" id="settingsDiv">
-
+            <div #collapsables class="settings collapsables" id="settingsDiv">
+                <div class="deleteresdiv">
+                    <button (click)="deleteRestaurant()" class="deletebtn">Delete restaurant</button>
+                </div>
             </div>
             
 

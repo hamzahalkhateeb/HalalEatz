@@ -122,12 +122,12 @@ export class RestaurantAdminComponent implements OnInit {
       next: (data: any) =>{
         if (data.success){
           
-          this.restaurantName= data.restaurantName;
-          console.log(this.restaurantName, data.restaurantName);
+          this.restaurantName= data.restaurantName || null;
+          
           
           
 
-          this.menue2 = JSON.parse(data.menue);
+          this.menue2 = JSON.parse(data.menue) || null;
           
           this.mealsArray  = this.menue2.meals.map((mealString: string) => JSON.parse(mealString)) || null;
           this.drinksArray  = this.menue2.drinks.map((drinkString: string) => JSON.parse(drinkString)) || null;
@@ -296,14 +296,19 @@ export class RestaurantAdminComponent implements OnInit {
 
   showDiv(DivId: any){
 
-    let closeDivs = ['ordersDiv','menueDiv','statsDiv','settingsDiv']
-    
-
     this.collapsables.forEach((div)=>{
+      div.nativeElement.style.display = 'none';
+    });
 
-      console.log(div.nativeElement.id);
-      
-    })
+    let displayDiv = document.getElementById(DivId);
+
+    if(displayDiv){
+      displayDiv.style.display = 'flex';
+
+    } else {
+      console.log('there is no div with that id');
+    }
+    
 
 
 

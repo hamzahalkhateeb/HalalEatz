@@ -42,6 +42,8 @@ export class GoogleAuthService {
   private handleCredentialResponse(response: any){
     console.log('Google credential response: ', response);
     this.credentialResponseObject.next(response);
+
+    this.credentialResponseObject.next(null);
   }
 
   getCredentialResponse(): Observable<any>{
@@ -51,6 +53,7 @@ export class GoogleAuthService {
 
   signOut(): void {
     google.accounts.id.disableAutoSelect();
+    this.credentialResponseObject.next(null);
     
     //idk add more logic here
     console.log('Logged out');
