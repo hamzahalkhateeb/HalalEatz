@@ -27,13 +27,13 @@ export class RestaurantAdminComponent implements OnInit {
 
  
 
-  mealsArray: any;
-  drinksArray: any;
-  desertsArray: any;
-  menue2: any;
-  menueId: any;
+  mealsArray!: any;
+  drinksArray!: any;
+  desertsArray!: any;
+  menue2!: any;
+  menueId!: any;
 
-  restaurantName: any;
+  restaurantName!: any;
 
   menueItem = {
     type: '',
