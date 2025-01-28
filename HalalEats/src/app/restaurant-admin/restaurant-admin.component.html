@@ -63,22 +63,22 @@
             <div #collapsables class="menueTab collapsables" id="menueDiv">
 
                 <div class="navBar">
-                    <div class="navBarLabelDiv">
+                    <div #menueTab class="navBarLabelDiv" id="mealsTab" (click)="showMenueBox('mealsBox', 'mealsTab')">
                         <label class="navBarLabel label2">Meals Menue</label>
                     </div>
-                    <div class="navBarLabelDiv">
+                    <div #menueTab class="navBarLabelDiv" id="drinksTab" (click)="showMenueBox('drinksBox', 'drinksTab')">
                         <label class="navBarLabel label2">Drinks Menue</label>
                     </div>
-                    <div class="navBarLabelDiv">
+                    <div #menueTab class="navBarLabelDiv" id="desertsTab" (click)="showMenueBox('desertsBox', 'desertsTab')">
                         <label class="navBarLabel label2">Desserts Menue</label>
                     </div>
-                    <div class="navBarLabelDiv">
+                    <div #menueTab class="navBarLabelDiv" id="addItemTab" (click)="showMenueBox('addItemBox', 'addItemTab')">
                         <label class="navBarLabel label2">Add Menue Item</label>
                     </div>
 
                 </div>
                 <div class="contentC">
-                    <div class="mealsContainer" *ngIf="mealsArray">
+                    <div #menueBox class="mealsContainer" id="mealsBox" >
                         <div class="mealsContent" *ngFor="let meal of mealsArray">
                             <div class="data">
                                 <div class="Mname">{{meal.name}}</div>
@@ -99,7 +99,7 @@
         
                         </div>
                     </div>
-                    <div class="drinksContainer " *ngIf="drinksArray">
+                    <div #menueBox class="drinksContainer " id="drinksBox" >
             
                         <div class="drinksContent" *ngFor="let drink of drinksArray">
                             <div class="data">
@@ -123,7 +123,7 @@
             
             
                     </div>  
-                    <div class="desertsContainer " *ngIf="desertsArray">
+                    <div #menueBox class="desertsContainer " id="desertsBox">
                     <div class="desertsContent" *ngFor="let desert of desertsArray">
                             <div class="data">
                                 <div class="Mname">{{desert.name}}</div>
@@ -144,7 +144,7 @@
         
                     </div>
                     </div>
-                    <div class="additemContent ">
+                    <div #menueBox class="additemContent" id="addItemBox" >
                         <form #menueForm="ngForm" (ngSubmit)="submitMenueItem(menueForm)">
                             <div class="menu">
                                 <div class="item" #itemContainer>

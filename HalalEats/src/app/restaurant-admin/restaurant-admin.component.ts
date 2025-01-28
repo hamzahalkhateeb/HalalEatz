@@ -19,6 +19,9 @@ export class RestaurantAdminComponent implements OnInit {
 
   @ViewChild('itemContainer', {static: true}) itemContainer!: ElementRef;
   @ViewChildren('collapsables') collapsables!: QueryList<ElementRef>;
+  @ViewChildren('menueBox') menueBoxes!: QueryList<ElementRef>;
+  @ViewChildren('menueTab') MenueTabs!: QueryList<ElementRef>;
+
   
   
 
@@ -315,8 +318,38 @@ export class RestaurantAdminComponent implements OnInit {
     
   }
 
-  navBarDivs(){
-    
+  showMenueBox(menueBoxId: any, tabId: any){
+
+    console.log("received box id and tab id: ", menueBoxId, tabId);
+
+    this.menueBoxes.forEach((box)=>{
+      box.nativeElement.style.display = 'none';
+    });
+
+    this.MenueTabs.forEach((tab) =>{
+      tab.nativeElement.style.backgroundColor = '#e4d0d0';
+      tab.nativeElement.style.backgroundShadow = '';
+      tab.nativeElement.style.height = '50%';
+    });
+
+    console.log("looped through boxes and closed all of them");
+
+    let displayBox = document.getElementById(menueBoxId);
+    let tab = document.getElementById(tabId);
+
+    console.log("here is display box element: ", displayBox);
+    console.log("here is tab element: ", tab);
+
+    if(displayBox && tab){
+      displayBox.style.display = 'flex';
+      tab.style.backgroundColor = '#d8bdbd';
+      tab.style.boxShadow = '-7px 0 8px 0 rgba(0, 0, 0, 0.2)';
+      tab.style.height = '70%';
+      
+    } else {
+      console.log('error displaying requested menue box and changing tab style');
+    }
+
   }
 
 
