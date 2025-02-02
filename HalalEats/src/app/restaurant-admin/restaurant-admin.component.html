@@ -44,8 +44,11 @@
             <div class="contentB">
     
                 <div #collapsables class="ordersContainer collapsables" id="ordersDiv">
-                    <div class="noOrdersYet" *ngIf="!ordersRetrieved"><h2> There are no orders yet !</h2></div>
-                    <div class="orders" *ngIf="ordersRetrieved">
+                    <div class="ordersNavBar">
+
+                    </div>
+                    <div class="noOrdersYet" *ngIf="!ordersRetrieved || ordersRetrieved.length === 0"><h2> There are no orders yet !</h2></div>
+                    <div class="orders" *ngIf="ordersRetrieved && ordersRetrieved.length > 0">
                         <div class="orderItems" *ngFor="let order of ordersRetrieved" >
                             <div class="orderRow">
                                 <div class="orderID">{{order.id}}</div>
@@ -87,21 +90,26 @@
                                     <img class="itemImage" [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
                                 </div>
                                 <div class="itemdata">
-                                    <div class="Mname itemName">{{meal.name}}</div>
+                                    <div class="itemHeaders">
+                                        <div class="Mname itemName">{{meal.name}}</div>
+                                        <div class="deletebtndiv">
+                                            <button (click)="deleteItem(meal.name, meal.description, meal.type)" class="deletebtn "> <i class="fas fa-xmark"></i> </button>
+                                        </div>
+                                        
+                                    </div>
+                                    
                                     <div class="Mdescription itemDescription">{{meal.description}}</div>
                                     <div class="Mprice itemPrice">${{meal.price}}</div>
                                     <div class="checks">
                                         <div class="Mhalal check itemHalal" *ngIf="meal.halal">&#x062D;&#x0644;&#x0627;&#x0644;
                                         </div>
-                                        <div class="Mvegan check itemVegan" *ngIf="meal.vegan">&#x24B1;</div>
-                                        <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian">vegetarian</div>
-                                        <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree">lactose free</div>
-                                        <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree">gluten free</div>
+                                        <div class="Mvegan check itemVegan" *ngIf="meal.vegan"><i  class="fas fa-v"></i><i class="fas fa-plus"></i></div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian"><i style="color: green;" class="fas fa-v"></i></div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree"><i class="fas fa-cow"></i><i style="color: red;" class="fas fa-xmark"></i></div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree"><i style="color: brown;" class="fas fa-bread-slice"></i><i style="color: red;"class="fas fa-xmark"></i></div>
                                     </div>
                                     
-                                    <div class="deletebtndiv">
-                                        <button (click)="deleteItem(meal.name, meal.description, meal.type)" class="deletebtn "> <i class="fas fa-xmark"></i> </button>
-                                    </div>
+                                    
                                 </div>
                                 
                                 
@@ -119,21 +127,26 @@
                                     <img class="itemImage" [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
                                 </div>
                                 <div class="itemdata">
-                                    <div class="Mname itemName">{{drink.name}}</div>
+                                    <div class="itemHeaders">
+                                        <div class="Mname itemName">{{drink.name}}</div>
+                                        <div class="deletebtndiv">
+                                            <button (click)="deleteItem(drink.name, drink.description, drink.type)" class="deletebtn "> <i class="fas fa-xmark"></i> </button>
+                                        </div>
+                                        
+                                    </div>
                                     <div class="Mdescription itemDescription">{{drink.description}}</div>
                                     <div class="Mprice itemPrice">${{drink.price}}</div>
                                     <div class="checks">
                                         <div class="Mhalal check itemHalal" *ngIf="drink.halal"> &#x062D;&#x0644;&#x0627;&#x0644;
                                         </div>
-                                        <div class="Mvegan check itemVegan" *ngIf="drink.vegan">V</div>
-                                        <div class="Mvegetarian check itemVegetarian" *ngIf="drink.vegetarian"> vegetarian</div>
-                                        <div class="Mlactosefree check itemLactose" *ngIf="drink.lactoseFree">lactose free</div>
-                                        <div class="Mglutenfree check itemGluten" *ngIf="drink.glutenFree"> gluten free</div>
+                                        <div class="Mvegan check itemVegan" *ngIf="drink.vegan"><i style="color: green;" class="fas fa-v"></i><i class="fas fa-plus"></i></div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="drink.vegetarian"><i style="color: green;" class="fas fa-v"></i></div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="drink.lactoseFree"><i class="fas fa-cow"></i><i style="color: red;" class="fas fa-xmark"></i></div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="drink.glutenFree"><i style="color: brown;" class="fas fa-bread-slice"></i><i style="color: red;"class="fas fa-xmark"></i></div>
+                                    
                                     </div>
                                     
-                                    <div class="deletebtndiv">
-                                        <button (click)="deleteItem(drink.name, drink.description, drink.type)" class="deletebtn">Delete</button>
-                                    </div>
+                                    
                                 </div>
                                 
                                 
@@ -153,21 +166,26 @@
                                         <img class="itemImage" [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
                                     </div>
                                     <div class="itemdata">
-                                        <div class="Mname itemName">{{desert.name}}</div>
+                                        <div class="itemHeaders">
+                                            <div class="Mname itemName">{{desert.name}}</div>
+                                            <div class="deletebtndiv">
+                                                <button (click)="deleteItem(desert.name, desert.description, desert.type)" class="deletebtn "> <i class="fas fa-xmark"></i> </button>
+                                            </div>
+                                            
+                                        </div>
                                         <div class="Mdescription itemDescription">{{desert.description}}</div>
                                         <div class="Mprice itemPrice">${{desert.price}}</div>
                                         <div class="checks">
                                             <div class="Mhalal check itemHalal" *ngIf="desert.halal"> &#x062D;&#x0644;&#x0627;&#x0644;
                                             </div>
-                                            <div class="Mvegan check itemVegan" *ngIf="desert.vegan">V</div>
-                                            <div class="Mvegetarian check itemVegetarian" *ngIf="desert.vegetarian"> vegetarian</div>
-                                            <div class="Mlactosefree check itemLactose" *ngIf="desert.lactoseFree">lactose free</div>
-                                            <div class="Mglutenfree check itemGluten" *ngIf="desert.glutenFree"> gluten free</div>
+                                            <div class="Mvegan check itemVegan" *ngIf="desert.vegan"><i style="color: green;" class="fas fa-v"></i><i  class="fas fa-plus"></i></div>
+                                            <div class="Mvegetarian check itemVegetarian" *ngIf="desert.vegetarian"><i style="color: green;" class="fas fa-v"></i></div>
+                                            <div class="Mlactosefree check itemLactose" *ngIf="desert.lactoseFree"><i class="fas fa-cow"></i><i style="color: red;" class="fas fa-xmark"></i></div>
+                                            <div class="Mglutenfree check itemGluten" *ngIf="desert.glutenFree"><i style="color: brown;" class="fas fa-bread-slice"></i><i style="color: red;"class="fas fa-xmark"></i></div>
+
                                         </div>
                                         
-                                        <div class="deletebtndiv">
-                                            <button (click)="deleteItem(desert.name, desert.description, desert.type)" class="deletebtn">Delete</button>
-                                        </div>
+                                        
                                     </div>
                                     
                                     

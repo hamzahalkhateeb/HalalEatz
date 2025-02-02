@@ -72,7 +72,7 @@ export class RestaurantAdminComponent implements OnInit {
 
     
     this.LoadRestaurantAdminPackage();
-    //this.getOrders();
+    this.getOrders();
     
 
     
