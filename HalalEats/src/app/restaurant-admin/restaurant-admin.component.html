@@ -19,7 +19,7 @@
         <div class="bottomPortion">
             <div class="sideBar">
                 <div class="placePusher"></div>
-                <div #tabs id="orderTab" class="orders tabs"  (click)="showDiv('ordersDiv', 'orderTab')">
+                <div #tabs id="orderTab" class=" tabs"  (click)="showDiv('ordersDiv', 'orderTab')">
                     <label class="label Ltab">Orders</label>
                     
     
@@ -49,7 +49,40 @@
                     </div>
                     <div class="noOrdersYet" *ngIf="!ordersRetrieved || ordersRetrieved.length === 0"><h2> There are no orders yet !</h2></div>
                     <div class="orders" *ngIf="ordersRetrieved && ordersRetrieved.length > 0">
-                        <div class="orderItems" *ngFor="let order of ordersRetrieved" >
+                        <table class="ordersTable">
+                            <thead class="titles">
+                                <tr class="tableRow">
+                                    <th class="tableHeading">Order ID</th>
+                                    <th class="tableHeading">Items Ordered</th>
+                                    
+                                    <th class="tableHeading">Order Status</th>
+                                    <th class="tableHeading">Time Ordered</th>
+                                    <th class="tableHeading">Last Modified</th>
+                                    <th class="tableHeading">Next Stage</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="tableContent">
+                                <tr class="tablePart" *ngFor="let order of ordersRetrieved">
+                                    <td class="tableSPart">{{order.id}}</td>
+                                    <td  class="tableSPart">
+                                        <ul>
+                                            <li *ngFor="let item of order.items">{{item.name}}  X{{item.quantity}}</li>
+                                        </ul> 
+                                    </td>
+                                    
+                                    <td class="tableSPart">{{order.status}}</td>
+                                    <td class="tableSPart">{{order.createdAt | date:' MM/dd,  h:mm a'}}</td>
+                                    <td class="tableSPart">{{order.updatedAt | date:' MM/dd,  h:mm a'}}</td>
+                                    <td class="tableSPart"><button (click)="advanceOrder(order.id)">Next Stage</button></td>
+                                        
+                                    
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                        <!--<div class="orderItems" *ngFor="let order of ordersRetrieved" >
                             <div class="orderRow">
                                 <div class="orderID">{{order.id}}</div>
                                 <div class="itemsList" *ngFor="let item of order.items">
@@ -62,7 +95,7 @@
                                 <div class="timePlace">{{order.createdAt}}</div>
                                 <div class="lastMod">{{order.updatedAt}}</div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
     
