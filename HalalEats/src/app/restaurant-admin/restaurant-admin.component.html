@@ -29,7 +29,7 @@
             
                 </div>
                 <div #tabs id="statsTab" class="stats tabs"  (click)="showDiv('statsDiv', 'statsTab')">
-                    <label class="label Ltab">Statistics and Trends</label>
+                    <label class="label Ltab">Statistics</label>
                     
         
                 </div>
@@ -198,43 +198,73 @@
     
     
                         <div #menueBox class="additemContent" id="addItemBox" >
-                            <form #menueForm="ngForm" (ngSubmit)="submitMenueItem(menueForm)">
-                                <div class="menu">
-                                    <div class="item" #itemContainer>
-                                        <div class="form-group item" #itemDiv>  
-                                            <label for="itemType">Item Type</label>
-                                            <select id="itemType" name="itemType">
-                                                <option value="meal">Meal</option>
-                                                <option value="drink">drink</option>
-                                                <option value="desert">desert</option>
-                                            </select>
-                                            <label for="itemName">Item Name</label>
-                                            <input type="text" class=""  name="itemName" required>
-                                            <label for="itemDescription">Description/Ingredients</label>
-                                            <input type="text" class=""  name="itemDescription" required>
-                                            <label for="itemPrice">Price</label>
-                                            <input type="number" class=""  name="itemPrice" required>
-                                            <label for="halal">Halal</label>
-                                            <input type="checkbox" class=""  name="halal" required>
-                                            <label for="vegan">Vegan</label>
-                                            <input type="checkbox" class=""  name="vegan" required>
-                                            <label for="vegetarian">Vegetarian</label>
-                                            <input type="checkbox" class=""  name="vegetarian" required>
-                                            <label for="glutenFree">Gluten Free</label>
-                                            <input type="checkbox" class=""  name="glutenFree" required>
-                                            <label for="lactoseFree">Lactose Free</label>
-                                            <input type="checkbox" class=""  name="lactoseFree" required>
-                                            <label for="itemimg">Item Image</label>
-                                            <input type="file" class=""  name="itemimg" (change)="onFileSelected($event)" accept="image/*" required>
+                            <div class="formDiv">
+                                <form #menueForm="ngForm" (ngSubmit)="submitMenueItem(menueForm)">
+                                    <div class="menu">
+                                        <div class="item" #itemContainer>
+                                            <div class="form-group item" #itemDiv>  
+                                                <label class="addItemFieldLabel" for="itemType">Item Type</label>
+                                                <select id="itemType" class="field" name="itemType">
+                                                    <option value="meal">Meal</option>
+                                                    <option value="drink">drink</option>
+                                                    <option value="desert">desert</option>
+                                                </select>
+                                                
+                                                <label class="addItemFieldLabel" for="itemName">Item Name</label>
+                                                <input type="text" class="field"  name="itemName" required>
+
+                                                <label class="addItemFieldLabel" for="itemDescription">Description/Ingredients</label>
+                                                <input type="text" class="field des"  name="itemDescription" required>
+
+                                                <label class="addItemFieldLabel" for="itemPrice">Price</label>
+                                                <input type="number" class="field"  name="itemPrice" required>
+
+                                                <div class="checkinput">
+                                                    <input type="checkbox" class="checkboxB"  name="halal" required>
+                                                    <label class="addItemFieldLabel" for="halal">Halal</label>
+                                               
+                                                </div>
+                                                
+
+                                                <div class="checkinput">
+                                                    <input type="checkbox" class="checkboxB"  name="vegan" required>
+                                                    <label class="addItemFieldLabel" for="vegan">Vegan</label>
+                                                    
+                                                </div>
+                                                <div class="checkinput">
+                                                    <input type="checkbox" class="checkboxB"  name="vegetarian" required>
+                                                    <label class="addItemFieldLabel" for="vegetarian">Vegetarian</label>
+                                                    
+                                                </div>
+                                                <div class="checkinput">
+                                                    <input type="checkbox" class="checkboxB"  name="glutenFree" required>
+                                                    <label class="addItemFieldLabel" for="glutenFree">Gluten Free</label>
+                                                   
+                                                </div>
+                                                <div class="checkinput">
+                                                    <input type="checkbox" class="checkboxB"  name="lactoseFree" required>
+                                                    <label class="addItemFieldLabel" for="lactoseFree">Lactose Free</label>
+                                                   
+                                                </div>
+                                                <div class="checkinput imgupdiv">
+                                                    <label class="addItemFieldLabel imglabel" for="itemimg">Item Image</label>
+                                                    <input type="file" class=""  name="itemimg" (change)="onFileSelected($event)" accept="image/*" required>
+                                                </div>
+
+                                                <div class="submitBtndiv">
+                                                    <button class="submitbtn"type="submit">Submit menue Item</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                        
-                                <button type="submit">Submit menue Item</button>
-                        
-                                        
-                        
-                            </form>
+                            
+                                    
+                            
+                                            
+                            
+                                </form>
+                            </div>
+                           
             
                         </div>
                     </div>
