@@ -21,6 +21,7 @@ export class RestaurantAdminComponent implements OnInit {
   @ViewChildren('collapsables') collapsables!: QueryList<ElementRef>;
   @ViewChildren('menueBox') menueBoxes!: QueryList<ElementRef>;
   @ViewChildren('menueTab') MenueTabs!: QueryList<ElementRef>;
+  @ViewChildren('tabs') tabs!: QueryList<ElementRef>;
 
   
   
@@ -297,7 +298,7 @@ export class RestaurantAdminComponent implements OnInit {
 });}
 
 
-  showDiv(DivId: any){
+  showDiv(DivId: any, tabId: any){
 
     this.collapsables.forEach((div)=>{
       div.nativeElement.style.display = 'none';
@@ -311,7 +312,23 @@ export class RestaurantAdminComponent implements OnInit {
     } else {
       console.log('there is no div with that id');
     }
-    
+
+
+    this.tabs.forEach((tab)=>{
+      tab.nativeElement.style.backgroundColor ='#bcd9ab';
+      tab.nativeElement.style.boxShadow = '';
+      
+    });
+
+    let displayTab = document.getElementById(tabId);
+
+    if(displayTab){
+      displayTab.style.boxShadow = '15px 15px 8px 0 rgba(0, 0, 0, 0.2)';
+      displayTab.style.backgroundColor = '#9ebb8d';
+
+    } else {
+      console.log('there is no div with that id');
+    }
 
 
 
@@ -327,7 +344,7 @@ export class RestaurantAdminComponent implements OnInit {
     });
 
     this.MenueTabs.forEach((tab) =>{
-      tab.nativeElement.style.backgroundColor = '#e4d0d0';
+      tab.nativeElement.style.backgroundColor = '#bcd9ab';
       tab.nativeElement.style.boxShadow = 'none';
       tab.nativeElement.style.height = '50%';
     });
@@ -342,8 +359,8 @@ export class RestaurantAdminComponent implements OnInit {
 
     if(displayBox && tab){
       displayBox.style.display = 'flex';
-      tab.style.backgroundColor = '#d8bdbd';
-      tab.style.boxShadow = '-7px 0 8px 0 rgba(0, 0, 0, 0.2)';
+      tab.style.backgroundColor = '#9ebb8d';
+      tab.style.boxShadow = '15px 15px 8px 0 rgba(0, 0, 0, 0.2)';
       tab.style.height = '70%';
       
     } else {

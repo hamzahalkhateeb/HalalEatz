@@ -4,9 +4,7 @@
             <img class="logoimg" src = "http://localhost:3000/uploads/smallLogo.png" alt="Logo"/>
         </div>
 
-        <div class="resName">
-            <h1 class="resNameHeading">{{restaurantName}}</h1>
-        </div>
+        
 
         <div class="logoutDiv">
             <button class="logoutBtn" (click)="logout('logout requested!')">Log Out</button>
@@ -15,234 +13,242 @@
     </div>
 
     <div class="mainContent">
-        <div class="sideBar">
-            <div class="orders tabs"  (click)="showDiv('ordersDiv')">
-                <label class="label">Orders</label>
-                
-
-            </div>
-            <div class="menue tabs"  (click)="showDiv('menueDiv')">
-                <label class="label">Menue</label>
-        
-            </div>
-            <div class="stats tabs"  (click)="showDiv('statsDiv')">
-                <label class="label">Statistics and Trends</label>
-                
-    
-            </div>
-            <div class="settings tabs"  (click)="showDiv('settingsDiv')">
-                <label class="label">Settings</label>
-                
-                
-    
-            </div>
+        <div class="topPortion">
+            <h1 class="resNameHeading">{{restaurantName}}</h1>
         </div>
+        <div class="bottomPortion">
+            <div class="sideBar">
+                <div class="placePusher"></div>
+                <div #tabs id="orderTab" class="orders tabs"  (click)="showDiv('ordersDiv', 'orderTab')">
+                    <label class="label Ltab">Orders</label>
+                    
+    
+                </div>
+                <div #tabs id="menueTab" class="menue tabs"  (click)="showDiv('menueDiv', 'menueTab')">
+                    <label class="label Ltab">Menue</label>
+            
+                </div>
+                <div #tabs id="statsTab" class="stats tabs"  (click)="showDiv('statsDiv', 'statsTab')">
+                    <label class="label Ltab">Statistics and Trends</label>
+                    
         
-        <div class="contentB">
-
-            <div #collapsables class="ordersContainer collapsables" id="ordersDiv">
-                <div class="noOrdersYet" *ngIf="!ordersRetrieved"><h2> There are no orders yet !</h2></div>
-                <div class="orders" *ngIf="ordersRetrieved">
-                    <div class="orderItems" *ngFor="let order of ordersRetrieved" >
-                        <div class="orderRow">
-                            <div class="orderID">{{order.id}}</div>
-                            <div class="itemsList" *ngFor="let item of order.items">
-                                <div class="orderQuantity">X{{item.quantity}}</div>
-                                <div class="OrderName">{{item.name}}</div>
-                                <div class="price">${{item.quantity * item.unit_amount.value}}</div>
-                            </div>
-                            <div class="orderStatus">{{order.status}}</div>
-                            <div class="orderProgressBtn"><button (click)="advanceOrder(order.id)">Next Stage</button></div>
-                            <div class="timePlace">{{order.createdAt}}</div>
-                            <div class="lastMod">{{order.updatedAt}}</div>
-                        </div>
-                    </div>
+                </div>
+                <div #tabs id="settingsTab" class="settings tabs"  (click)="showDiv('settingsDiv', 'settingsTab')">
+                    <label class="label Ltab">Settings</label>
+                    
+                    
+        
                 </div>
             </div>
-
-            <div #collapsables class="menueTab collapsables" id="menueDiv">
-
-                <div class="navBar">
-                    <div #menueTab class="navBarLabelDiv" id="mealsTab" (click)="showMenueBox('mealsBox', 'mealsTab')">
-                        <label class="navBarLabel label2">Meals Menue</label>
+            
+            <div class="contentB">
+    
+                <div #collapsables class="ordersContainer collapsables" id="ordersDiv">
+                    <div class="noOrdersYet" *ngIf="!ordersRetrieved"><h2> There are no orders yet !</h2></div>
+                    <div class="orders" *ngIf="ordersRetrieved">
+                        <div class="orderItems" *ngFor="let order of ordersRetrieved" >
+                            <div class="orderRow">
+                                <div class="orderID">{{order.id}}</div>
+                                <div class="itemsList" *ngFor="let item of order.items">
+                                    <div class="orderQuantity">X{{item.quantity}}</div>
+                                    <div class="OrderName">{{item.name}}</div>
+                                    <div class="price">${{item.quantity * item.unit_amount.value}}</div>
+                                </div>
+                                <div class="orderStatus">{{order.status}}</div>
+                                <div class="orderProgressBtn"><button (click)="advanceOrder(order.id)">Next Stage</button></div>
+                                <div class="timePlace">{{order.createdAt}}</div>
+                                <div class="lastMod">{{order.updatedAt}}</div>
+                            </div>
+                        </div>
                     </div>
-                    <div #menueTab class="navBarLabelDiv" id="drinksTab" (click)="showMenueBox('drinksBox', 'drinksTab')">
-                        <label class="navBarLabel label2">Drinks Menue</label>
-                    </div>
-                    <div #menueTab class="navBarLabelDiv" id="desertsTab" (click)="showMenueBox('desertsBox', 'desertsTab')">
-                        <label class="navBarLabel label2">Desserts Menue</label>
-                    </div>
-                    <div #menueTab class="navBarLabelDiv" id="addItemTab" (click)="showMenueBox('addItemBox', 'addItemTab')">
-                        <label class="navBarLabel label2">Add Menue Item</label>
-                    </div>
-
                 </div>
-                <div class="contentC">
-                    <div #menueBox class="mealsContainer" id="mealsBox" >
-                        <div class="mealsContent itemS" *ngFor="let meal of mealsArray">
-                            <div class="image itemImageDiv">
-                                <img class="itemImage" [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
-                            </div>
-                            <div class="itemdata">
-                                <div class="Mname itemName">{{meal.name}}</div>
-                                <div class="Mdescription itemDescription">{{meal.description}}</div>
-                                <div class="Mprice itemPrice">${{meal.price}}</div>
-                                <div class="checks">
-                                    <div class="Mhalal check itemHalal" *ngIf="meal.halal">&#x062D;&#x0644;&#x0627;&#x0644;
-                                    </div>
-                                    <div class="Mvegan check itemVegan" *ngIf="meal.vegan">&#x24B1;</div>
-                                    <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian">vegetarian</div>
-                                    <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree">lactose free</div>
-                                    <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree">gluten free</div>
-                                </div>
-                                
-                                <div class="deletebtndiv">
-                                    <button (click)="deleteItem(meal.name, meal.description, meal.type)" class="deletebtn">Delete</button>
-                                </div>
-                            </div>
-                            
-                            
-        
+    
+                <div #collapsables class="menueTab collapsables" id="menueDiv">
+    
+                    <div class="navBar">
+                        <div #menueTab class="navBarLabelDiv" id="mealsTab" (click)="showMenueBox('mealsBox', 'mealsTab')">
+                            <label class="navBarLabel label2">Meals Menue</label>
                         </div>
+                        <div #menueTab class="navBarLabelDiv" id="drinksTab" (click)="showMenueBox('drinksBox', 'drinksTab')">
+                            <label class="navBarLabel label2">Drinks Menue</label>
+                        </div>
+                        <div #menueTab class="navBarLabelDiv" id="desertsTab" (click)="showMenueBox('desertsBox', 'desertsTab')">
+                            <label class="navBarLabel label2">Desserts Menue</label>
+                        </div>
+                        <div #menueTab class="navBarLabelDiv" id="addItemTab" (click)="showMenueBox('addItemBox', 'addItemTab')">
+                            <label class="navBarLabel label2">Add Menue Item</label>
+                        </div>
+    
                     </div>
-
-
-
-
-
-                    <div #menueBox class="drinksContainer " id="drinksBox" >
-                        <div class="drinksContent itemS" *ngFor="let drink of drinksArray">
-                            <div class="image itemImageDiv">
-                                <img class="itemImage" [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
-                            </div>
-                            <div class="itemdata">
-                                <div class="Mname itemName">{{drink.name}}</div>
-                                <div class="Mdescription itemDescription">{{drink.description}}</div>
-                                <div class="Mprice itemPrice">${{drink.price}}</div>
-                                <div class="checks">
-                                    <div class="Mhalal check itemHalal" *ngIf="drink.halal"> &#x062D;&#x0644;&#x0627;&#x0644;
-                                    </div>
-                                    <div class="Mvegan check itemVegan" *ngIf="drink.vegan">V</div>
-                                    <div class="Mvegetarian check itemVegetarian" *ngIf="drink.vegetarian"> vegetarian</div>
-                                    <div class="Mlactosefree check itemLactose" *ngIf="drink.lactoseFree">lactose free</div>
-                                    <div class="Mglutenfree check itemGluten" *ngIf="drink.glutenFree"> gluten free</div>
-                                </div>
-                                
-                                <div class="deletebtndiv">
-                                    <button (click)="deleteItem(drink.name, drink.description, drink.type)" class="deletebtn">Delete</button>
-                                </div>
-                            </div>
-                            
-                            
-        
-                        </div>
-            
-            
-                    </div>  
-
-
-
-
-
-                    <div #menueBox class="desertsContainer " id="desertsBox">
-                        <div class="desertsContent itemS" *ngFor="let desert of desertsArray">
+                    <div class="contentC">
+                        <div #menueBox class="mealsContainer" id="mealsBox" >
+                            <div class="mealsContent itemS" *ngFor="let meal of mealsArray">
                                 <div class="image itemImageDiv">
-                                    <img class="itemImage" [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
+                                    <img class="itemImage" [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
                                 </div>
                                 <div class="itemdata">
-                                    <div class="Mname itemName">{{desert.name}}</div>
-                                    <div class="Mdescription itemDescription">{{desert.description}}</div>
-                                    <div class="Mprice itemPrice">${{desert.price}}</div>
+                                    <div class="Mname itemName">{{meal.name}}</div>
+                                    <div class="Mdescription itemDescription">{{meal.description}}</div>
+                                    <div class="Mprice itemPrice">${{meal.price}}</div>
                                     <div class="checks">
-                                        <div class="Mhalal check itemHalal" *ngIf="desert.halal"> &#x062D;&#x0644;&#x0627;&#x0644;
+                                        <div class="Mhalal check itemHalal" *ngIf="meal.halal">&#x062D;&#x0644;&#x0627;&#x0644;
                                         </div>
-                                        <div class="Mvegan check itemVegan" *ngIf="desert.vegan">V</div>
-                                        <div class="Mvegetarian check itemVegetarian" *ngIf="desert.vegetarian"> vegetarian</div>
-                                        <div class="Mlactosefree check itemLactose" *ngIf="desert.lactoseFree">lactose free</div>
-                                        <div class="Mglutenfree check itemGluten" *ngIf="desert.glutenFree"> gluten free</div>
+                                        <div class="Mvegan check itemVegan" *ngIf="meal.vegan">&#x24B1;</div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian">vegetarian</div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree">lactose free</div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree">gluten free</div>
                                     </div>
                                     
                                     <div class="deletebtndiv">
-                                        <button (click)="deleteItem(desert.name, desert.description, desert.type)" class="deletebtn">Delete</button>
+                                        <button (click)="deleteItem(meal.name, meal.description, meal.type)" class="deletebtn "> <i class="fas fa-xmark"></i> </button>
                                     </div>
                                 </div>
                                 
                                 
+            
+                            </div>
+                        </div>
+    
+    
+    
+    
+    
+                        <div #menueBox class="drinksContainer " id="drinksBox" >
+                            <div class="drinksContent itemS" *ngFor="let drink of drinksArray">
+                                <div class="image itemImageDiv">
+                                    <img class="itemImage" [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
+                                </div>
+                                <div class="itemdata">
+                                    <div class="Mname itemName">{{drink.name}}</div>
+                                    <div class="Mdescription itemDescription">{{drink.description}}</div>
+                                    <div class="Mprice itemPrice">${{drink.price}}</div>
+                                    <div class="checks">
+                                        <div class="Mhalal check itemHalal" *ngIf="drink.halal"> &#x062D;&#x0644;&#x0627;&#x0644;
+                                        </div>
+                                        <div class="Mvegan check itemVegan" *ngIf="drink.vegan">V</div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="drink.vegetarian"> vegetarian</div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="drink.lactoseFree">lactose free</div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="drink.glutenFree"> gluten free</div>
+                                    </div>
+                                    
+                                    <div class="deletebtndiv">
+                                        <button (click)="deleteItem(drink.name, drink.description, drink.type)" class="deletebtn">Delete</button>
+                                    </div>
+                                </div>
+                                
+                                
+            
+                            </div>
+                
+                
+                        </div>  
+    
+    
+    
+    
+    
+                        <div #menueBox class="desertsContainer " id="desertsBox">
+                            <div class="desertsContent itemS" *ngFor="let desert of desertsArray">
+                                    <div class="image itemImageDiv">
+                                        <img class="itemImage" [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
+                                    </div>
+                                    <div class="itemdata">
+                                        <div class="Mname itemName">{{desert.name}}</div>
+                                        <div class="Mdescription itemDescription">{{desert.description}}</div>
+                                        <div class="Mprice itemPrice">${{desert.price}}</div>
+                                        <div class="checks">
+                                            <div class="Mhalal check itemHalal" *ngIf="desert.halal"> &#x062D;&#x0644;&#x0627;&#x0644;
+                                            </div>
+                                            <div class="Mvegan check itemVegan" *ngIf="desert.vegan">V</div>
+                                            <div class="Mvegetarian check itemVegetarian" *ngIf="desert.vegetarian"> vegetarian</div>
+                                            <div class="Mlactosefree check itemLactose" *ngIf="desert.lactoseFree">lactose free</div>
+                                            <div class="Mglutenfree check itemGluten" *ngIf="desert.glutenFree"> gluten free</div>
+                                        </div>
+                                        
+                                        <div class="deletebtndiv">
+                                            <button (click)="deleteItem(desert.name, desert.description, desert.type)" class="deletebtn">Delete</button>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                
+                            </div>
+                        </div>
+    
+    
+    
+    
+    
+                        <div #menueBox class="additemContent" id="addItemBox" >
+                            <form #menueForm="ngForm" (ngSubmit)="submitMenueItem(menueForm)">
+                                <div class="menu">
+                                    <div class="item" #itemContainer>
+                                        <div class="form-group item" #itemDiv>  
+                                            <label for="itemType">Item Type</label>
+                                            <select id="itemType" name="itemType">
+                                                <option value="meal">Meal</option>
+                                                <option value="drink">drink</option>
+                                                <option value="desert">desert</option>
+                                            </select>
+                                            <label for="itemName">Item Name</label>
+                                            <input type="text" class=""  name="itemName" required>
+                                            <label for="itemDescription">Description/Ingredients</label>
+                                            <input type="text" class=""  name="itemDescription" required>
+                                            <label for="itemPrice">Price</label>
+                                            <input type="number" class=""  name="itemPrice" required>
+                                            <label for="halal">Halal</label>
+                                            <input type="checkbox" class=""  name="halal" required>
+                                            <label for="vegan">Vegan</label>
+                                            <input type="checkbox" class=""  name="vegan" required>
+                                            <label for="vegetarian">Vegetarian</label>
+                                            <input type="checkbox" class=""  name="vegetarian" required>
+                                            <label for="glutenFree">Gluten Free</label>
+                                            <input type="checkbox" class=""  name="glutenFree" required>
+                                            <label for="lactoseFree">Lactose Free</label>
+                                            <input type="checkbox" class=""  name="lactoseFree" required>
+                                            <label for="itemimg">Item Image</label>
+                                            <input type="file" class=""  name="itemimg" (change)="onFileSelected($event)" accept="image/*" required>
+                                        </div>
+                                    </div>
+                                </div>
+                        
+                                <button type="submit">Submit menue Item</button>
+                        
+                                        
+                        
+                            </form>
             
                         </div>
                     </div>
-
-
-
-
-
-                    <div #menueBox class="additemContent" id="addItemBox" >
-                        <form #menueForm="ngForm" (ngSubmit)="submitMenueItem(menueForm)">
-                            <div class="menu">
-                                <div class="item" #itemContainer>
-                                    <div class="form-group item" #itemDiv>  
-                                        <label for="itemType">Item Type</label>
-                                        <select id="itemType" name="itemType">
-                                            <option value="meal">Meal</option>
-                                            <option value="drink">drink</option>
-                                            <option value="desert">desert</option>
-                                        </select>
-                                        <label for="itemName">Item Name</label>
-                                        <input type="text" class=""  name="itemName" required>
-                                        <label for="itemDescription">Description/Ingredients</label>
-                                        <input type="text" class=""  name="itemDescription" required>
-                                        <label for="itemPrice">Price</label>
-                                        <input type="number" class=""  name="itemPrice" required>
-                                        <label for="halal">Halal</label>
-                                        <input type="checkbox" class=""  name="halal" required>
-                                        <label for="vegan">Vegan</label>
-                                        <input type="checkbox" class=""  name="vegan" required>
-                                        <label for="vegetarian">Vegetarian</label>
-                                        <input type="checkbox" class=""  name="vegetarian" required>
-                                        <label for="glutenFree">Gluten Free</label>
-                                        <input type="checkbox" class=""  name="glutenFree" required>
-                                        <label for="lactoseFree">Lactose Free</label>
-                                        <input type="checkbox" class=""  name="lactoseFree" required>
-                                        <label for="itemimg">Item Image</label>
-                                        <input type="file" class=""  name="itemimg" (change)="onFileSelected($event)" accept="image/*" required>
-                                    </div>
-                                </div>
-                            </div>
                     
-                            <button type="submit">Submit menue Item</button>
-                    
-                                    
-                    
-                        </form>
-        
+    
+    
+                </div>
+    
+                <div #collapsables class="stats collapsables" id="statsDiv">
+    
+                </div>
+    
+                <div #collapsables class="settings collapsables" id="settingsDiv">
+                    <div class="deleteresdiv">
+                        <button (click)="deleteRestaurant()" class="deletebtn">Delete restaurant</button>
                     </div>
                 </div>
                 
-
-
+    
+               
+                
+                
+                
+                
+                
+                
+                
+    
             </div>
-
-            <div #collapsables class="stats collapsables" id="statsDiv">
-
-            </div>
-
-            <div #collapsables class="settings collapsables" id="settingsDiv">
-                <div class="deleteresdiv">
-                    <button (click)="deleteRestaurant()" class="deletebtn">Delete restaurant</button>
-                </div>
-            </div>
-            
-
-           
-            
-            
-            
-            
-            
-            
-            
 
         </div>
+        
 
     </div>
     
