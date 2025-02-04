@@ -74,7 +74,7 @@
                                     <td class="tableSPart">{{order.status}}</td>
                                     <td class="tableSPart">{{order.createdAt | date:' MM/dd,  h:mm a'}}</td>
                                     <td class="tableSPart">{{order.updatedAt | date:' MM/dd,  h:mm a'}}</td>
-                                    <td class="tableSPart"><button (click)="advanceOrder(order.id)">Next Stage</button></td>
+                                    <td class="tableSPart"><div class=" advancebtn" (click)="advanceOrder(order.id)">Advance Order</div></td>
                                         
                                     
                                 </tr>
