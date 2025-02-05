@@ -36,7 +36,7 @@
                         <div class="resName">
                             <!-- , currentUserId for click below -->
             
-                            <h1 (click)="restaurantPage(restaurant.id)">{{ restaurant.name }}</h1>
+                            <label class="restaurantNameLabel" (click)="restaurantPage(restaurant.id)">{{ restaurant.name }}</label>
                         </div>
                         <div class="disrating">
                             <div class="rating">
@@ -58,21 +58,21 @@
 
 
             <div class="cxOrdersContainer" *ngIf="cxOrders">
+                <div class="ordersTitle">
+                    <label class="titlesLable">Orders Placed</label>
+                </div>
         
                 <div class="cxOrderItems" *ngFor="let order of cxOrders">
-                    <div class="orderRow">
-                        <div class="orderID">{{order.id}}</div>
-                        <div class="itemsList" *ngFor="let item of order.items">
-                            <div class="orderQuantity">X{{item.quantity}}</div>
-                            <div class="OrderName">{{item.name}}</div>
-                            <div class="price">${{item.quantity * item.unit_amount.value}}</div>
-                        </div>
-                        <div class="orderStatus">{{order.status}}</div>
-                        <div class="timePlace">{{order.createdAt}}</div>
-                        <div class="lastMod">{{order.updatedAt}}</div>
+
+                    <div class="orderinfo">
+                        <label class="orderLabel">Order ID: {{order.id}}</label>
                     </div>
+                    <div class="orderinfo">
+                        <label class="orderLabel">Status: {{order.status}}</label>
+                    </div>
+                    
                 </div>
-                <span style="display: block; width: 100%; border-top: 1px solid black;"></span>
+                
             
             
             </div> 
