@@ -1,59 +1,91 @@
-<header>
-    <span class="logo" >Halal Eats</span>
-    <nav>
-        <ul class="nav__links">
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Projects</a></li>
-            <li><a href="#">About</a></li>
-        </ul>
-    </nav>
-    <a class-="cta" href="#"><button (click)="logout('logout requested!')">Logout</button></a>
+<div class="mainDiv">
+
+    <div class="topBar">
+        <div class="logo">
+            <img class="logoimg" src = "http://localhost:3000/uploads/smallLogo.png" alt="Logo"/>
     
-</header>
-<body>
-    <div class="restaurantContainer" *ngIf="restaurantPackage">
-
-        <div class="restaurant" *ngFor="let restaurant of restaurantPackage">
-            <div class="coverImgDiv">
-                <img [src]=" 'http://localhost:3000/' + restaurant.images" alt="Description of image"/>
-            </div>
-            <div class="resName">
-                <!-- , currentUserId for click below-->
-                <h1 (click)="restaurantPage(restaurant.id)">{{ restaurant.name }}</h1>
-            </div>
-            <div class="disrating">
-                <div class="dis">
-                    <h6>{{restaurant.distance}}</h6>
-                </div>
-                <div class="rating">
-                    <h6>{{restaurant.halalRating}}</h6>
-                </div>
-            </div>
         </div>
-       
-    </div>
-    <div class="noOrders" *ngIf="!cxOrders"><h2>You have not placed any orders yet!</h2></div>
-    <div class="cxOrdersContainer" *ngIf="cxOrders">
         
-            <div class="cxOrderItems" *ngFor="let order of cxOrders">
-                <div class="orderRow">
-                    <div class="orderID">{{order.id}}</div>
-                    <div class="itemsList" *ngFor="let item of order.items">
-                        <div class="orderQuantity">X{{item.quantity}}</div>
-                        <div class="OrderName">{{item.name}}</div>
-                        <div class="price">${{item.quantity * item.unit_amount.value}}</div>
-                    </div>
-                    <div class="orderStatus">{{order.status}}</div>
-                    <div class="timePlace">{{order.createdAt}}</div>
-                    <div class="lastMod">{{order.updatedAt}}</div>
-                </div>
-            </div>
-            <span style="display: block; width: 100%; border-top: 1px solid black;"></span>
-        
-        
+        <div class="hrefDiv">
+            <ul class="nav__links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Place Holder</a></li>
+                <li><a href="#">Future Updates</a></li>
+            </ul>
+        </div>
+
+        <div class="logoutDiv">
+            <button class="logoutBtn" (click)="logout('logout requested!')">Log Out</button>
+        </div>
     </div>
 
-</body>
+    <div class="mainContent">
+        <div class="coverPhoto">
+            <img class="coverImg" src = "http://localhost:3000/uploads/CoverImg.jpg" alt="Cover Image"/>
+        </div>
+
+         <div class="crammedDiv">
+            <div class="restaurantContainer" *ngIf="restaurantPackage">
+
+                <div class="restaurant" *ngFor="let restaurant of restaurantPackage">
+                    <div class="coverImgDiv">
+                        <img class="restaurantCoverImg" [src]=" 'http://localhost:3000/' + restaurant.images" alt="Description of image"/>
+                    </div>
+
+                    <div class="restaurantDetails">
+                        <div class="resName">
+                            <!-- , currentUserId for click below -->
+            
+                            <h1 (click)="restaurantPage(restaurant.id)">{{ restaurant.name }}</h1>
+                        </div>
+                        <div class="disrating">
+                            <div class="rating">
+                                <h6>&#x062D;&#x0644;&#x0627;&#x0644; rating: {{restaurant.halalRating}}</h6>
+                            </div>
+                            <div class="dis">
+                                <h6>{{restaurant.distance | number: '1.1-1'}}KM Away from you</h6>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+               
+            </div>
+
+
+            <div class="noOrders" *ngIf="!cxOrders"><h2>You have not placed any orders yet!</h2></div>
+
+
+            <div class="cxOrdersContainer" *ngIf="cxOrders">
+        
+                <div class="cxOrderItems" *ngFor="let order of cxOrders">
+                    <div class="orderRow">
+                        <div class="orderID">{{order.id}}</div>
+                        <div class="itemsList" *ngFor="let item of order.items">
+                            <div class="orderQuantity">X{{item.quantity}}</div>
+                            <div class="OrderName">{{item.name}}</div>
+                            <div class="price">${{item.quantity * item.unit_amount.value}}</div>
+                        </div>
+                        <div class="orderStatus">{{order.status}}</div>
+                        <div class="timePlace">{{order.createdAt}}</div>
+                        <div class="lastMod">{{order.updatedAt}}</div>
+                    </div>
+                </div>
+                <span style="display: block; width: 100%; border-top: 1px solid black;"></span>
+            
+            
+            </div> 
+
+
+
+        </div> 
+        
+
+
+    </div>
+</div>
+
 
 
 
