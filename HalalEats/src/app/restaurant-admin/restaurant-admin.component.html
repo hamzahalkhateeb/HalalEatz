@@ -74,7 +74,7 @@
                                     <td class="tableSPart">{{order.status}}</td>
                                     <td class="tableSPart">{{order.createdAt | date:' MM/dd,  h:mm a'}}</td>
                                     <td class="tableSPart">{{order.updatedAt | date:' MM/dd,  h:mm a'}}</td>
-                                    <td class="tableSPart"><div class=" advancebtn" (click)="advanceOrder(order.id)">Advance Order</div></td>
+                                    <td class="tableSPart"><div class=" advancebtn" (click)="advanceOrder(order.id)">Process <i class="fas fa-arrow-right"></i> </div></td>
                                         
                                     
                                 </tr>
@@ -82,20 +82,7 @@
 
                         </table>
 
-                        <!--<div class="orderItems" *ngFor="let order of ordersRetrieved" >
-                            <div class="orderRow">
-                                <div class="orderID">{{order.id}}</div>
-                                <div class="itemsList" *ngFor="let item of order.items">
-                                    <div class="orderQuantity">X{{item.quantity}}</div>
-                                    <div class="OrderName">{{item.name}}</div>
-                                    <div class="price">${{item.quantity * item.unit_amount.value}}</div>
-                                </div>
-                                <div class="orderStatus">{{order.status}}</div>
-                                <div class="orderProgressBtn"><button (click)="advanceOrder(order.id)">Next Stage</button></div>
-                                <div class="timePlace">{{order.createdAt}}</div>
-                                <div class="lastMod">{{order.updatedAt}}</div>
-                            </div>
-                        </div> -->
+                        
                     </div>
                 </div>
     
@@ -307,13 +294,24 @@
                 </div>
     
                 <div #collapsables class="stats collapsables" id="statsDiv">
-    
+                    <div class="navBar">
+
+                    </div>
+                    <div class="contentC">
+
+                    </div>
                 </div>
     
                 <div #collapsables class="settings collapsables" id="settingsDiv">
-                    <div class="deleteresdiv">
-                        <button (click)="deleteRestaurant()" class="deletebtn">Delete restaurant</button>
+                    <div class="navBar">
+
                     </div>
+                    <div class="contentC">
+                        <div class="deleteresdiv">
+                            <button (click)="deleteRestaurant()" class="deletebtn">Delete restaurant</button>
+                        </div>
+                    </div>
+                    
                 </div>
                 
     

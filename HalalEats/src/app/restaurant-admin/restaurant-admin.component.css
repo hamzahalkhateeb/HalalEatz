@@ -209,13 +209,10 @@
 
     
   
-  
-.advancebtn:hover {
-transition: all 0.3s ease;
-background-color: #4B6134;
-
-
+.advancebtn{
+    cursor: pointer;
 }
+
 .ordersTable{
     margin: 20px;
     width: 95%;
@@ -588,4 +585,6 @@ background-color: #4B6134;
 .des{
     height: 150px;
 }
+
+
 
