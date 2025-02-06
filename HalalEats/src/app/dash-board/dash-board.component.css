@@ -153,15 +153,17 @@ align-items: center;
     width: 30%;
     margin: 10px;
     height: 20%;
-    transition: 1s ease;
+    transition: 0.3s ease;
     scale: 1;
     background-color: #9ebb8d;
     box-shadow: 7px 7px 8px 0px rgba(0,0,0,0.2);
+    overflow: hidden;
 
 }
 
-.restaurant.hover{
+.restaurant:hover{
     scale: 1.1;
+    border: 1px solid;
 }
 
 .coverImgDiv{
@@ -188,7 +190,7 @@ align-items: center;
 }
 
 .restaurantNameLabel{
-    font-size: 10%;
+    font-size: 150%;
     font-weight: bold;
     font-family: 'lato' sans-serif;
 }

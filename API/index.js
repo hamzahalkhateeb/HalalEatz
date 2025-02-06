@@ -566,13 +566,14 @@ app.post('/LoadRestaurantAdminPackage',   async (req, res) => {
         try{
             
             let menue = JSON.stringify(await Menue.findOne({where : {restaurantId: restaurantId}}));
+            let restaurant = await Restaurant.findOne({where : {id : restaurantId}});
             
 
             if (!menue){
-            return res.json({success:false, message: "This restaurant does not have any items available tp purchase"});
+            return res.json({success:false, message: "This restaurant does not have any items available tp purchase", restaurant: restaurant});
             } else {
             
-            return res.json({success: true, message: "menue retrieval successfull!", menue});
+            return res.json({success: true, message: "menue retrieval successfull!", menue, restaurant: restaurant});
             }
         } catch (error){
             res.status(500).json({success: false, message: "something went wrong, internal server error"});

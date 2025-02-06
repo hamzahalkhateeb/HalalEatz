@@ -21,6 +21,20 @@ export class RestaurantPageComponent implements OnInit {
   drinksArray: any;
   desertsArray: any;
 
+  restaurant!:{
+    name: string;
+    location: string;
+    lat: number;
+    lon: number;
+    openingHours: string;
+    halalRating: number;
+    images: string;
+    open: boolean;
+
+  }
+
+  distance!: number;
+
   orderArray: Array<{
     name: string,
     description: string,
@@ -37,6 +51,7 @@ export class RestaurantPageComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.restaurantId = params['restaurantId'];
+      this.distance = params['distance'];
       
     });
 
@@ -54,6 +69,15 @@ export class RestaurantPageComponent implements OnInit {
           this.mealsArray  = this.menue.meals.map((mealString: string) => JSON.parse(mealString));
           this.drinksArray  = this.menue.drinks.map((drinkString: string) => JSON.parse(drinkString));
           this.desertsArray  = this.menue.deserts.map((desertString: string)=> JSON.parse(desertString));
+
+
+          let parsedRest = data.restaurant;
+
+          this.restaurant = {...parsedRest};
+
+          
+          
+
 
         } else {
           alert(data.message);

@@ -1,3 +1,48 @@
+<div class="mainDiv">
+    <div class="topBar">
+        <div class="logo">
+             <img class="logoimg" src = "http://localhost:3000/uploads/smallLogo.png" alt="Logo"/>   
+        </div>
+
+
+        <div class="logoutDiv">
+           <!-- CART -->
+        </div>
+
+    </div>
+
+    <div class="mainContent">
+        <div class="coverPhoto">
+            <img class="coverImg" [src] = " 'http://localhost:3000/' + restaurant.images"  alt="Cover Image"/>
+        </div>
+        <div class="resHeaders">
+            <div class="resName">
+                <label class="resTitle">{{restaurant.name}}</label>
+            </div>
+            <div class="disrating">
+                <div class="open">
+                    <label class="disLabel">{{restaurant.open}}</label>
+                </div>
+                <div class="distance">
+                    <label class="disLabel">{{distance}}KM away</label>
+                </div>
+                <div class="rating">
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!--
+
+
+
 <p>restaurant-page works! id is {{ restaurantId }}</p>
 
 
@@ -103,4 +148,4 @@
     </div>
     
     
-</div>
+</div> -->

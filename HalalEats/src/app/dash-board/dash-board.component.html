@@ -6,13 +6,7 @@
     
         </div>
         
-        <div class="hrefDiv">
-            <ul class="nav__links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Place Holder</a></li>
-                <li><a href="#">Future Updates</a></li>
-            </ul>
-        </div>
+        
 
         <div class="logoutDiv">
             <button class="logoutBtn" (click)="logout('logout requested!')">Log Out</button>
@@ -36,7 +30,7 @@
                         <div class="resName">
                             <!-- , currentUserId for click below -->
             
-                            <label class="restaurantNameLabel" (click)="restaurantPage(restaurant.id)">{{ restaurant.name }}</label>
+                            <label class="restaurantNameLabel" (click)="restaurantPage(restaurant.id, restaurant.distance)">{{ restaurant.name }}</label>
                         </div>
                         <div class="disrating">
                             <div class="rating">

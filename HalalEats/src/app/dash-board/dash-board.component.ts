@@ -96,7 +96,7 @@ export class DashBoardComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           if(data.success){
-            alert(data.message);
+            
             this.router.navigateByUrl(data.redirectUrl);
           } else {
             console.log("unexpected json format! ", data);
@@ -114,7 +114,7 @@ export class DashBoardComponent implements OnInit {
     .subscribe({
       next: (data: any) => {
         if(data.success){
-          alert(data.restaurantPackage);
+          
 
           let recievedData = JSON.parse(data.restaurantPackage);
           this.restaurantPackage = [];
@@ -148,11 +148,11 @@ export class DashBoardComponent implements OnInit {
     });}
 
 
-  restaurantPage(restaurantId: number, ): void {
+  restaurantPage(restaurantId: number, distance: number ): void {
 
     console.log("restaurantPage is being clicked___________________________________");
     this.router.navigate(['/restaurantPage', restaurantId], {
-      queryParams: { restaurantId: restaurantId}
+      queryParams: { restaurantId: restaurantId, distance: distance}
     });
   }
 
