@@ -254,11 +254,11 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     }
 
     nextSection(click: any){
-      if (this.resInfo.halalRating < 0 ){
+      if (this.resInfo.halalRating < 7 ){
         alert("your restaurant does not qualify to be listed on this site!");
         this.router.navigateByUrl('/login');
         return;
-      } else if (this.resInfo.halalRating  >= 0){
+      } else if (this.resInfo.halalRating  >= 7){
 
         console.log('event called');
         const container1 = this.container1Ref.nativeElement;
@@ -318,7 +318,12 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     }
     
 
-    
+    validateResInfo(resInfo: object){
+
+      
+
+
+    }
     
     
   }

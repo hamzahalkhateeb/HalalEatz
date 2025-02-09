@@ -1,7 +1,7 @@
 <div class="mainDiv">
     <div class="topBar">
         <div class="logo">
-            <img class="logoimg" src = "http://localhost:3000/uploads/smallLogo.png" alt="Logo"/>
+            <img class="logoimg" src = "http://localhost:3000/uploads/newlogo33.png" alt="Logo"/>
         </div>
 
         
@@ -106,8 +106,13 @@
                     <div class="contentC">
                         <div #menueBox class="mealsContainer" id="mealsBox" >
                             <div class="mealsContent itemS" *ngFor="let meal of mealsArray">
-                                <div class="image itemImageDiv">
-                                    <img class="itemImage" [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
+                                <div class="imgandprice">
+
+                                    <div class="image itemImageDiv">
+                                        <img class="itemImage" [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
+                                    </div>
+                                    <div class="Mprice itemPrice">${{meal.price}}</div>
+
                                 </div>
                                 <div class="itemdata">
                                     <div class="itemHeaders">
@@ -119,14 +124,13 @@
                                     </div>
                                     
                                     <div class="Mdescription itemDescription">{{meal.description}}</div>
-                                    <div class="Mprice itemPrice">${{meal.price}}</div>
+                                    
                                     <div class="checks">
-                                        <div class="Mhalal check itemHalal" *ngIf="meal.halal">&#x062D;&#x0644;&#x0627;&#x0644;
-                                        </div>
-                                        <div class="Mvegan check itemVegan" *ngIf="meal.vegan"><i  class="fas fa-v"></i><i class="fas fa-plus"></i></div>
-                                        <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian"><i style="color: green;" class="fas fa-v"></i></div>
-                                        <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree"><i class="fas fa-cow"></i><i style="color: red;" class="fas fa-xmark"></i></div>
-                                        <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree"><i style="color: brown;" class="fas fa-bread-slice"></i><i style="color: red;"class="fas fa-xmark"></i></div>
+                                        
+                                        <div class="Mvegan check itemVegan" *ngIf="meal.vegan"><img class="iconimg" src = "http://localhost:3000/uploads/vegan.png" alt="Logo"/></div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian"><img class="iconimg" src = "http://localhost:3000/uploads/vegetarian.png" alt="Logo"/></div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree"><img class="iconimg" src = "http://localhost:3000/uploads/lactose.png" alt="Logo"/></div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree"><img class="iconimg" src = "http://localhost:3000/uploads/gluten.png" alt="Logo"/></div>
                                     </div>
                                     
                                     
@@ -234,7 +238,7 @@
                                                 <input type="text" class="field"  name="itemName" required>
 
                                                 <label class="addItemFieldLabel" for="itemDescription">Description/Ingredients</label>
-                                                <input type="text" class="field des"  name="itemDescription" required>
+                                                <textarea type="text" class="field des"  name="itemDescription" required></textarea>
 
                                                 <label class="addItemFieldLabel" for="itemPrice">Price</label>
                                                 <input type="number" class="field"  name="itemPrice" required>
