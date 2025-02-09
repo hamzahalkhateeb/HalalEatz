@@ -71,12 +71,18 @@ html, body {
     pointer-events: none !important;
   }
 
+  .checkbox{
+    width:100%;
+    border-bottom: solid 1px;
+    margin-bottom: 5px;
+  }
+
 label{
   font-family: 'DM sans', sans-serif;
   
 }
   .containerTitle{
-    margin-top: -20px;
+    
     text-align: center;
     font-family: 'Georgia', serif;
     font-weight: bold;
@@ -103,8 +109,9 @@ label{
     transform: scale(1.05);
     background-color: lightgray;
   }
+
   .form-check-input{
-    margin-left: 20px;
+    
     border-radius: 50%;
   }
 
@@ -116,7 +123,7 @@ label{
     
   }
 
-  
+
 
   .questions{
     width: 100%;
@@ -129,7 +136,7 @@ label{
     transition: transform 1s ease, opacity 0.5s ease;
     transform: translateX(100%);
     position: absolute;
-    padding: 20px;
+    
     background-repeat: no-repeat;
     height: fit-content;
     border-radius: 9px;
@@ -156,7 +163,7 @@ label{
 
   .form-control{
     background-color: #e5e8e2;
-    border: solid lightgray 1px;
+    border: solid lightgray 2px;
   }
 
 .res{
@@ -173,10 +180,11 @@ label{
   .dayName{
     margin-bottom: 5px;
     margin-top: 5px;
+    
   }
   .NameLocationImg{
     position: relative;
-    width: 25%;
+    width: 35%;
     background-color: #e5e8e2;
     padding: 20px;
     
@@ -203,12 +211,18 @@ label{
   .Leftelement{
     margin-bottom: 20px;
     z-index: 13;
+    
   }
 
   .time-inputs{
     padding: 3px;
-    border-bottom: solid 1px;
+    
+    
     margin-bottom: 20px;
+  }
+
+  .lastTimeInput{
+    margin-bottom: 0px;
   }
 
   .Openingschedule{
@@ -220,16 +234,27 @@ label{
   .time-inputsS{
     background-color: #e5e8e2;
     padding: 20px;
+    padding-bottom:0px;
     padding-left: 60px;
-    
+    width: 40%
     
   }
 
+  .openFrom{
+    margin-right: 20px;
+  }
+
+  .lolol{
+    border: none;
+    border-radius: 50% !important;
+  }
+
   .time-slot{
-    margin-right: 5px;
+    margin-right: 25px;
     margin-left: 9px;
     border-radius: 5px;
     border: none;
+    background-color: #e5e8e2;
 
   }
 
@@ -286,11 +311,13 @@ label{
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+    margin-top: 20px;
   }
 
   #googlebtn{
     display: flex;
     justify-content: center;
+    margin-bottom: 20px;
   }
   
 
