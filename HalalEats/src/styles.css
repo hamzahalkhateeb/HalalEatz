@@ -5,8 +5,7 @@ body {
     height: 100vh;
     overflow: scroll;
     justify-content: center;
-
-    background-color: #e5e8e2;
+    background-color: #e5e8e2 !important;
     
 }
 

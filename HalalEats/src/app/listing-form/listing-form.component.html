@@ -1,3 +1,13 @@
+<div class="topBar">
+    <div class="logo">
+        <img class="logoimg" src = "http://localhost:3000/uploads/newlogo33.png" alt="Logo"/>
+
+    </div>
+    
+    
+
+</div>
+
 <div class="ParentContainer">
 
     <div class="container1" #container1>
@@ -19,14 +29,14 @@
 
                 <div class="NameLocationImg" #NameLocationImg>
                     <div class="Leftelement">
-                        <label for="resName">Restaurant Name *</label>
+                        <label for="resName" class="res">Restaurant Name *</label>
                         <input type="text" class="form-control" id="resName" name="resName" [(ngModel)]="resInfo.name" required>
                         
                     </div>
                     
             
                     <div class="Leftelement">
-                        <label for="resLocation">Location *</label>
+                        <label for="resLocation" class="res">Location *</label>
                         <input #resLocationInput type="text" class="form-control" id="resLocation" name="resLocation" [(ngModel)]="resInfo.location" (input)="onLocationChange($event)" required>
                         <ul *ngIf="predictions && predictions.length > 0">
                             <div *ngFor="let prediction of predictions" class="predicOption" (click)="selectPrediction(prediction)">
@@ -36,7 +46,7 @@
                     </div>
     
                     <div class="Leftelement">
-                        <label for="resPhoto">Cover Photo *</label>
+                        <label for="resPhoto" class="res">Cover Photo *</label>
                         <label class="warningText">Please ensure your photo has 2.63:1 ratio or a 820x3120 resolution</label>
                         <input type="file" class="form-control" id="resPhoto" name="resPhoto" (change)="onFileSelected($event)" accept="image/*" required>
                     </div>
@@ -44,6 +54,7 @@
                 </div>
         
                 <div class="time-inputsS">
+                    <label class="Openingschedule">Open Hours</label>
                     <div class="checkbox">
                         <label class="dayName">
                             <input type="checkbox" [(ngModel)]="resInfo.days.monday.open" name="daysMondayOpen"> Monday

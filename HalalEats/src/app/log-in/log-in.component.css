@@ -2,20 +2,26 @@
 
 
 
+.body{
+   background-color: #e5e8e2;
+}
 
 .logSection {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center horizontally */
+    justify-content:flex-start; /* Center horizontally */
     align-items: center; /* Center vertically */
-    height: 80vh; /* Take at least the full height of the viewport */
-    
+    height: 100vh; /* Take at least the full height of the viewport */
+    width: 100vh;
+    background-color: #e5e8e2;
 }
 
 
  .logo{
-   width: 60%;
-   height: 50%;
+   margin-top: 10%;
+   margin-bottom: 5%;
+   width: 55%;
+   height: 55%;
    display: flex;
    flex-direction: column;
    justify-content: center;
@@ -91,9 +97,9 @@ button:hover{
 }
 
 .logoimg{
-   width: 100%;
    
-   object-fit: cover;
+   height: 100%;
+   object-fit: contain;
    
    
 }

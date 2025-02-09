@@ -7,16 +7,41 @@ html, body {
     
   }
 
+
+  .topBar{
+    margin-top:2%;
+    width: 100%;
+    display: flex;
+    margin-right: 10px;
+    height: 10%;
+    z-index: 5;
+    position: relative;
+
+    flex-direction: row;
+    
+}
+
+
+.logo{
+  width:15%;  
+}
+
+.logoimg{
+  width: 100%;
+  height:100%;
+  object-fit:contain;
+}
+
   .ParentContainer{
     background: #e5e8e2;
-    background: linear-gradient(0deg, #e5e8e2 0%, #9ebb8d 50%);
+    
     width: 100vw;
     height: 100vh;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    
     z-index: 0;
     overflow-x:hidden;
     position: relative;
@@ -25,12 +50,12 @@ html, body {
   }
 
   .container1{
-    margin: 5%;
+    width: 60vw;
     opacity: 0;
     display: block;
-    padding: 20px;
+    
     background-repeat: no-repeat;
-    background-color: #f0e6e6;
+    background-color: #e5e8e2;
     height: fit-content;
     border-radius: 9px;
     z-index: 5;
@@ -47,15 +72,20 @@ html, body {
   }
 
 label{
-  font-family: 'lato', sans-serif;
-  font-weight: bold;
+  font-family: 'DM sans', sans-serif;
+  
 }
   .containerTitle{
-    
+    margin-top: -20px;
     text-align: center;
-    font-family: 'lato', sans-serif;
-    margin-top: 10px;
-    border-bottom: solid 1px;
+    font-family: 'Georgia', serif;
+    font-weight: bold;
+    z-index: 10;
+    position: relative;
+    margin-bottom: 30px;
+    height: 10%;
+    font-size: 370%;
+    
     
     
   }
@@ -63,7 +93,7 @@ label{
   .quesBox{
     opacity: 0;
     width: 100%;
-    margin-top: 5%;
+    margin-top: 2%;
     transition: opacity 1s ease;
     border-radius: 5px;
   }
@@ -75,15 +105,18 @@ label{
   }
   .form-check-input{
     margin-left: 20px;
+    border-radius: 50%;
   }
 
   .quesText{
-    font-family: 'lato', sans-serif;
+    font-family: 'DM sans', sans-serif;
     margin-left: 10px;
     margin-right: 10px;
-    font-weight: bold;
+    
     
   }
+
+  
 
   .questions{
     width: 100%;
@@ -101,7 +134,7 @@ label{
     height: fit-content;
     border-radius: 9px;
     z-index: 5;
-    background-color: #faf9f6;
+    background-color: #e5e8e2;
     display: block;
     flex-direction: column;
     z-index: 10;
@@ -121,13 +154,19 @@ label{
     flex-direction: column;
   }
 
-  
+  .form-control{
+    background-color: #e5e8e2;
+    border: solid lightgray 1px;
+  }
 
-
+.res{
+  font-weight: bold;
+  margin-bottom: 10px;
+}
   .overallInfo{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
 
   }
 
@@ -138,10 +177,12 @@ label{
   .NameLocationImg{
     position: relative;
     width: 25%;
-    background-color: #f0e6e6;
+    background-color: #e5e8e2;
     padding: 20px;
-    border-radius: 7px;
-    box-shadow: 7px 7px 8px 0px rgba(0,0,0,0.2);
+    
+    border-right: solid 1px;
+    padding-right: 60px;
+    
   }
 
   .predicOption{
@@ -170,11 +211,18 @@ label{
     margin-bottom: 20px;
   }
 
+  .Openingschedule{
+    font-size: large;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
   .time-inputsS{
-    background-color: #f0e6e6;
+    background-color: #e5e8e2;
     padding: 20px;
-    border-radius: 7px;
-    box-shadow: 7px 7px 8px 0px rgba(0,0,0,0.2);
+    padding-left: 60px;
+    
+    
   }
 
   .time-slot{
@@ -186,12 +234,16 @@ label{
   }
 
   .nextSectionBtn{
+    margin-top: 20px;
     width: 100%;
     display: flex;
     justify-content: center;
     
   }
   .nextBtn {
+    
+    width: 25%;
+    height:fit-content;
     margin-top: 20px;
     bottom: 0;
     display: inline-flex;
@@ -217,10 +269,7 @@ label{
     border-right-color: #000000;
     border-bottom-color: #000000;
     border-left-color: #000000;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-radius: 50px;
     background-color: #334625;
     box-shadow: 7px 7px 8px 0px rgba(0,0,0,0.2);
   }
