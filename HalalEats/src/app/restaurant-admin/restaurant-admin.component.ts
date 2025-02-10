@@ -241,9 +241,11 @@ export class RestaurantAdminComponent implements OnInit {
         if (data.success){
 
           this.ordersRetrieved = data.orders;
-
+          
+          
           this.ordersRetrieved.forEach(order =>{
             order.items = JSON.parse(order.items);
+            
           });
 
 

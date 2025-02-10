@@ -533,7 +533,7 @@ app.post('/LoadRestaurantAdminPackage',   async (req, res) => {
     const type = req.body.userType;
     
     
-    const sessionUserId = 78;//req.session.userId;
+    const sessionUserId = 75;//req.session.userId;
     //const sessionID = req.sessionID;
     //console.log(`inside loading restaurant package user id: ${sessionUserId}`);
     //console.log(`inside loading restaurant package session id: ${sessionID}`);
@@ -855,7 +855,7 @@ app.post('/capturePayment', async (req, res)=>{
 
 app.post('/getOrders',  async (req, res) =>{
     
-    const userId = 78;//req.session.userId;
+    const userId = 75;//req.session.userId;
 
     try {
         const restaurant = await Restaurant.findOne({where : {userId : userId}});
