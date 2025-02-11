@@ -145,6 +145,23 @@ export class RestaurantPageComponent implements OnInit {
     
   }
 
+  logout(response: any): void{
+    console.log("logout attempt initiated!");
+    this.http.post('http://localhost:3000/logout', { id_token: response.credential }, {withCredentials: true})
+      .subscribe({
+        next: (data: any) => {
+          if(data.success){
+            
+            this.router.navigateByUrl(data.redirectUrl);
+          } else {
+            console.log("unexpected json format! ", data);
+          }
+        },
+        error: (error: any) => {
+          console.error('Error: ', error);
+        }
+});}
+
 
   checkout(totalPrice: number){
 

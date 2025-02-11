@@ -1,12 +1,13 @@
 <div class="mainDiv">
     <div class="topBar">
         <div class="logo">
-             <img class="logoimg" src = "http://localhost:3000/uploads/smallLogo.png" alt="Logo"/>   
+             <img class="logoimg" src = "http://localhost:3000/uploads/newlogo33.png" alt="Logo"/>   
         </div>
 
 
         <div class="logoutDiv">
-           <!-- CART -->
+            <div class="cartIcon"><i class="fas fa-shopping-cart " ></i></div>
+            <button class="logoutBtn" (click)="logout('logout requested!')">Log Out</button>
         </div>
 
     </div>
@@ -20,18 +21,145 @@
                 <label class="resTitle">{{restaurant.name}}</label>
             </div>
             <div class="disrating">
-                <div class="open">
-                    <label class="disLabel">{{restaurant.open}}</label>
+                <div class="OorC" >
+                    <label class="opLabel" *ngIf="restaurant.open">OPEN</label>
+                    <label class="clLabel" *ngIf="!restaurant.open">CLOSED</label>
                 </div>
                 <div class="distance">
-                    <label class="disLabel">{{distance}}KM away</label>
+                    <label class="disLabel"><img width="39" height="39" src="https://img.icons8.com/fluency/48/google-maps-new.png" alt="google-maps-new"/>{{distance  | number: '1.1-1'}}KM</label>
                 </div>
                 <div class="rating">
-
+                    <label class="disLabel"><div class="star"><span class="number">{{restaurant.halalRating}}</span></div></label>
                 </div>
 
             </div>
         </div>
+
+        <div class="menues">
+            <div class="tabsDiv">
+                <div class="mealsTab tab">
+
+                </div>
+                <div class="drinksTab tab">
+
+                </div>
+                <div class="desertsTab tab">
+
+                </div>
+            </div>
+            <div class="itemsDiv">
+                <div #menueBox class="mealsContainer" id="mealsBox" >
+                            <div class="mealsContent itemS" *ngFor="let meal of mealsArray">
+                                <div class="imgandprice">
+
+                                    <div class="image itemImageDiv">
+                                        <img class="itemImage" [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
+                                    </div>
+                                    <div class="Mprice itemPrice">${{meal.price}}.00</div>
+
+                                </div>
+                                <div class="itemdata">
+                                    <div class="itemHeaders">
+                                        <div class="Mname itemName">{{meal.name}}</div>
+                                        
+                                        
+                                    </div>
+                                    
+                                    <div class="Mdescription itemDescription">{{meal.description}}</div>
+                                    
+                                    <div class="checks">
+                                        
+                                        <div class="Mvegan check itemVegan" *ngIf="meal.vegan"><img class="iconimg" src = "http://localhost:3000/uploads/vegan.png" alt="Logo"/></div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian"><img class="iconimg" src = "http://localhost:3000/uploads/vegetarian.png" alt="Logo"/></div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree"><img class="iconimg" src = "http://localhost:3000/uploads/lactose.png" alt="Logo"/></div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree"><img class="iconimg" src = "http://localhost:3000/uploads/gluten.png" alt="Logo"/></div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                
+                                
+            
+                            </div>
+                        </div>
+
+                        <div #menueBox class="drinksContainer " id="drinksBox" >
+                            <div class="drinksContent itemS" *ngFor="let drink of drinksArray">
+
+                                <div class="imgandprice">
+                                    <div class="image itemImageDiv">
+                                        <img class="itemImage" [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
+                                    </div>
+                                    <div class="Mprice itemPrice">${{drink.price}}.00</div>
+
+                                </div>
+                                <div class="itemdata">
+                                    <div class="itemHeaders">
+                                        <div class="Mname itemName">{{drink.name}}</div>
+                                        
+                                        
+                                    </div>
+                                    <div class="Mdescription itemDescription">{{drink.description}}</div>
+                                    
+                                    <div class="checks">
+                                        
+                                        <div class="Mvegan check itemVegan" *ngIf="drink.vegan"><img class="iconimg" src = "http://localhost:3000/uploads/vegan.png" alt="Logo"/></div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="drink.vegetarian"><img class="iconimg" src = "http://localhost:3000/uploads/vegetarian.png" alt="Logo"/> </div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="drink.lactoseFree"> <img class="iconimg" src = "http://localhost:3000/uploads/lactose.png" alt="Logo"/></div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="drink.glutenFree"><img class="iconimg" src = "http://localhost:3000/uploads/gluten.png" alt="Logo"/> </div>
+                                    
+                                    </div>
+                                    
+                                    
+                                </div>
+                                
+                                
+            
+                            </div>
+                
+                
+                        </div>
+                        
+                        
+                        <div #menueBox class="desertsContainer " id="desertsBox">
+                            <div class="desertsContent itemS" *ngFor="let desert of desertsArray">
+
+                                    <div class="imgandprice">
+                                        <div class="image itemImageDiv">
+                                            <img class="itemImage" [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
+                                        </div>
+                                        <div class="Mprice itemPrice">${{desert.price}}.00</div>
+
+                                    </div>
+
+                                    <div class="itemdata">
+                                        <div class="itemHeaders">
+                                            <div class="Mname itemName">{{desert.name}}</div>
+                                            
+                                        </div>
+                                        <div class="Mdescription itemDescription">{{desert.description}}</div>
+                                        
+                                        <div class="checks">
+                                            
+                                            <div class="Mvegan check itemVegan" *ngIf="desert.vegan"><img class="iconimg" src = "http://localhost:3000/uploads/vegan.png" alt="Logo"/> </div>
+                                            <div class="Mvegetarian check itemVegetarian" *ngIf="desert.vegetarian"><img class="iconimg" src = "http://localhost:3000/uploads/vegetarian.png" alt="Logo"/> </div>
+                                            <div class="Mlactosefree check itemLactose" *ngIf="desert.lactoseFree"><img class="iconimg" src = "http://localhost:3000/uploads/lactose.png" alt="Logo"/></div>
+                                            <div class="Mglutenfree check itemGluten" *ngIf="desert.glutenFree"><img class="iconimg" src = "http://localhost:3000/uploads/gluten.png" alt="Logo"/></div>
+
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                    
+                                    
+                
+                            </div>
+                        </div>
+
+
+            </div>
+        </div>
+
 
     </div>
 
