@@ -173,9 +173,7 @@
 }
 
 
-.ordersContainer{
-    display: flex;
-}
+
 
 .noOrdersYet{
     width: 100%;
@@ -225,7 +223,11 @@
     background-color: blue;
 }
 .mealsContainer{
-    display: none;
+    display: flex;
+}
+
+#mealsTab{
+    
 }
 .drinksContainer{
     display: none;
@@ -251,13 +253,16 @@
 
 .collapsables{
     display: none;
-
     flex-direction: column;
     background-color: #e5e8e2;
     width: 100%;
     height: 100%;
     border-top-right-radius: 9px;
     border-bottom-right-radius: 9px;  
+}
+
+.ordersContainer{
+    display: flex;
 }
 
 
@@ -369,6 +374,8 @@
     width: 100%;
     margin: 10px;
     flex-direction: row;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 
 .ordersTableHeader{
@@ -377,6 +384,7 @@
     align-items: center;
     font-family: 'Georgia' , serif;
     font-weight: bold;
+    border-bottom: 1px solid black;
     
 }
 
@@ -406,17 +414,24 @@
 .orderRow{
     display: flex;
     justify-content: left;
-    align-items: center;
+    align-items: flex-start;
     font-family: 'DM sans' ,  serif;
     margin: 10px;
+    margin-bottom: 15px;
+    margin-left: 20px;
     width: 100%;
     
+}
+
+.orderRow:nth-child(even){
+    background-color: #bcd9ab;
 }
 
 .itemsss{
     width: 100%;
     
 }
+
 
 
 
@@ -516,6 +531,25 @@
     justify-content: center;
     align-items: flex-start;
     height: fit-content;
+}
+
+.dbd{
+    justify-content: center;
+    align-items: center;
+}
+
+.std{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.deleteresdiv{
+    display: flex;
+    
+    margin: 20px;
+    justify-content: center;
 }
 
 .deletebtn {

@@ -51,7 +51,7 @@ export class RestaurantAdminComponent implements OnInit {
 
   ordersRetrieved: any[] = [];
   
-  orderStatus = ['submitted, unpaid', 'paid', 'accepted & being prepared', 'ready to collect!'];
+  orderStatus = ['Submitted, Unpaid', 'Paid', 'Accepted & being prepared', 'Ready to collect!', 'Collected'];
 
   private socket! : Socket;
 
@@ -260,6 +260,8 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   advanceOrder(orderId: any): void{
+    console.log('advance order called!');
+
     this.http.post('http://localhost:3000/advanceOrder', {orderId: orderId}, {withCredentials: true})
     .subscribe({
       next:(data: any) =>{

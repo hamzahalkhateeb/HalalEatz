@@ -896,7 +896,7 @@ app.post('/getcxOrders', isAuthenticated, async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 app.post('/advanceOrder', isAuthenticated, async (req, res) =>{
 
-    const orderStatus = ['submitted, unpaid', 'paid', 'accepted & being prepared', 'ready to collect!'];
+    const orderStatus = ['Submitted, unpaid', 'Paid', 'Accepted & being prepared', 'Ready to collect!', 'Collected'];
     const orderId = req.body.orderId;
     console.log(`retrieved the order id: ${orderId}`);
 
