@@ -438,6 +438,28 @@
     
 }
 
+.addToCartBtn{
+    margin-right: 10px;
+    margin-bottom: 5px;;
+    padding: 2px;
+    transition: ease 0.3s;  
+    width: 10%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    background-color: #9ebb8d;
+    
+    
+}
+
+.addToCartBtn:hover{
+    background-color: grey;
+}
+
+
+
 .itemDescription{
     font-family: 'DM sans', sans-serif;
     

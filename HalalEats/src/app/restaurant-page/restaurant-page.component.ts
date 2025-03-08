@@ -234,6 +234,8 @@ export class RestaurantPageComponent implements OnInit {
 
 
   }
+
+  
     
 }
   
