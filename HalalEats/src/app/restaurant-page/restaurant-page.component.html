@@ -6,7 +6,11 @@
 
 
         <div class="logoutDiv">
-            <div class="cartIcon"><i class="fas fa-shopping-cart " ></i></div>
+            <div class="cartIcon" (click)="ShowCart('cart')"><i class="fas fa-shopping-cart" ></i></div>
+
+            <div class="cart" id="cart"></div>
+
+
             <button class="logoutBtn" (click)="logout('logout requested!')">Log Out</button>
         </div>
 
@@ -58,14 +62,16 @@
                                     </div>
                                     <div class="Mprice itemPrice">${{meal.price}}.00</div>
 
+                                    
+                                    <div class="addToCartBtn" (click)="addToCart(meal.name, meal.description, meal.price)">add to cart</div>
+                                    
+
                                 </div>
                                 <div class="itemdata">
                                     <div class="itemHeaders">
                                         <div class="Mname itemName">{{meal.name}}</div>
                                         
-                                        <div class="addToCartBtn">
-                                            <div class="addtoCartIcons"><i class="fas fa-plus"></i></div>
-                                        </div>
+                                        
                                     </div>
                                     
                                     <div class="Mdescription itemDescription">{{meal.description}}</div>
@@ -94,6 +100,7 @@
                                         <img class="itemImage" [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
                                     </div>
                                     <div class="Mprice itemPrice">${{drink.price}}.00</div>
+                                    <div class="addToCartBtn" (click)="addToCart(drink.name, drink.description, drink.price)">add to cart</div>
 
                                 </div>
                                 <div class="itemdata">
@@ -132,6 +139,7 @@
                                             <img class="itemImage" [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
                                         </div>
                                         <div class="Mprice itemPrice">${{desert.price}}.00</div>
+                                        <div class="addToCartBtn" (click)="addToCart(desert.name, desert.description, desert.price)">add to cart</div>
 
                                     </div>
 

@@ -97,6 +97,8 @@ export class RestaurantPageComponent implements OnInit {
   addToCart(itemName: any, itemDescription: any,  itemPrice: any){
 
 
+    console.log(itemName);
+
     for (let i = 0; i < this.orderArray.length; i++) {
       if(this.orderArray[i].name == itemName &&
         this.orderArray[i].unit_amount.value == itemPrice && 
@@ -235,6 +237,18 @@ export class RestaurantPageComponent implements OnInit {
 
   }
 
+  ShowCart(cartId: any){
+
+    let cart = document.getElementById(cartId);
+
+    if(cart){
+      cart.style.opacity = '1';
+      cart.style.display = 'flex';
+    } else{
+      console.error;
+    }
+
+  }
   
     
 }
