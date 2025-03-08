@@ -281,7 +281,7 @@
 .menues{
     display: flex;
     flex-direction: column;
-    
+    margin-top: 15px;
     width: 100%;
     height: auto;
     background-color: #9ebb8d;
@@ -293,7 +293,7 @@
     display: flex;
     height: 10%;
     width: 100%;
-    background-color: red;
+    background-color: #e5e8e2;
     flex-direction: row;
     justify-content: space-evenly;
 }
@@ -311,7 +311,9 @@
     font-size: large;
 }
 
-
+.menueContainer{
+    display: none;
+}
 
 .mealsContainer{
     display: flex;

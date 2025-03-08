@@ -38,17 +38,17 @@
         <div class="menues">
             <div class="tabsDiv">
                 <div class="mealsTab tab">
-                    <label class="label">Meals</label>
+                    <label class="label" id="mealsTab">Meals</label>
                 </div>
                 <div class="drinksTab tab">
-                    <label class="label">Drinks</label>
+                    <label class="label" id="drinksTab">Drinks</label>
                 </div>
                 <div class="desertsTab tab">
-                    <label class="label">Desert</label>
+                    <label class="label" id="desertTab">Desert</label>
                 </div>
             </div>
             <div class="itemsDiv">
-                <div #menueBox class="mealsContainer" id="mealsBox" >
+                <div #menueBox class="mealsContainer menueContainer" id="mealsBox" >
                             <div class="mealsContent itemS" *ngFor="let meal of mealsArray">
                                 <div class="imgandprice">
 
@@ -83,7 +83,7 @@
                             </div>
                         </div>
 
-                        <div #menueBox class="drinksContainer " id="drinksBox" >
+                        <div #menueBox class="drinksContainer menueContainer" id="drinksBox" >
                             <div class="drinksContent itemS" *ngFor="let drink of drinksArray">
 
                                 <div class="imgandprice">
@@ -121,7 +121,7 @@
                         </div>
                         
                         
-                        <div #menueBox class="desertsContainer " id="desertsBox">
+                        <div #menueBox class="desertsContainer menueContainer" id="desertsBox">
                             <div class="desertsContent itemS" *ngFor="let desert of desertsArray">
 
                                     <div class="imgandprice">

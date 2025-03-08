@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, viewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ViewChildren, ElementRef, QueryList } from '@angular/core';
 
 @Component({
   selector: 'app-restaurant-page',
@@ -12,6 +13,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './restaurant-page.component.css'
 })
 export class RestaurantPageComponent implements OnInit {
+
+  @ViewChildren('menueContainer') menueContainer!: QueryList<ElementRef>;
 
   restaurantId!: number;
   
@@ -198,7 +201,9 @@ export class RestaurantPageComponent implements OnInit {
   }
 
     
+  showDiv(divId: any, tabId: any){
 
+  }
     
 }
   
