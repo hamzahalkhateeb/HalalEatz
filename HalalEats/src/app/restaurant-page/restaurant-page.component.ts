@@ -249,6 +249,19 @@ export class RestaurantPageComponent implements OnInit {
     }
 
   }
+
+  closeCart(cartId: any){
+
+    let cart = document.getElementById(cartId);
+
+    if(cart){
+      cart.style.opacity = '0';
+      cart.style.display = 'none';
+    } else{
+      console.error;
+    }
+
+  }
   
     
 }

@@ -6,9 +6,41 @@
 
 
         <div class="logoutDiv">
-            <div class="cartIcon" (click)="ShowCart('cart')"><i class="fas fa-shopping-cart" ></i></div>
+            <div class="cartIcon" (click)="ShowCart('cart')"><span class="badge"></span> <i class="fas fa-shopping-cart" ></i></div>
 
-            <div class="cart" id="cart"></div>
+            <div class="cart" id="cart">
+
+                <div class="headers">
+                    <div class="itemNameC">Item Name</div>
+                    <div class="itemPriceC">Unit Price</div>
+                    <div class="quantityC">Quantity</div>
+                    <div class="closeCart" (click)="closeCart('cart')"><i class="fas fa-xmark"></i></div>
+                </div>
+                <div class="repeatingItems">
+                    <div class="cartDivItems" *ngFor="let item of orderArray">
+                        <div class="itemNameC">{{item.name}}</div>
+                        <div class="itemPriceC">${{item.unit_amount.value}}.00</div>
+                        <div class="quantityC">
+                            <div class="dltBtnC" (click)="dlt( item.name, item.description, item.unit_amount.value)"><i class="fas fa-minus" ></i></div>
+                            <div class="itemQuantityC">{{item.quantity}}</div>
+                            <div (click)="addToCart(item.name, item.description, item.unit_amount.value)" class="addToCartBtnC"><i class="fas fa-plus" ></i></div>
+                        </div>
+                        
+        
+                    </div>
+                </div>
+                
+                
+                <div class="conclusionDiv">
+                    <div class="totalPriceC" *ngIf="getTotal() > 0">
+                        <div class="priceC">Total Price:    ${{ getTotal() }}.00</div>
+                    </div>
+                    <div class="checkoutC" *ngIf="getTotal() > 0">
+                        <div class="checkoutBtnC" (click)="checkout( getTotal() )">Checkout</div>
+                    </div> 
+                </div>
+
+            </div>
 
 
             <button class="logoutBtn" (click)="logout('logout requested!')">Log Out</button>
@@ -41,15 +73,22 @@
 
         <div class="menues">
             <div class="tabsDiv">
-                <div #tabs class="mealsTab tab" id="mealsTab" (click)="showDiv('mealsBox', 'mealsTab')">
-                    <label class="label" >Meals</label>
+                <div class="firstHalf">
+                    <div #tabs class="mealsTab tab" id="mealsTab" (click)="showDiv('mealsBox', 'mealsTab')">
+                        <label class="label" >Meals</label>
+                    </div>
+                    <div #tabs class="drinksTab tab" id="drinksTab" (click)="showDiv('drinksBox', 'drinksTab')">
+                        <label class="label" >Drinks</label>
+                    </div>
+                    <div #tabs class="desertsTab tab"  id="desertTab" (click)="showDiv('desertsBox', 'desertTab')">
+                        <label class="label" >Desert</label>
+                    </div>
                 </div>
-                <div #tabs class="drinksTab tab" id="drinksTab" (click)="showDiv('drinksBox', 'drinksTab')">
-                    <label class="label" >Drinks</label>
+
+                <div class="secondHalf">
+
                 </div>
-                <div #tabs class="desertsTab tab"  id="desertTab" (click)="showDiv('desertsBox', 'desertTab')">
-                    <label class="label" >Desert</label>
-                </div>
+                
             </div>
             <div class="itemsDiv">
 
