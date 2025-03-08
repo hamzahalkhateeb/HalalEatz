@@ -14,7 +14,8 @@ import { ViewChildren, ElementRef, QueryList } from '@angular/core';
 })
 export class RestaurantPageComponent implements OnInit {
 
-  @ViewChildren('menueContainer') menueContainer!: QueryList<ElementRef>;
+  @ViewChildren('menueBox') menueContainer!: QueryList<ElementRef>;
+  @ViewChildren('tabs') tabs!: QueryList<ElementRef>;
 
   restaurantId!: number;
   
@@ -202,6 +203,35 @@ export class RestaurantPageComponent implements OnInit {
 
     
   showDiv(divId: any, tabId: any){
+
+    this.menueContainer.forEach((div)=>{
+      div.nativeElement.style.display = 'none';
+    });
+
+    let displayDiv = document.getElementById(divId);
+
+    if(displayDiv){
+      displayDiv.style.display = 'flex';
+
+    } else {
+      console.log('there is no div with that id');
+    }
+
+    this.tabs.forEach((tab)=>{
+      tab.nativeElement.style.backgroundColor = '#bcd9ab';
+      
+    })
+
+    let displayTab = document.getElementById(tabId);
+
+    if(displayTab){
+      
+      displayTab.style.backgroundColor = '#9ebb8d';
+
+    } else {
+      console.log('there is no div with that id');
+    }
+
 
   }
     

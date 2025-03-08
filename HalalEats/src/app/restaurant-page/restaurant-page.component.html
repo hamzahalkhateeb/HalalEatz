@@ -37,18 +37,19 @@
 
         <div class="menues">
             <div class="tabsDiv">
-                <div class="mealsTab tab">
-                    <label class="label" id="mealsTab">Meals</label>
+                <div #tabs class="mealsTab tab" id="mealsTab" (click)="showDiv('mealsBox', 'mealsTab')">
+                    <label class="label" >Meals</label>
                 </div>
-                <div class="drinksTab tab">
-                    <label class="label" id="drinksTab">Drinks</label>
+                <div #tabs class="drinksTab tab" id="drinksTab" (click)="showDiv('drinksBox', 'drinksTab')">
+                    <label class="label" >Drinks</label>
                 </div>
-                <div class="desertsTab tab">
-                    <label class="label" id="desertTab">Desert</label>
+                <div #tabs class="desertsTab tab"  id="desertTab" (click)="showDiv('desertsBox', 'desertTab')">
+                    <label class="label" >Desert</label>
                 </div>
             </div>
             <div class="itemsDiv">
-                <div #menueBox class="mealsContainer menueContainer" id="mealsBox" >
+
+                        <div #menueBox class="mealsContainer menueContainer" id="mealsBox" >
                             <div class="mealsContent itemS" *ngFor="let meal of mealsArray">
                                 <div class="imgandprice">
 

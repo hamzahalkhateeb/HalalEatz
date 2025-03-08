@@ -291,7 +291,7 @@
 
 .tabsDiv{
     display: flex;
-    height: 10%;
+    height: 5vh;
     width: 100%;
     background-color: #e5e8e2;
     flex-direction: row;
@@ -300,16 +300,30 @@
 
 .tab{
     background-color: #9ebb8d;
-    border-top-left-radius: 9px;
-    border-top-right-radius: 9px;
-    width: 100px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    width: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'Vibur', sans-serif;
     font-weight: bold;
     font-size: large;
+    transition: ease 0.3s;
 }
+
+.mealsTab{
+    background-color: #9ebb8d;
+}
+
+.drinksTab{
+    background-color: #bcd9ab;
+}
+
+.desertsTab{
+    background-color: #bcd9ab;
+}
+
 
 .menueContainer{
     display: none;
