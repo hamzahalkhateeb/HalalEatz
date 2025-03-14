@@ -161,14 +161,14 @@ export class RestaurantAdminComponent implements OnInit {
 
     //assign the values in html input fields into menuitem object fields
     this.menueItem.type= (itemDiv.querySelector(`[name='itemType']`) as HTMLInputElement).value;
-    this.menueItem.name= (itemDiv.querySelector(`[name='itemName']`) as HTMLInputElement).value;
-    this.menueItem.price= parseFloat((itemDiv.querySelector(`[name='itemPrice']`) as HTMLInputElement).value);
+    this.menueItem.name= (itemDiv.querySelector(`[name='itemName']`) as HTMLInputElement).value; //39
+    this.menueItem.price= parseFloat((itemDiv.querySelector(`[name='itemPrice']`) as HTMLInputElement).value); //cant be float
     this.menueItem.halal= (itemDiv.querySelector(`[name='halal']`) as HTMLInputElement).checked;
     this.menueItem.vegan= (itemDiv.querySelector(`[name='vegan']`) as HTMLInputElement).checked;
     this.menueItem.vegetarian= (itemDiv.querySelector(`[name='vegetarian']`) as HTMLInputElement).checked;
     this.menueItem.glutenFree= (itemDiv.querySelector(`[name='glutenFree']`) as HTMLInputElement).checked;
     this.menueItem.lactoseFree= (itemDiv.querySelector(`[name='lactoseFree']`) as HTMLInputElement).checked;
-    this.menueItem.description= (itemDiv.querySelector(`[name='itemDescription']`) as HTMLInputElement).value;
+    this.menueItem.description= (itemDiv.querySelector(`[name='itemDescription']`) as HTMLInputElement).value; //250
  
     
     //declare an empty formdata variable
@@ -178,10 +178,10 @@ export class RestaurantAdminComponent implements OnInit {
     menueitemFormData.append("menueItem", JSON.stringify(this.menueItem));
     menueitemFormData.append("image", this.selectedFile!, this.selectedFile!.name);
     
-    
 
 
-    this.http.post('http://localhost:3000/submitMenue', menueitemFormData, {withCredentials: true})
+    if(this.validate()){
+      this.http.post('http://localhost:3000/submitMenue', menueitemFormData, {withCredentials: true})
       .subscribe({
         next: (data: any) => {
           if (data.success){
@@ -194,7 +194,11 @@ export class RestaurantAdminComponent implements OnInit {
         error: (error: any) => {
           console.error('Error: ', error);
         }
-      });
+      }); 
+
+    }
+
+
     
     
   } 
@@ -371,6 +375,48 @@ export class RestaurantAdminComponent implements OnInit {
       console.log('error displaying requested menue box and changing tab style');
     }
 
+  }
+
+
+  validate(): boolean{
+
+    if(this.menueItem.name.length > 35 || this.menueItem.name.length <3){
+    
+      let label = document.getElementById('nameLabel');
+
+      label!.style.color = 'red';
+      
+      console.log(this.menueItem.name);
+      console.log('name is now red');
+
+      return false;
+    }
+
+    if(this.menueItem.description.length > 250){
+
+      let label = document.getElementById('desLabel');
+
+      label!.style.color = 'red';
+
+      console.log('description is now red');
+
+      return false
+    }
+
+
+    if(typeof this.menueItem.price !== 'number' || this.menueItem.price < 0){
+
+      let label = document.getElementById('priceLabel');
+
+      label!.style.color = 'red';
+
+      console.log('price is now red');
+
+      return false
+    }
+
+    
+    return true;
   }
 
 

@@ -312,13 +312,13 @@
                                                     <option value="desert">desert</option>
                                                 </select>
                                                 
-                                                <label class="addItemFieldLabel" for="itemName">Item Name</label>
+                                                <label class="addItemFieldLabel" id="nameLabel" for="itemName">Item Name</label>
                                                 <input type="text" class="field"  name="itemName" required>
 
-                                                <label class="addItemFieldLabel" for="itemDescription">Description/Ingredients</label>
+                                                <label class="addItemFieldLabel" id="desLabel" for="itemDescription">Description/Ingredients</label>
                                                 <textarea type="text" class="field des"  name="itemDescription" required></textarea>
 
-                                                <label class="addItemFieldLabel" for="itemPrice">Price</label>
+                                                <label class="addItemFieldLabel" id="priceLabel" for="itemPrice">Price</label>
                                                 <input type="number" class="field"  name="itemPrice" required>
 
                                                 <div class="checkinput">
@@ -352,6 +352,7 @@
                                                     <label class="addItemFieldLabel imglabel" for="itemimg">Item Image</label>
                                                     <input type="file" class=""  name="itemimg" (change)="onFileSelected($event)" accept="image/*" required>
                                                 </div>
+                                                
 
                                                 <div class="submitBtndiv">
                                                     <button class="submitbtn"type="submit">Submit menue Item</button>

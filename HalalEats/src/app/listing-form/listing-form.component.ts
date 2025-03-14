@@ -336,7 +336,7 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
 
     
 
-      if(resInfo.name.length > 50){
+      if(resInfo.name.length > 39 || resInfo.name.length < 3){
         let nameDiv = document.getElementById('resName');
         nameDiv!.style.borderColor = 'red';
         return false;
