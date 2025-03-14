@@ -30,14 +30,14 @@
                 <div class="NameLocationImg" #NameLocationImg>
                     <div class="Leftelement">
                         <label for="resName" class="res">Restaurant Name *</label>
-                        <input type="text" class="form-control" id="resName" name="resName" [(ngModel)]="resInfo.name" required>
+                        <input #inputField type="text" class="form-control" id="resName" name="resName" [(ngModel)]="resInfo.name" required>
                         
                     </div>
                     
             
                     <div class="Leftelement">
                         <label for="resLocation" class="res">Location *</label>
-                        <input #resLocationInput type="text" class="form-control" id="resLocation" name="resLocation" [(ngModel)]="resInfo.location" (input)="onLocationChange($event)" required>
+                        <input #inputField #resLocationInput type="text" class="form-control" id="resLocation" name="resLocation" [(ngModel)]="resInfo.location" (input)="onLocationChange($event)" required>
                         <ul *ngIf="predictions && predictions.length > 0">
                             <div *ngFor="let prediction of predictions" class="predicOption" (click)="selectPrediction(prediction)">
                             {{ prediction.description }}
@@ -48,13 +48,13 @@
                     <div class="Leftelement">
                         <label for="resPhoto" class="res">Cover Photo *</label>
                         <label class="warningText">Please ensure your photo has 2.63:1 ratio or a 820x3120 resolution</label>
-                        <input type="file" class="form-control" id="resPhoto" name="resPhoto" (change)="onFileSelected($event)" accept="image/*" required>
+                        <input #inputField type="file" class="form-control" id="resPhoto" name="resPhoto" (change)="onFileSelected($event)" accept="image/*" required>
                     </div>
     
                 </div>
         
-                <div class="time-inputsS">
-                    <label class="Openingschedule">Open Hours</label>
+                <div class="time-inputsS" id="times">
+                    <label class="Openingschedule" id="openingHeading">Open Hours</label>
                     <div class="checkbox">
                         <label class="dayName">
                             <input class="form-check-input" type="checkbox" [(ngModel)]="resInfo.days.monday.open" name="daysMondayOpen"> Monday
@@ -153,6 +153,7 @@
                 
             </div>
             <div class="googlebtnWarning" >
+                
                 <div class="warningTextDiv">
                     <label class="warningText">Please use the same email for this account as the one linked to your PayPal payments.</label>
 

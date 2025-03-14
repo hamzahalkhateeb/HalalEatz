@@ -32,6 +32,7 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     @ViewChild('container2') container2Ref!: ElementRef;
     @ViewChild('NameLocationImg') NameLocationImg!: ElementRef;
     @ViewChildren('quesBox') quesBoxes!: QueryList<ElementRef>;
+    @ViewChildren('inputFields') inputFields!: QueryList<ElementRef>;
     
 
     
@@ -55,6 +56,8 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
       
       
     ];
+
+    
 
     resInfo = {
       name: '', 
@@ -160,41 +163,50 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
       
       
       if (this.resInfo.halalRating >= 7){
-        const resInfoJSON = JSON.stringify(this.resInfo);
+
+        const valid = this.validateResInfo();
+        if(valid){
+
+
+
         
-
-        const formData = new FormData();
-        
-        formData.append('auth_token', response.credential);
-        formData.append('resInfo', resInfoJSON);
-        formData.append('image', this.selectedFile!, this.selectedFile!.name);
-        formData.append('type', 'main');
-        formData.append('relItem', '');
-        
+          const resInfoJSON = JSON.stringify(this.resInfo);
+          
 
 
+          const formData = new FormData();
+          
+          formData.append('auth_token', response.credential);
+          formData.append('resInfo', resInfoJSON);
+          formData.append('image', this.selectedFile!, this.selectedFile!.name);
+          formData.append('type', 'main');
+          formData.append('relItem', '');
+          
 
 
 
-        this.http.post('http://localhost:3000/listRestaurant', formData, {withCredentials: true})
 
-        .subscribe({
-          next: (data:any) =>{
-            if(data.success){
-              alert(data.message);
-              
-              
-              this.router.navigateByUrl(data.redirectUrl);
 
-            } else {
-              console.log("unexpected json format! ", data.message);
+          this.http.post('http://localhost:3000/listRestaurant', formData, {withCredentials: true})
+
+          .subscribe({
+            next: (data:any) =>{
+              if(data.success){
+                alert(data.message);
+                
+                
+                this.router.navigateByUrl(data.redirectUrl);
+
+              } else {
+                console.log("unexpected json format! ", data.message);
+              }
+            },
+            error: (error: any) => {
+              console.error('Error: ', error);
             }
-          },
-          error: (error: any) => {
-            console.error('Error: ', error);
-          }
-        });
+          });
 
+        }
       } else {
         alert("Your halal rating is less than the minimum allowed! your restaurant is not eligible to be on this website!");
         this.router.navigateByUrl("/login");
@@ -318,12 +330,58 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     }
     
 
-    validateResInfo(resInfo: object){
+    validateResInfo(): boolean{
+      const resInfo = this.resInfo;
+
+
+    
+
+      if(resInfo.name.length > 50){
+        let nameDiv = document.getElementById('resName');
+        nameDiv!.style.borderColor = 'red';
+        return false;
+      }
 
       
 
+      if(resInfo.location === '' || resInfo.lat === null || resInfo.lon === null){
+        let locationDiv = document.getElementById('resLocation');
+        locationDiv!.style.borderColor = 'red'; 
+        return false
+      };
+
+      for(const day of Object.keys(resInfo.days)){
+        
+        const dayInfo = resInfo.days[day as keyof typeof resInfo.days];
+        
+        if(dayInfo.open === true){
+          if(dayInfo.openingHours.start === '' || dayInfo.openingHours.end === ''){
+
+            let timesDiv = document.getElementById('openingHeading');
+            timesDiv!.style.color = 'red'; 
+            console.log("timesdiv should be coloured");
+            return false;
+          } 
+
+        }
+
+      }
+
+
+      return true;
+      
+
+       
 
     }
+      
+
+      
+      
+      
+
+
+    
     
     
   }
