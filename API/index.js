@@ -375,7 +375,7 @@ app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, re
         
         
         const image = req.file;
-        const userId = 78; //req.session.userId;
+        const userId = req.session.userId;
         
         
         
@@ -533,14 +533,14 @@ app.post('/LoadRestaurantAdminPackage',   async (req, res) => {
     const type = req.body.userType;
     
     
-    const sessionUserId = 75;//req.session.userId;
-    //const sessionID = req.sessionID;
-    //console.log(`inside loading restaurant package user id: ${sessionUserId}`);
-    //console.log(`inside loading restaurant package session id: ${sessionID}`);
+    const sessionUserId = req.session.userId;
+    const sessionID = req.sessionID;
+    console.log(`inside loading restaurant package user id: ${sessionUserId}`);
+    console.log(`inside loading restaurant package session id: ${sessionID}`);
 
 
     if (type === "admin"){
-        //const userId = req.body.Id;
+        const userId = req.body.Id;
         console.log("user type is admin, using the session user id to as the user: ", sessionUserId);
 
         try{
@@ -797,7 +797,7 @@ app.post('/capturePayment', async (req, res)=>{
         
         
         if (response.status === "COMPLETED"){
-            order.status = 'paid';
+            order.status = 'Paid';
             await order.save();
             
             const restaurantId = order.restaurantId;
@@ -853,9 +853,11 @@ app.post('/capturePayment', async (req, res)=>{
 /////////////////////////////////////////////////////////////////////////////
 
 
-app.post('/getOrders',  async (req, res) =>{
+
+
+app.post('/getOrders', isAuthenticated, async (req, res) =>{
     
-    const userId = 75;//req.session.userId;
+    const userId = req.session.userId;
 
     try {
         const restaurant = await Restaurant.findOne({where : {userId : userId}});
@@ -901,7 +903,7 @@ app.post('/advanceOrder', isAuthenticated, async (req, res) =>{
     console.log(`retrieved the order id: ${orderId}`);
 
     const order = await Order.findOne({where : {id: orderId}});
-    console.log(`found order object with matching id: ${order}`);
+    console.log(`found order object with matching id, here is the matching STATUS:${order.status}`);
 
     try{
         for(let i = 0; i< orderStatus.length; i++){
@@ -913,6 +915,7 @@ app.post('/advanceOrder', isAuthenticated, async (req, res) =>{
         }
         await order.save();
 
+        console.log("UPDATED ORDER STATUS SUCCESSFULLY TO:", order.status);
         const userId = order.customerId;
         console.log(`user id for socket: ${userId}`);
            
@@ -956,15 +959,11 @@ app.post('/advanceOrder', isAuthenticated, async (req, res) =>{
 
 
 /////////////////////////////////////////////////////////////////////////////
-/* for testing purposes
+/* this function is found inside of place order
 async function createOrder(purchase_units, restaurantId, userId, orderId){
 
-<<<<<<< HEAD
-    console.log('create order endpoint called!');
-=======
     console.log('createOrder called!');
     const sessionUserId = req.session.userId;
->>>>>>> cred
 
     let access_token = await generateAccess_Token();
 
@@ -1082,6 +1081,8 @@ function isAuthenticated(req, res, next) {
         res.status(401).json({success: false, message: "Unauthorized access, please log in", redirectUrl: "/login"});
     }
 }
+
+
 
 
 

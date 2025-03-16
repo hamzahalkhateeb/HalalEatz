@@ -51,7 +51,7 @@ export class RestaurantAdminComponent implements OnInit {
 
   ordersRetrieved: any[] = [];
   
-  orderStatus = ['Submitted, Unpaid', 'Paid', 'Accepted & being prepared', 'Ready to collect!', 'Collected'];
+  orderStatus = ['Submitted, Unpaid', 'paid', 'Accepted & being prepared', 'Ready to collect!', 'Collected'];
 
   private socket! : Socket;
 
@@ -205,7 +205,7 @@ export class RestaurantAdminComponent implements OnInit {
 
   deleteItem(name: String, description: String, type: String): void {
     console.log(`name: ${name}, description: ${description}, and menue id in question ${this.menue2.id}`);
-    this.http.post('http://localhost:3000/deleteItem', {menueId: this.menue2.id, itemName: name, itemDescription: description, type: type})
+    this.http.post('http://localhost:3000/deleteItem', {menueId: this.menue2.id, itemName: name, itemDescription: description, type: type}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
@@ -270,6 +270,7 @@ export class RestaurantAdminComponent implements OnInit {
     .subscribe({
       next:(data: any) =>{
         if (data.success){
+          console.log("order status updates successfully in the back end");
           const order = this.ordersRetrieved.find(order => order.id === orderId);
           for(let i = 0; i < this.orderStatus.length; i++){
             if (order.status === this.orderStatus[i] && i != this.orderStatus.length - 1){
