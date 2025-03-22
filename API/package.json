@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "node index.js",
+    "start:dev": "node index.js",
+    "docker-build:dev": "docker build -t my-node-image-dev:0.0.1 -f Dockerfile.dev .",
+    "docker-run:dev": "docker run -it -p 3000:3000 --name my-node-c-dev -v .:/app -v my-node-modules my-node-image-dev:0.0.1"
   },
   "keywords": [],
   "author": "",
