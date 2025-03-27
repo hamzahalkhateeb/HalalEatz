@@ -1,6 +1,6 @@
 import { CommonModule, isPlatformBrowser, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, OnInit, afterNextRender } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListingFormComponent } from '../listing-form/listing-form.component';
 import {io, Socket} from 'socket.io-client';
@@ -35,7 +35,11 @@ export class DashBoardComponent implements OnInit {
   }> = [];
 
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+    afterNextRender(() => {
+      this.initilizeSockets();
+    });
+  }
 
   ngOnInit(): void {
     if(isPlatformBrowser(this.platformId)){
@@ -62,6 +66,32 @@ export class DashBoardComponent implements OnInit {
     console.log("about to call get cx orders");
     this.getCxOrders();
 
+    /*const socket = io("http://localhost:3000", {
+      withCredentials: true
+    });
+
+
+    // connect to backend >>>>
+    socket.on("connect", () =>{
+      socket.emit('customerConnected');
+      console.log("cx front end connected to back end");
+    });
+
+    //listen for order updates from backend <<<
+    socket.on('orderProgressed', (data) => {
+      console.log(`order progressed!`);
+
+      const order = this.cxOrders.find(order => order.id === data.orderId);
+
+      order.status = data.orderStatus;
+      
+
+    }) */
+
+
+  }
+
+  initilizeSockets(){
     const socket = io("http://localhost:3000", {
       withCredentials: true
     });
@@ -83,8 +113,6 @@ export class DashBoardComponent implements OnInit {
       
 
     })
-
-
   }
 
   

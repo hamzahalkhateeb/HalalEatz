@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, PLATFORM_ID, ViewChild, ViewChildren, ElementRef, OnDestroy, ChangeDetectorRef, Renderer2, QueryList } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, ViewChild, ViewChildren, ElementRef, OnDestroy, ChangeDetectorRef, Renderer2, QueryList, afterNextRender, Inject } from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule,  } from '@angular/common';
 import {io, Socket} from 'socket.io-client';
+
 
 
 
@@ -59,63 +60,52 @@ export class RestaurantAdminComponent implements OnInit {
 
   selectedFile: File | null = null;
 
-  constructor(private http: HttpClient, 
+  constructor(
+    private http: HttpClient, 
     private router: Router, 
     private route: ActivatedRoute, 
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
     private el: ElementRef
-    ) {}
+    
+    ) {
+      console.log('constructor called');
+      afterNextRender(() => {
+        this.initilizeWebSockets();
+      });
+    }
   ngOnInit(): void {
 
    
+    console.log('restaurant admin intilized, about to call the admin package and get orders');
 
+    
     
     this.LoadRestaurantAdminPackage();
     this.getOrders();
-    
 
-    
-    const socket = io("http://localhost:3000", {
-      withCredentials: true,
+
+  }
+
+  ngOnDestroy(): void{
+
+    if(this.socket){
+      this.socket.disconnect;
+    }
+
+
+  }
+
+  initilizeWebSockets(){
+    this.socket = io("http://localhost:3000", { withCredentials: true });
+    this.socket.on("connect", () => {
+      this.socket.emit('restaurantConnected');
+      console.log("Restaurant front end connected to back end");
     });
-
-    //connect to socket in back end  >>>
-
-    socket.on("connect", () =>{
-      //somehow include current cookies with the request
-      socket.emit('restaurantConnected');
-      console.log("restaurant front end connected to back end");
-    });
-
-
-    //listen for orders from back end   <<<<<<
-
-    socket.on('orderPaid&Placed', (data) => {
+    this.socket.on('orderPaid&Placed', (data) => {
       console.log('New Order Placed:', data.orderJSON);
       alert(data.message);
-
-      let orderReceived = JSON.parse(data.orderJSON);
-      orderReceived.items = JSON.parse(orderReceived.items);
-      
-      const sameOrder = this.ordersRetrieved.find(order => order.id === orderReceived.id);
-
-      if(sameOrder){
-        console.log("order receiced via socket, however it is already in the orders array!");
-      } else {
-        this.ordersRetrieved = this.ordersRetrieved.concat(orderReceived);
-        this.cdr.detectChanges();
-
-      }
-
-      
-
-    
-
     });
-
-    
-
   }
 
   

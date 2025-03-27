@@ -38,13 +38,26 @@ const sessionMiddleWare = session({
         secure: false,
         httpOnly: true,
         maxAge: 1000 * 60 * 60,
-        sameSite: 'strict'
+        sameSite: 'strict',
+        domain: 'localhost'
     }
 });
 
-app.use(sessionMiddleWare);
+app.use(cors({
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+    
+}));
+
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(express.urlencoded({extended: true}));
 
 app.use(cookieParser());
+app.use(sessionMiddleWare);
+
+
 
 sessionStore.sync();
 
@@ -54,6 +67,7 @@ const io = new Server(server, {
         origin: "http://localhost:4200",
         methods: ["GET", "POST"],
         credentials: true,
+        
     }
 });
 
@@ -99,11 +113,7 @@ io.on('connect', (socket) => {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
-app.use(cors({
-    origin: 'http://localhost:4200',
-    methods: ['GET, POST, PUT, DELETE'],
-    credentials: true
-}));
+
 
 app.use(express.json());
 app.use(bodyParser.json());
