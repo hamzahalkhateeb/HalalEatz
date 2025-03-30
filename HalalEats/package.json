@@ -7,7 +7,14 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:HalalEats": "node dist/halal-eats/server/server.mjs"
+    "serve:ssr:HalalEats": "node dist/halal-eats/server/server.mjs",
+    "start:dev": "ng serve",
+    "start:prod": "ng serve",
+    "docker-build:dev": "docker build -t frontend-angular:dev -f Dockerfile.dev .",
+    "docker-run:dev": "docker run -it -p 4200:4200 --name frontend-Angular-dev frontend-angular:dev",
+    "docker-build:prod": "docker build -t frontend-angular:prod -f Dockerfile.prod --build-arg NODE_ENV=production .",
+    "docker-run:prod": "docker run -it -p 4200:4200 --name frontend-angular-prod frontend-angular:prod"
+
   },
   "private": true,
   "dependencies": {
