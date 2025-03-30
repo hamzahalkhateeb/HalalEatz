@@ -8,8 +8,9 @@
     "start:dev": "node index.js",
     "docker-build:dev": "docker build -t my-node-image-dev:0.0.1 -f Dockerfile.dev .",
     "docker-run:dev": "docker run -it -p 3000:3000 --name my-node-c-dev -v .:/app -v my-node-modules my-node-image-dev:0.0.1",
+    "start:prod": "node index.js",
     "docker-build:prod": "docker build -t my-node-image-prod:0.0.1 -f Dockerfile.prod .",
-    "docker-run:prod": "docker run -it -p 3000:3000 --name my-node-c-prod -v .:/app -v my-node-modules my-node-image-prod:0.0.1"
+    "docker-run:prod": "docker run -it -p 3000:3000 --name my-node-c-prod  my-node-image-prod:0.0.1"
   },
   "keywords": [],
   "author": "",

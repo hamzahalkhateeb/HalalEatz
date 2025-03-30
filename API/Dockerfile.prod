@@ -1,6 +1,6 @@
 FROM node:20-alpine as prodBackendExpress
 
-ENV NODE-ENV=production
+ENV NODE_ENV=production
 
 ENV PORT=3000
 
