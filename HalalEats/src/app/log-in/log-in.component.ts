@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { GoogleAuthService } from '../google-auth.service';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -60,7 +61,7 @@ export class LogInComponent implements OnInit {
     console.log("sign in attemp initiated! *****************************************");
     
     const auth_token = response.credential;
-    this.http.post('http://localhost:3000/login', {auth_token}, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/login`, {auth_token}, {withCredentials: true})
       .subscribe({
         next: (data:any) =>{
           if (data.success){

@@ -4,6 +4,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule,  } from '@angular/common';
 import {io, Socket} from 'socket.io-client';
+import { environment } from '../../environments/environment';
 
 
 
@@ -97,7 +98,7 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   initilizeWebSockets(){
-    this.socket = io("http://localhost:3000", { withCredentials: true });
+    this.socket = io(environment.backendURL, { withCredentials: true });
     this.socket.on("connect", () => {
       this.socket.emit('restaurantConnected');
       console.log("Restaurant front end connected to back end");
@@ -111,7 +112,7 @@ export class RestaurantAdminComponent implements OnInit {
   
   LoadRestaurantAdminPackage(): void  {
     
-    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {userType: 'admin'}, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/LoadRestaurantAdminPackage`, {userType: 'admin'}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
@@ -171,7 +172,7 @@ export class RestaurantAdminComponent implements OnInit {
 
 
     if(this.validate()){
-      this.http.post('http://localhost:3000/submitMenue', menueitemFormData, {withCredentials: true})
+      this.http.post(`${environment.backendURL}/submitMenue`, menueitemFormData, {withCredentials: true})
       .subscribe({
         next: (data: any) => {
           if (data.success){
@@ -195,7 +196,7 @@ export class RestaurantAdminComponent implements OnInit {
 
   deleteItem(name: String, description: String, type: String): void {
     console.log(`name: ${name}, description: ${description}, and menue id in question ${this.menue2.id}`);
-    this.http.post('http://localhost:3000/deleteItem', {menueId: this.menue2.id, itemName: name, itemDescription: description, type: type}, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/deleteItem`, {menueId: this.menue2.id, itemName: name, itemDescription: description, type: type}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
@@ -210,7 +211,7 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   deleteRestaurant(): void{
-    this.http.post('http://localhost:3000/deleteRestaurant', {userId: 'variablePlaceHolder'}, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/deleteRestaurant`, {userId: 'variablePlaceHolder'}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
@@ -229,7 +230,7 @@ export class RestaurantAdminComponent implements OnInit {
   getOrders(): void{
     
 
-    this.http.post('http://localhost:3000/getOrders', {userId: 'variablePlaceHolder'}, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/getOrders`, {userId: 'variablePlaceHolder'}, {withCredentials: true})
     .subscribe({
       next: (data: any) =>{
         if (data.success){
@@ -256,7 +257,7 @@ export class RestaurantAdminComponent implements OnInit {
   advanceOrder(orderId: any): void{
     console.log('advance order called!');
 
-    this.http.post('http://localhost:3000/advanceOrder', {orderId: orderId}, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/advanceOrder`, {orderId: orderId}, {withCredentials: true})
     .subscribe({
       next:(data: any) =>{
         if (data.success){
@@ -281,7 +282,7 @@ export class RestaurantAdminComponent implements OnInit {
 
   logout(response: any): void{
     console.log("logout attempt initiated!");
-    this.http.post('http://localhost:3000/logout', { id_token: response.credential }, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/logout`, { id_token: response.credential }, {withCredentials: true})
       .subscribe({
         next: (data: any) => {
           if(data.success){
