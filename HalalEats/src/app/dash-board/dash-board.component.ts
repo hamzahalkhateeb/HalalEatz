@@ -4,6 +4,7 @@ import { Component, Inject, PLATFORM_ID, OnInit, afterNextRender } from '@angula
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListingFormComponent } from '../listing-form/listing-form.component';
 import {io, Socket} from 'socket.io-client';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-dash-board',
@@ -66,7 +67,7 @@ export class DashBoardComponent implements OnInit {
     console.log("about to call get cx orders");
     this.getCxOrders();
 
-    /*const socket = io("http://localhost:3000", {
+    /*const socket = io(`${environment.backendURL}`, {
       withCredentials: true
     });
 
@@ -92,7 +93,7 @@ export class DashBoardComponent implements OnInit {
   }
 
   initilizeSockets(){
-    const socket = io("http://localhost:3000", {
+    const socket = io(`${environment.backendURL}`, {
       withCredentials: true
     });
 
@@ -120,7 +121,7 @@ export class DashBoardComponent implements OnInit {
 
   logout(response: any): void{
     console.log("logout attempt initiated!");
-    this.http.post('http://localhost:3000/logout', { id_token: response.credential }, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/logout`, { id_token: response.credential }, {withCredentials: true})
       .subscribe({
         next: (data: any) => {
           if(data.success){
@@ -138,7 +139,7 @@ export class DashBoardComponent implements OnInit {
 
   getCloseRestaurants(): void{
     console.log(`get close restauratns function called, it sent the following data: lat: ${this.latitude}, long: ${this.longitude} `);
-    this.http.post('http://localhost:3000/getCloseRestaurants', { long: this.longitude, lat: this.latitude }, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/getCloseRestaurants`, { long: this.longitude, lat: this.latitude }, {withCredentials: true})
     .subscribe({
       next: (data: any) => {
         if(data.success){
@@ -186,7 +187,7 @@ export class DashBoardComponent implements OnInit {
 
   getCxOrders(): void{
     console.log("inside get cx orders!");
-    this.http.post('http://localhost:3000/getcxOrders', {userId: 'variablePlaceHolder'}, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/getcxOrders`, {userId: 'variablePlaceHolder'}, {withCredentials: true})
     .subscribe({
       next: (data: any) => {
         if (data.success){

@@ -4,6 +4,8 @@ import { Component, OnInit, viewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ViewChildren, ElementRef, QueryList } from '@angular/core';
+import { environment } from '../../environments/environment';
+
 
 @Component({
   selector: 'app-restaurant-page',
@@ -65,7 +67,7 @@ export class RestaurantPageComponent implements OnInit {
   }
 
   LoadRestaurantPackage(restaurantId: any){
-    this.http.post('http://localhost:3000/LoadRestaurantAdminPackage', {Id : restaurantId, userType: 'consumer'}, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/LoadRestaurantAdminPackage`, {Id : restaurantId, userType: 'consumer'}, {withCredentials: true})
     .subscribe({
       next:(data: any)=>{
         if (data.success){
@@ -153,7 +155,7 @@ export class RestaurantPageComponent implements OnInit {
 
   logout(response: any): void{
     console.log("logout attempt initiated!");
-    this.http.post('http://localhost:3000/logout', { id_token: response.credential }, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/logout`, { id_token: response.credential }, {withCredentials: true})
       .subscribe({
         next: (data: any) => {
           if(data.success){
@@ -188,7 +190,7 @@ export class RestaurantPageComponent implements OnInit {
     console.log(totalPrice.toFixed(2));
     console.log(this.orderArray);
 
-    this.http.post(`http://localhost:3000/placeOrder`, { restaurantId: this.restaurantId, status: 'submitted, unpaid', orderArray: JSON.stringify(this.orderArray), totalPrice: totalPrice.toFixed(2)}, {withCredentials: true})
+    this.http.post(`${environment.backendURL}/placeOrder`, { restaurantId: this.restaurantId, status: 'submitted, unpaid', orderArray: JSON.stringify(this.orderArray), totalPrice: totalPrice.toFixed(2)}, {withCredentials: true})
     .subscribe({
       next:(data: any)=>{
         if (data.success && data.redirectUrl){
