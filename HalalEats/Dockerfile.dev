@@ -1,0 +1,22 @@
+FROM node:20-alpine as frontendAngular
+
+ENV NODE-ENV=development
+
+ENV PORT=4200
+
+WORKDIR /app
+
+COPY package*.json .
+
+RUN npm i
+
+COPY . .
+
+
+CMD ["npm", "run", "start:dev"]
+
+# FROM httpd:alpine3.15
+
+#WORKDIR /use/local/apache2/htdocs
+
+#COPY --from=frontendAngular /app/dist/halal-eats .
