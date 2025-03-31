@@ -8,9 +8,15 @@ WORKDIR /app
 
 COPY package*.json .
 
-RUN npm install --production
+RUN npm ci --omit=dev
 
-RUN npm install -g @angular/cli && npm install
+######these should be enough but errors are popping up because ther eis no production\
+
+#RUN npm install -g @angular/cli 
+
+#RUN npm install rollup --omit=dev
+
+# && npm install --production
 
 COPY . .
 
