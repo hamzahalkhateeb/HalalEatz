@@ -12,9 +12,9 @@ import { environment } from '../../environments/environment';
 import { GoogleAuthService } from '../google-auth.service';
 import { After } from 'v8';
 import { setTimeout } from 'timers';
-import { GoogleMapsService } from './../google-maps.service';
 
-declare var google: any;
+
+//declare var google: any;
 
 
 @Component({
@@ -41,7 +41,8 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     
     predictions: google.maps.places.AutocompletePrediction[] = [];
 
-    
+    apikey = environment.googleMaps_api_key;
+
     private autocompleteService!: google.maps.places.AutocompleteService;
     
 
@@ -108,7 +109,7 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
                 private ngZone: NgZone, 
                 private renderer: Renderer2, 
                 private googleAuthService: GoogleAuthService, 
-                private googleMapsService: GoogleMapsService) {}
+                ) {}
 
     ngOnInit(): void {
       if (isPlatformBrowser(this.platformId)){
@@ -116,12 +117,12 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
         
       }
 
-      
+      this.autocompleteService = new google.maps.places.AutocompleteService();
       
       this.googleAuthService.initilizeGoogleAuth();
       this.googleAuthService.renderGoogleBtn('googlebtn');
-      this.googleMapsService.loadGoogleMapsScript();
-      this.autocompleteService = new google.maps.places.AutocompleteService();
+      
+      
       
 
       this.credentialSubscription = this.googleAuthService
