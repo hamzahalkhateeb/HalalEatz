@@ -62,32 +62,15 @@ export class DashBoardComponent implements OnInit {
         console.log('get restaurants request not sent');
       }
 
+
+      this.getCloseRestaurants();
+      console.log("about to call get cx orders");
+      this.getCxOrders();
+
     }
-    this.getCloseRestaurants();
-    console.log("about to call get cx orders");
-    this.getCxOrders();
+    
 
-    /*const socket = io(`${environment.backendURL}`, {
-      withCredentials: true
-    });
-
-
-    // connect to backend >>>>
-    socket.on("connect", () =>{
-      socket.emit('customerConnected');
-      console.log("cx front end connected to back end");
-    });
-
-    //listen for order updates from backend <<<
-    socket.on('orderProgressed', (data) => {
-      console.log(`order progressed!`);
-
-      const order = this.cxOrders.find(order => order.id === data.orderId);
-
-      order.status = data.orderStatus;
-      
-
-    }) */
+    
 
 
   }

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, PLATFORM_ID, ViewChild, ViewChildren, ElementRef, OnDestroy, ChangeDetectorRef, Renderer2, QueryList, afterNextRender, Inject } from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
-import { CommonModule,  } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {io, Socket} from 'socket.io-client';
 import { environment } from '../../environments/environment';
 
@@ -67,7 +67,8 @@ export class RestaurantAdminComponent implements OnInit {
     private route: ActivatedRoute, 
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
-    private el: ElementRef
+    private el: ElementRef,
+    @Inject(PLATFORM_ID) private platformId: Object
     
     ) {
       console.log('constructor called');
@@ -77,13 +78,19 @@ export class RestaurantAdminComponent implements OnInit {
     }
   ngOnInit(): void {
 
-   
-    console.log('restaurant admin intilized, about to call the admin package and get orders');
+    if (isPlatformBrowser(this.platformId)){
+      console.log('restaurant admin intilized, about to call the admin package and get orders');
 
     
     
-    this.LoadRestaurantAdminPackage();
-    this.getOrders();
+      this.LoadRestaurantAdminPackage();
+      this.getOrders();
+            
+            
+    }
+
+   
+    
 
 
   }

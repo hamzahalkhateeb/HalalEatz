@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, viewChildren } from '@angular/core';
+import { Component, OnInit, viewChildren, Inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ViewChildren, ElementRef, QueryList } from '@angular/core';
@@ -52,17 +52,21 @@ export class RestaurantPageComponent implements OnInit {
     
   }> = [];
 
-  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) {}
+  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      this.restaurantId = params['restaurantId'];
-      this.distance = params['distance'];
-      
-    });
 
-
-    this.LoadRestaurantPackage(this.restaurantId);
+    if (isPlatformBrowser(this.platformId)){
+        this.route.queryParams.subscribe(params => {
+          this.restaurantId = params['restaurantId'];
+          this.distance = params['distance'];
+          
+        });
+    
+    
+        this.LoadRestaurantPackage(this.restaurantId);
+    }
+    
 
   }
 

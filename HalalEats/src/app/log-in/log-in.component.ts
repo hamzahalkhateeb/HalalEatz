@@ -1,11 +1,12 @@
 declare var google: any;
-import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy, AfterViewInit } from '@angular/core';
 import { HttpClient, } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { GoogleAuthService } from '../google-auth.service';
 import { environment } from '../../environments/environment';
+
 
 
 @Component({
@@ -21,25 +22,36 @@ import { environment } from '../../environments/environment';
 export class LogInComponent implements OnInit {
 
   private credentialSubscription!: Subscription;
+
+  //private googleInitialized: boolean = false;
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private gooogleAuthService: GoogleAuthService) {}
 
   ngOnInit(): void {
 
     if (isPlatformBrowser(this.platformId)){
       (window as any)['OpenListingForm'] = this.OpenListingForm.bind(this);
+
+
+      /*
+      if (typeof google !== 'undefined'){
+        this.initGoogleServices();
+      } else {
+        setTimeout(()=>{
+          if (typeof google !== 'undefined') {
+            this.initGoogleServices();
+          } else {
+            console.error('Google API not loaded.');
+          }
+        }, 1000);
+      } */
+
+
+
+
     }
 
-    this.gooogleAuthService.initilizeGoogleAuth();
-    this.gooogleAuthService.renderGoogleBtn('googlebtn');
-
-    this.credentialSubscription = this.gooogleAuthService
-     .getCredentialResponse()
-     .subscribe((response) => {
-      if (response) {
-        console.log('Received credentiuals in the ccomponent:', response);
-        this.sendCredentialsToBackend(response);
-      }
-     })
+    
     
 
      
@@ -52,6 +64,30 @@ export class LogInComponent implements OnInit {
     if (this.credentialSubscription){
       this.credentialSubscription.unsubscribe();
     }
+  }
+
+  ngAfterViewInit(): void{
+    this.initGoogleServices();
+  }
+
+
+  initGoogleServices(): void{
+    this.gooogleAuthService.initilizeGoogleAuth();
+    this.gooogleAuthService.renderGoogleBtn('googlebtn');
+
+    this.credentialSubscription = this.gooogleAuthService
+     .getCredentialResponse()
+     .subscribe((response) => {
+      if (response) {
+        console.log('Received credentiuals in the ccomponent:', response);
+        this.sendCredentialsToBackend(response);
+      }
+     });
+
+
+     //this.googleInitialized = true;
+
+
   }
 
 

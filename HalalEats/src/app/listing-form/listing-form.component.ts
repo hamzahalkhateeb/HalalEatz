@@ -1,3 +1,4 @@
+
 /// <reference types="@types/google.maps" />
 import { Component , OnInit, AfterViewInit, Inject, Injectable,  PLATFORM_ID, NgZone, ViewChild, ElementRef, Renderer2, QueryList, ViewChildren, OnDestroy, viewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
@@ -11,7 +12,9 @@ import { environment } from '../../environments/environment';
 import { GoogleAuthService } from '../google-auth.service';
 import { After } from 'v8';
 import { setTimeout } from 'timers';
+import { GoogleMapsService } from './../google-maps.service';
 
+declare var google: any;
 
 
 @Component({
@@ -38,7 +41,7 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     
     predictions: google.maps.places.AutocompletePrediction[] = [];
 
-    apikey = environment.googleMaps_api_key;
+    
     private autocompleteService!: google.maps.places.AutocompleteService;
     
 
@@ -99,7 +102,13 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
 
     
 
-    constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient, private router: Router, private ngZone: NgZone, private renderer: Renderer2, private googleAuthService: GoogleAuthService) {}
+    constructor(@Inject(PLATFORM_ID) private platformId: Object,
+                private http: HttpClient, 
+                private router: Router, 
+                private ngZone: NgZone, 
+                private renderer: Renderer2, 
+                private googleAuthService: GoogleAuthService, 
+                private googleMapsService: GoogleMapsService) {}
 
     ngOnInit(): void {
       if (isPlatformBrowser(this.platformId)){
@@ -107,10 +116,13 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
         
       }
 
-      this.autocompleteService = new google.maps.places.AutocompleteService();
-
+      
+      
       this.googleAuthService.initilizeGoogleAuth();
       this.googleAuthService.renderGoogleBtn('googlebtn');
+      this.googleMapsService.loadGoogleMapsScript();
+      this.autocompleteService = new google.maps.places.AutocompleteService();
+      
 
       this.credentialSubscription = this.googleAuthService
      .getCredentialResponse()
@@ -124,6 +136,8 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     }
     
     ngAfterViewInit(): void {
+
+      
 
       //fade in container 1
       const container1 = this.container1Ref.nativeElement;
@@ -235,7 +249,7 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
           this.predictions = [];
         }
       }
-    }
+    } 
 
   
     selectPrediction(prediction: google.maps.places.AutocompletePrediction): void {
@@ -243,7 +257,7 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
       
       if (placeId) {
         const service = new google.maps.places.PlacesService(document.createElement('div'));
-        service.getDetails({ placeId: placeId }, (place, status) => { 
+        service.getDetails({ placeId: placeId }, (place: google.maps.places.PlaceResult | null, status: google.maps.places.PlacesServiceStatus) => { 
           this.resInfo.location = place?.formatted_address || '';
           this.resInfo.lat = place?.geometry?.location?.lat() || null;
           this.resInfo.lon = place?.geometry?.location?.lng() || null;

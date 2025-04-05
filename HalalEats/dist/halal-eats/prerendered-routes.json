@@ -1,0 +1,10 @@
+{
+  "routes": [
+    "/dashboard",
+    "/error",
+    "/listing-form",
+    "/login",
+    "/restaurantAdmin",
+    "/succesfullPayment"
+  ]
+}
