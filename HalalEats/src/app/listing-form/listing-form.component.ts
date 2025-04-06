@@ -114,26 +114,29 @@ export class ListingFormComponent implements OnInit, AfterViewInit, OnDestroy{
     ngOnInit(): void {
       if (isPlatformBrowser(this.platformId)){
         (window as any)['handleFormSubmission'] = this.handleFormSubmission.bind(this)
+
+
+
         
+      
+
+        this.autocompleteService = new google.maps.places.AutocompleteService();
+        
+        this.googleAuthService.initilizeGoogleAuth();
+        this.googleAuthService.renderGoogleBtn('googlebtn');
+        
+        
+        
+
+        this.credentialSubscription = this.googleAuthService
+        .getCredentialResponse()
+        .subscribe((response) => {
+          if (response) {
+            console.log('Received credentiuals in the ccomponent:', response);
+            this.handleFormSubmission(response);
+          }
+        })
       }
-
-      this.autocompleteService = new google.maps.places.AutocompleteService();
-      
-      this.googleAuthService.initilizeGoogleAuth();
-      this.googleAuthService.renderGoogleBtn('googlebtn');
-      
-      
-      
-
-      this.credentialSubscription = this.googleAuthService
-     .getCredentialResponse()
-     .subscribe((response) => {
-      if (response) {
-        console.log('Received credentiuals in the ccomponent:', response);
-        this.handleFormSubmission(response);
-      }
-     })
-
     }
     
     ngAfterViewInit(): void {

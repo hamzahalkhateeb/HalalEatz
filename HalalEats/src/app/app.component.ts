@@ -10,9 +10,7 @@ import { ErrorComponent } from './error/error.component';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet,
-    NgIf, 
-    LogInComponent,
-    ErrorComponent
+    
     //other components
   ],
   templateUrl: './app.component.html',

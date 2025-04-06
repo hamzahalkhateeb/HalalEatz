@@ -32,22 +32,8 @@ export class LogInComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)){
       (window as any)['OpenListingForm'] = this.OpenListingForm.bind(this);
 
-
-      /*
-      if (typeof google !== 'undefined'){
-        this.initGoogleServices();
-      } else {
-        setTimeout(()=>{
-          if (typeof google !== 'undefined') {
-            this.initGoogleServices();
-          } else {
-            console.error('Google API not loaded.');
-          }
-        }, 1000);
-      } */
-
-
-
+      this.initGoogleServices();
+      
 
     }
 
@@ -66,9 +52,7 @@ export class LogInComponent implements OnInit {
     }
   }
 
-  ngAfterViewInit(): void{
-    this.initGoogleServices();
-  }
+  
 
 
   initGoogleServices(): void{
@@ -85,7 +69,7 @@ export class LogInComponent implements OnInit {
      });
 
 
-     //this.googleInitialized = true;
+    
 
 
   }
