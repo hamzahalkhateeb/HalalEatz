@@ -35,16 +35,17 @@ const sessionMiddleWare = session({
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-        secure: false,
+        secure: process.end.NODE_ENV === 'production', 
         httpOnly: true,
         maxAge: 1000 * 60 * 60,
-        sameSite: 'strict',
-        domain: 'localhost'
+        sameSite: 'None',
+        domain: '.halaleats.com'
     }
 });
 
 app.use(cors({
-    origin: 'http://localhost:4200',
+    origin: ['http://localhost:4200', 
+            'https://halaleats-2272d9855c59.herokuapp.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     
@@ -64,7 +65,8 @@ sessionStore.sync();
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:4200",
+        origin: ["http://localhost:4200", 
+            'https://halaleats-2272d9855c59.herokuapp.com'],
         methods: ["GET", "POST"],
         credentials: true,
         
