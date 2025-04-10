@@ -35,7 +35,7 @@ const sessionMiddleWare = session({
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-        secure: process.end.NODE_ENV === 'production', 
+        secure: true, 
         httpOnly: true,
         maxAge: 1000 * 60 * 60,
         sameSite: 'None',
