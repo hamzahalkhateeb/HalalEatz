@@ -9,7 +9,7 @@ if (process.env.JAWSDB_URL) {
         dialectOptions: {
             ssl: {
                 
-                rejectUnauthorized: false
+                rejectUnauthorized: false // Allow self-signed certificates
             }
         }
     });

@@ -38,10 +38,11 @@ const sessionMiddleWare = session({
         secure: true, 
         httpOnly: true,
         maxAge: 1000 * 60 * 60,
-        sameSite: 'None',
-        domain: '.halaleats.com'
+        sameSite: 'None'
     }
 });
+
+app.set('trust proxy', 1);
 
 app.use(cors({
     origin: ['http://localhost:4200', 
@@ -50,6 +51,8 @@ app.use(cors({
     credentials: true,
     
 }));
+
+app.options('*', cors());
 
 app.use(express.json());
 app.use(bodyParser.json());
