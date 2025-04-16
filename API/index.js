@@ -123,9 +123,43 @@ app.use(express.urlencoded({extended: true}));
 
 
 
+cloudinary.config({
+    cloud_name: process.env.cloudinary_name,
+    api_key: process.env.cloudinary_api_key,
+    api_secret: process.env.cloudinary_api_secret
+});
+
+const storage = multer.memoryStorage();
 
 
+const streamUpload = (buffer, public_id)=>{
 
+    console.log("stream upload function called!");
+    console.log("buffer received: ", buffer);
+    console.log("public id received: ", public_id);
+    console.log("cloudinary config: ", cloudinary.config());
+    return new Promise((resolve, reject) => {
+        console.log("inside stream upload function, creating stream now!");
+        const stream = cloudinary.uploader.upload_stream({public_id}, (error, result) => {
+            console.log("inside stream upload function, stream created now!");
+            if (result) {
+                console.log("result, resolving now: ", result);
+                console.log("result secure url: ", result.secure_url);
+                resolve(result);
+            } else {
+                console.error("error in stream upload function: ", error);
+
+                reject(error);
+            }
+        });
+        console.log("stream created, piping now!");
+        streamifier.createReadStream(buffer).pipe(stream);
+        console.log("stream piped!");
+    });
+}
+
+
+/*
 const storage = multer.diskStorage({
     destination: (req, file, cb) =>{
         cb(null, 'uploads/');
@@ -136,7 +170,7 @@ const storage = multer.diskStorage({
         cb(null, ogName);
         
     }
-}); 
+}); */
 
 const upload = multer({ storage: storage });
 
@@ -146,10 +180,10 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
     const sanitizedName = restaurantName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
     if(type == "main"){
-        let imgName = `${sanitizedName}_${type}_${Date.now()}${path.extname(originalname)}`;
+        let imgName = `${sanitizedName}_${type}_${Date.now()}`;
         return imgName;
     } else {
-        let imgName = `${sanitizedName}_${type}_${relItem}_${Date.now()}${path.extname(originalname)}`;
+        let imgName = `${sanitizedName}_${type}_${relItem}_${Date.now()}`;
         return imgName;
     }
     
@@ -378,10 +412,14 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
 app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, res) => {
     //Menue.destroy({ where: {} });
+
+    console.log("submit menue received!");
     
     
     try{
         //extract all the information
+
+        console.log("trying to extract menue item object from the request body");
         
         const menueItemObject = JSON.parse(req.body.menueItem);
         
@@ -389,7 +427,9 @@ app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, re
         const image = req.file;
         const userId = req.session.userId;
         
-        
+        if (!image || !image.buffer) {
+            return res.status(400).json({ success: false, message: 'Image is missing.' });
+        }
         
         const itemType = menueItemObject.type;
         
@@ -414,9 +454,20 @@ app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, re
 
         //change uploaded image name
         const itemImageName = generateImgName(restaurant.name, itemType, image.originalname, relItem);
-        
+
+        console.log("renamed image!");
+
+        const cloudinaryResult = await streamUpload(image.buffer, itemImageName);
+
+        console.log("uploaded image to cloudinary successfully!");
+
+        const cloudinaryUrl = cloudinaryResult.secure_url;
+
+        console.log("ssubmitted image successfully, here is the image url: ", cloudinaryUrl);
+
+        /*
         const oldPath = path.join(__dirname, 'uploads', image.filename);
-        const newPath = path.join('uploads', itemImageName);
+        const newPath = path.join('uploads', itemImageName); 
         
         fs.rename(oldPath, newPath, (err) => {
             if (err) {
@@ -424,12 +475,14 @@ app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, re
                 
             }
         
-        });
+        }); */
 
 
         //store image path
-        menueItemObject.imgPath = newPath;
+        menueItemObject.imgPath = cloudinaryUrl;
         const menueItemString = JSON.stringify(menueItemObject);
+
+        console.log("menue item string: ", menueItemString);
     
         let menue = await Menue.findOne({where : {restaurantId: restaurant.id}});
         const fieldMap = {
