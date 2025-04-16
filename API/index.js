@@ -20,6 +20,8 @@ const server = request.createServer(app);
 const { Server } = require("socket.io");
 const cookieParser = require('cookie-parser');
 const { Session } = require('express-session');
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
 
 
 const sessionStore = new sequelizeStore({
@@ -115,7 +117,7 @@ io.on('connect', (socket) => {
 
 
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 
 
@@ -125,24 +127,43 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
 
 
+cloudinary.config({
+    cloud_name: process.env.cloudinary_name,
+    api_key: process.env.cloudinary_api_key,
+    api_secret: process.env.cloudinary_api_secret
+});
 
 
 
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) =>{
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        
-        const ogName = file.originalname;
-        cb(null, ogName);
-        
-    }
-}); 
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 
+const streamUpload = (buffer, public_id)=>{
+
+    console.log("stream upload function called!");
+    console.log("buffer received: ", buffer);
+    console.log("public id received: ", public_id);
+    console.log("cloudinary config: ", cloudinary.config());
+    return new Promise((resolve, reject) => {
+        console.log("inside stream upload function, creating stream now!");
+        const stream = cloudinary.uploader.upload_stream({public_id}, (error, result) => {
+            console.log("inside stream upload function, stream created now!");
+            if (result) {
+                console.log("result, resolving now: ", result);
+                console.log("result secure url: ", result.secure_url);
+                resolve(result);
+            } else {
+                console.error("error in stream upload function: ", error);
+
+                reject(error);
+            }
+        });
+        console.log("stream created, piping now!");
+        streamifier.createReadStream(buffer).pipe(stream);
+        console.log("stream piped!");
+    });
+}
 
 const generateImgName = (restaurantName, type, originalname, relItem ) => {
     
@@ -167,9 +188,6 @@ app.post('/login', async (req, res) => {
     
     const {auth_token} = req.body;
 
-    
-    
-    
     try{
         const ticket = await google_client.verifyIdToken({
             idToken: auth_token,
@@ -202,9 +220,7 @@ app.post('/login', async (req, res) => {
 
             console.log("just saved a session after logging in, here is the user id associated with it: ", req.session.userId);
             console.log('session id in the log in route sessionID', req.sessionID);
-            
         
-
 
             res.status(201).json({success: true, message: "You have signed up successfully!",  redirectUrl: "/dashboard"});
         } else {
@@ -231,18 +247,6 @@ app.post('/login', async (req, res) => {
 });
 
 /////////////////////////////////////////////////////////////////////////////
-
-app.post('/getSesUserId', isAuthenticated, async (req, res) => {
-    try{
-        const userId = req.session.userId;
-
-        res.status(200).json({success: true, userId: userId, message: "successfully retreieved userId"});
-
-    } catch {
-        res.status(500).json({success: false, message: "unable to retreive user id" });
-    }
-    
-});
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -301,18 +305,10 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
     //change image name
     const newImageName = generateImgName(resInfo.name, type, uploadedImg.originalname, relItem)
     
+    const cloudinaryResult = await streamUpload(uploadedImg.buffer, newImageName);
 
-    // declaring paths and renaming the newly stored image!
-    const oldPath = path.join(__dirname, 'uploads', uploadedImg.filename);
-    const newPath = path.join('uploads', newImageName);
+    const cloudinaryUrl = cloudinaryResult.secure_url;
 
-    fs.rename(oldPath, newPath, (err) => {
-        if (err) {
-            console.error('Error renaming file:', err);
-            
-        }
-    
-    });
     
     console.log(`image renamed and saved! `);
 
@@ -351,7 +347,7 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
                 openingHours: JSON.stringify(resInfo.days), 
                 halalRating: resInfo.halalRating, 
                 userId: user.id, 
-                images: newPath,
+                images: cloudinaryUrl,
             });
             
 
@@ -381,10 +377,14 @@ app.post('/listRestaurant', upload.single('image'),  async (req, res) =>{
 
 app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, res) => {
     //Menue.destroy({ where: {} });
+
+    console.log("submit menue received!");
     
     
     try{
         //extract all the information
+
+        console.log("trying to extract menue item object from the request body");
         
         const menueItemObject = JSON.parse(req.body.menueItem);
         
@@ -392,7 +392,9 @@ app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, re
         const image = req.file;
         const userId = req.session.userId;
         
-        
+        if (!image || !image.buffer) {
+            return res.status(400).json({ success: false, message: 'Image is missing.' });
+        }
         
         const itemType = menueItemObject.type;
         
@@ -417,9 +419,20 @@ app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, re
 
         //change uploaded image name
         const itemImageName = generateImgName(restaurant.name, itemType, image.originalname, relItem);
-        
+
+        console.log("renamed image!");
+
+        const cloudinaryResult = await streamUpload(image.buffer, itemImageName);
+
+        console.log("uploaded image to cloudinary successfully!");
+
+        const cloudinaryUrl = cloudinaryResult.secure_url;
+
+        console.log("ssubmitted image successfully, here is the image url: ", cloudinaryUrl);
+
+        /*
         const oldPath = path.join(__dirname, 'uploads', image.filename);
-        const newPath = path.join('uploads', itemImageName);
+        const newPath = path.join('uploads', itemImageName); 
         
         fs.rename(oldPath, newPath, (err) => {
             if (err) {
@@ -427,12 +440,14 @@ app.post('/submitMenue', isAuthenticated, upload.single('image'), async (req, re
                 
             }
         
-        });
+        }); */
 
 
         //store image path
-        menueItemObject.imgPath = newPath;
+        menueItemObject.imgPath = cloudinaryUrl;
         const menueItemString = JSON.stringify(menueItemObject);
+
+        console.log("menue item string: ", menueItemString);
     
         let menue = await Menue.findOne({where : {restaurantId: restaurant.id}});
         const fieldMap = {
@@ -761,8 +776,8 @@ app.post('/placeOrder', isAuthenticated, async (req, res) => {
                 intent: 'CAPTURE',
                 purchase_units: purchase_units,
                 application_context: {
-                    return_url : `http://localhost:4200/succesfullPayment?orderId=${orderId}`,
-                    cancel_url : `http://localhost:4200/restaurantPage/${restaurantId}?restaurantId=${restaurantId}&${userId}=userId`,
+                    return_url : `https://halaleats-2272d9855c59.herokuapp.com/succesfullPayment?orderId=${orderId}`,
+                    cancel_url : `https://halaleats-2272d9855c59.herokuapp.com/restaurantPage/${restaurantId}?restaurantId=${restaurantId}&${userId}=userId`,
                     shipping_preference: 'NO_SHIPPING',
                     user_action: 'PAY_NOW',
                     brand_name: 'Halal Eatz'
@@ -974,42 +989,7 @@ app.post('/advanceOrder', isAuthenticated, async (req, res) =>{
 
 
 /////////////////////////////////////////////////////////////////////////////
-/* this function is found inside of place order
-async function createOrder(purchase_units, restaurantId, userId, orderId){
 
-    console.log('createOrder called!');
-    const sessionUserId = req.session.userId;
-
-    let access_token = await generateAccess_Token();
-
-    
-    console.log(`2- (create order function): access token used by the create order function: `, access_token);
-    
-    const response = await axios({
-        url: 'https://api-m.sandbox.paypal.com/v2/checkout/orders',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + access_token
-        },
-        data: JSON.stringify({
-            intent: 'CAPTURE',
-            purchase_units: purchase_units,
-            application_context: {
-                return_url : `http://localhost:4200/succesfullPayment?orderId=${orderId}`,
-                cancel_url : `http://localhost:4200/restaurantPage/${restaurantId}?restaurantId=${restaurantId}&${userId}=userId`,
-                shipping_preference: 'NO_SHIPPING',
-                user_action: 'PAY_NOW',
-                brand_name: 'Halal Eatz'
-            }
-        }) 
-    })
-    console.log("2- (inside create order function): order id: ", response.data);
-
-
-    
-    return response.data.links.find(link => link.rel === "approve").href;
-}; */
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -1101,13 +1081,6 @@ function isAuthenticated(req, res, next) {
 
 
 
-
-
-
-
-    
-
-    
 
 
 const PORT = process.env.PORT || 3000;
