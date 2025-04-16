@@ -20,6 +20,8 @@ const server = request.createServer(app);
 const { Server } = require("socket.io");
 const cookieParser = require('cookie-parser');
 const { Session } = require('express-session');
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
 
 
 const sessionStore = new sequelizeStore({
