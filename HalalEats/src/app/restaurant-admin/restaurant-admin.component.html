@@ -1,7 +1,7 @@
 <div class="mainDiv">
     <div class="topBar">
         <div class="logo">
-            <img class="logoimg" src = "http://localhost:3000/uploads/newlogo33.png" alt="Logo"/>
+            <img class="logoimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/newlogo33_zreu21.png" alt="Logo"/>
         </div>
 
         
@@ -108,50 +108,7 @@
                            </div>
 
                         </div>
-                        
-
-
-
-
-                        <!--
-                        
-                        
-                        <table class="ordersTable">
-                            <thead class="titles">
-                                <tr class="tableRow">
-                                    <th class="tableHeading">Order ID</th>
-                                    <th class="tableHeading">Items Ordered</th>
-                                    
-                                    <th class="tableHeading">Order Status</th>
-                                    <th class="tableHeading">Time Ordered</th>
-                                    <th class="tableHeading">Last Modified</th>
-                                    <th class="tableHeading">Next Stage</th>
-                                </tr>
-                            </thead>
-
-                            <tbody class="tableContent">
-                                <tr class="tablePart" *ngFor="let order of ordersRetrieved">
-                                    <td class="tableSPart">{{order.id}}</td>
-                                    <td  class="tableSPart">
-                                        <ul>
-                                            <li *ngFor="let item of order.items">{{item.name}}  X{{item.quantity}}</li>
-                                        </ul> 
-                                    </td>
-                                    
-                                    <td class="tableSPart">{{order.status}}</td>
-                                    <td class="tableSPart">{{order.createdAt | date:' MM/dd,  h:mm a'}}</td>
-                                    <td class="tableSPart">{{order.updatedAt | date:' MM/dd,  h:mm a'}}</td>
-                                    <td class="tableSPart"><div class=" advancebtn" (click)="advanceOrder(order.id)">Process <i class="fas fa-arrow-right"></i> </div></td>
-                                        
-                                    
-                                </tr>
-                            </tbody>
-
-                        </table>
-
-                        -->
-
-                        
+                                                
                     </div>
                 </div>
     
@@ -178,7 +135,7 @@
                                 <div class="imgandprice">
 
                                     <div class="image itemImageDiv">
-                                        <img class="itemImage" [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
+                                        <img class="itemImage" [src]="meal.imgPath" alt="Description of image"/>
                                     </div>
                                     <div class="Mprice itemPrice">${{meal.price}}.00</div>
 
@@ -196,10 +153,10 @@
                                     
                                     <div class="checks">
                                         
-                                        <div class="Mvegan check itemVegan" *ngIf="meal.vegan"><img class="iconimg" src = "http://localhost:3000/uploads/vegan.png" alt="Logo"/></div>
-                                        <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian"><img class="iconimg" src = "http://localhost:3000/uploads/vegetarian.png" alt="Logo"/></div>
-                                        <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree"><img class="iconimg" src = "http://localhost:3000/uploads/lactose.png" alt="Logo"/></div>
-                                        <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree"><img class="iconimg" src = "http://localhost:3000/uploads/gluten.png" alt="Logo"/></div>
+                                        <div class="Mvegan check itemVegan" *ngIf="meal.vegan"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/vegan_rqu3az.png" alt="Logo"/></div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto//vegetarian_kcboot.png" alt="Logo"/></div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/lactose_erk6zo.png" alt="Logo"/></div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/gluten_iytb6a.png" alt="Logo"/></div>
                                     </div>
                                     
                                     
@@ -219,7 +176,7 @@
 
                                 <div class="imgandprice">
                                     <div class="image itemImageDiv">
-                                        <img class="itemImage" [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
+                                        <img class="itemImage" [src]="drink.imgPath" alt="Description of image"/>
                                     </div>
                                     <div class="Mprice itemPrice">${{drink.price}}.00</div>
 
@@ -236,11 +193,11 @@
                                     
                                     <div class="checks">
                                         
-                                        <div class="Mvegan check itemVegan" *ngIf="drink.vegan"><img class="iconimg" src = "http://localhost:3000/uploads/vegan.png" alt="Logo"/></div>
-                                        <div class="Mvegetarian check itemVegetarian" *ngIf="drink.vegetarian"><img class="iconimg" src = "http://localhost:3000/uploads/vegetarian.png" alt="Logo"/> </div>
-                                        <div class="Mlactosefree check itemLactose" *ngIf="drink.lactoseFree"> <img class="iconimg" src = "http://localhost:3000/uploads/lactose.png" alt="Logo"/></div>
-                                        <div class="Mglutenfree check itemGluten" *ngIf="drink.glutenFree"><img class="iconimg" src = "http://localhost:3000/uploads/gluten.png" alt="Logo"/> </div>
-                                    
+                                        <div class="Mvegan check itemVegan" *ngIf="drink.vegan"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/vegan_rqu3az.png" alt="Logo"/></div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="drink.vegetarian"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto//vegetarian_kcboot.png" alt="Logo"/> </div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="drink.lactoseFree"> <img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/lactose_erk6zo.png" alt="Logo"/></div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="drink.glutenFree"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/gluten_iytb6a.png" alt="Logo"/> </div>
+
                                     </div>
                                     
                                     
@@ -262,7 +219,7 @@
 
                                     <div class="imgandprice">
                                         <div class="image itemImageDiv">
-                                            <img class="itemImage" [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
+                                            <img class="itemImage" [src]="desert.imgPath" alt="Description of image"/>
                                         </div>
                                         <div class="Mprice itemPrice">${{desert.price}}.00</div>
 
@@ -280,10 +237,11 @@
                                         
                                         <div class="checks">
                                             
-                                            <div class="Mvegan check itemVegan" *ngIf="desert.vegan"><img class="iconimg" src = "http://localhost:3000/uploads/vegan.png" alt="Logo"/> </div>
-                                            <div class="Mvegetarian check itemVegetarian" *ngIf="desert.vegetarian"><img class="iconimg" src = "http://localhost:3000/uploads/vegetarian.png" alt="Logo"/> </div>
-                                            <div class="Mlactosefree check itemLactose" *ngIf="desert.lactoseFree"><img class="iconimg" src = "http://localhost:3000/uploads/lactose.png" alt="Logo"/></div>
-                                            <div class="Mglutenfree check itemGluten" *ngIf="desert.glutenFree"><img class="iconimg" src = "http://localhost:3000/uploads/gluten.png" alt="Logo"/></div>
+                                            <div class="Mvegan check itemVegan" *ngIf="desert.vegan"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/vegan_rqu3az.png" alt="Logo"/> </div>
+                                            <div class="Mvegetarian check itemVegetarian" *ngIf="desert.vegetarian"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto//vegetarian_kcboot.png" alt="Logo"/> </div>
+                                            <div class="Mlactosefree check itemLactose" *ngIf="desert.lactoseFree"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/lactose_erk6zo.png" alt="Logo"/></div>
+                                            <div class="Mglutenfree check itemGluten" *ngIf="desert.glutenFree"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/gluten_iytb6a.png" alt="Logo"/></div>
+
 
                                         </div>
                                         
@@ -416,8 +374,3 @@
     
 </div>
 
-<!--
-
-after long break, coming back!
-
--->

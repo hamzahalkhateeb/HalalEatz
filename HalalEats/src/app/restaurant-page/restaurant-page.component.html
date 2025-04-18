@@ -1,7 +1,7 @@
 <div class="mainDiv">
     <div class="topBar">
         <div class="logo">
-             <img class="logoimg" src = "http://localhost:3000/uploads/newlogo33.png" alt="Logo"/>   
+             <img class="logoimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/newlogo33_zreu21.png" alt="Logo"/>   
         </div>
 
 
@@ -50,7 +50,7 @@
 
     <div class="mainContent">
         <div class="coverPhoto">
-            <img class="coverImg" [src] = " 'http://localhost:3000/' + restaurant.images"  alt="Cover Image"/>
+            <img class="coverImg" [src] = "restaurant.images"  alt="Cover Image"/>
         </div>
         <div class="resHeaders">
             <div class="resName">
@@ -97,7 +97,7 @@
                                 <div class="imgandprice">
 
                                     <div class="image itemImageDiv">
-                                        <img class="itemImage" [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
+                                        <img class="itemImage" [src]=" meal.imgPath" alt="Description of image"/>
                                     </div>
                                     <div class="Mprice itemPrice">${{meal.price}}.00</div>
 
@@ -117,10 +117,10 @@
                                     
                                     <div class="checks">
                                         
-                                        <div class="Mvegan check itemVegan" *ngIf="meal.vegan"><img class="iconimg" src = "http://localhost:3000/uploads/vegan.png" alt="Logo"/></div>
-                                        <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian"><img class="iconimg" src = "http://localhost:3000/uploads/vegetarian.png" alt="Logo"/></div>
-                                        <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree"><img class="iconimg" src = "http://localhost:3000/uploads/lactose.png" alt="Logo"/></div>
-                                        <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree"><img class="iconimg" src = "http://localhost:3000/uploads/gluten.png" alt="Logo"/></div>
+                                        <div class="Mvegan check itemVegan" *ngIf="meal.vegan"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/vegan_rqu3az.png" alt="Logo"/></div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="meal.vegetarian"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto//vegetarian_kcboot.png" alt="Logo"/></div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="meal.lactoseFree"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/lactose_erk6zo.png" alt="Logo"/></div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="meal.glutenFree"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/gluten_iytb6a.png" alt="Logo"/></div>
                                     </div>
                                     
                                     
@@ -136,7 +136,7 @@
 
                                 <div class="imgandprice">
                                     <div class="image itemImageDiv">
-                                        <img class="itemImage" [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
+                                        <img class="itemImage" [src]="drink.imgPath" alt="Description of image"/>
                                     </div>
                                     <div class="Mprice itemPrice">${{drink.price}}.00</div>
                                     <div class="addToCartBtn" (click)="addToCart(drink.name, drink.description, drink.price)">add to cart</div>
@@ -152,10 +152,11 @@
                                     
                                     <div class="checks">
                                         
-                                        <div class="Mvegan check itemVegan" *ngIf="drink.vegan"><img class="iconimg" src = "http://localhost:3000/uploads/vegan.png" alt="Logo"/></div>
-                                        <div class="Mvegetarian check itemVegetarian" *ngIf="drink.vegetarian"><img class="iconimg" src = "http://localhost:3000/uploads/vegetarian.png" alt="Logo"/> </div>
-                                        <div class="Mlactosefree check itemLactose" *ngIf="drink.lactoseFree"> <img class="iconimg" src = "http://localhost:3000/uploads/lactose.png" alt="Logo"/></div>
-                                        <div class="Mglutenfree check itemGluten" *ngIf="drink.glutenFree"><img class="iconimg" src = "http://localhost:3000/uploads/gluten.png" alt="Logo"/> </div>
+                                        <div class="Mvegan check itemVegan" *ngIf="drink.vegan"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/vegan_rqu3az.png" alt="Logo"/></div>
+                                        <div class="Mvegetarian check itemVegetarian" *ngIf="drink.vegetarian"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto//vegetarian_kcboot.png" alt="Logo"/> </div>
+                                        <div class="Mlactosefree check itemLactose" *ngIf="drink.lactoseFree"> <img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/lactose_erk6zo.png" alt="Logo"/></div>
+                                        <div class="Mglutenfree check itemGluten" *ngIf="drink.glutenFree"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/gluten_iytb6a.png" alt="Logo"/> </div>
+
                                     
                                     </div>
                                     
@@ -175,7 +176,7 @@
 
                                     <div class="imgandprice">
                                         <div class="image itemImageDiv">
-                                            <img class="itemImage" [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
+                                            <img class="itemImage" [src]="desert.imgPath" alt="Description of image"/>
                                         </div>
                                         <div class="Mprice itemPrice">${{desert.price}}.00</div>
                                         <div class="addToCartBtn" (click)="addToCart(desert.name, desert.description, desert.price)">add to cart</div>
@@ -191,10 +192,10 @@
                                         
                                         <div class="checks">
                                             
-                                            <div class="Mvegan check itemVegan" *ngIf="desert.vegan"><img class="iconimg" src = "http://localhost:3000/uploads/vegan.png" alt="Logo"/> </div>
-                                            <div class="Mvegetarian check itemVegetarian" *ngIf="desert.vegetarian"><img class="iconimg" src = "http://localhost:3000/uploads/vegetarian.png" alt="Logo"/> </div>
-                                            <div class="Mlactosefree check itemLactose" *ngIf="desert.lactoseFree"><img class="iconimg" src = "http://localhost:3000/uploads/lactose.png" alt="Logo"/></div>
-                                            <div class="Mglutenfree check itemGluten" *ngIf="desert.glutenFree"><img class="iconimg" src = "http://localhost:3000/uploads/gluten.png" alt="Logo"/></div>
+                                            <div class="Mvegan check itemVegan" *ngIf="desert.vegan"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/vegan_rqu3az.png" alt="Logo"/> </div>
+                                            <div class="Mvegetarian check itemVegetarian" *ngIf="desert.vegetarian"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto//vegetarian_kcboot.png" alt="Logo"/> </div>
+                                            <div class="Mlactosefree check itemLactose" *ngIf="desert.lactoseFree"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/lactose_erk6zo.png" alt="Logo"/></div>
+                                            <div class="Mglutenfree check itemGluten" *ngIf="desert.glutenFree"><img class="iconimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/gluten_iytb6a.png" alt="Logo"/></div>
 
                                         </div>
                                         
@@ -216,114 +217,3 @@
 
 </div>
 
-
-<!--
-
-
-
-<p>restaurant-page works! id is {{ restaurantId }}</p>
-
-
-
-<div class="menue">
-    <div class="topbar"> 
-        <div class="meals"></div>
-        <div class="drinks"></div>
-        <div class="deserts"></div>
-        <div class="cart">
-            <div class="divItems" *ngFor="let item of orderArray">
-                <h6 class="itemName">{{item.name}}</h6>
-                <h6 class="itemPrice">{{item.unit_amount.value}}</h6>
-                <div class="quantity">
-                    <button class="dltBtn" (click)="dlt( item.name, item.description, item.unit_amount.value)">-</button>
-                    <h6 class="itemQuantity">{{item.quantity}}</h6>
-                    <button (click)="addToCart(item.name, item.description, item.unit_amount.value)" class="addToCartBtn">+</button>
-                </div>
-                
-
-            </div>
-            <div class="totalPrice" *ngIf="getTotal() > 0">
-               <h4 class="price">${{ getTotal() }}</h4>
-            </div>
-            <div class="checkout" *ngIf="getTotal() > 0">
-                <button class="checkoutBtn" (click)="checkout( getTotal() )">Checkout</button>
-            </div>
-        </div>
-
-    </div>
-    <div class="content">
-        <div class="mealsContainer" *ngIf="mealsArray">
-            <div class="mealsContent" *ngFor="let meal of mealsArray">
-                <div class="data">
-                    <div class="Mname">{{meal.name}}</div>
-                    <div class="Mdescription">{{meal.description}}</div>
-                    <div class="Mprice">${{meal.price}}</div>
-                    <div class="Mhalal" *ngIf="meal.halal"> halal _/</div>
-                    <div class="Mvegan" *ngIf="meal.vegan"> vegan _/</div>
-                    <div class="Mvegetarian" *ngIf="meal.vegetarian"> vegetarian _/</div>
-                    <div class="Mlactosefree" *ngIf="meal.lactoseFree">lactose free _/</div>
-                    <div class="Mglutenfree" *ngIf="meal.glutenFree"> gluten free _/</div>
-                </div>
-                <div class="image">
-                    <img [src]=" 'http://localhost:3000/' + meal.imgPath" alt="Description of image"/>
-                </div>
-                <div class="addToCart">
-                    <button (click)="addToCart(meal.name, meal.description, meal.price)" class="addToCartBtn">add to cart</button>
-                </div>
-
-            </div>
-        </div>
-            
-        <div class="drinksContent" *ngIf="drinksArray">
-
-            <div class="drinksContent" *ngFor="let drink of drinksArray">
-                <div class="data">
-                    <div class="Mname">{{drink.name}}</div>
-                    <div class="Mdescription">{{drink.description}}</div>
-                    <div class="Mprice">${{drink.price}}</div>
-                    <div class="Mhalal" *ngIf="drink.halal"> halal _/</div>
-                    <div class="Mvegan" *ngIf="drink.vegan"> vegan _/</div>
-                    <div class="Mvegetarian" *ngIf="drink.vegetarian"> vegetarian _/</div>
-                    <div class="Mlactosefree" *ngIf="drink.lactoseFree">lactose free _/</div>
-                    <div class="Mglutenfree" *ngIf="drink.glutenFree"> gluten free _/</div>
-                </div>
-                <div class="image">
-                    <img [src]=" 'http://localhost:3000/' + drink.imgPath" alt="Description of image"/>
-                </div>
-                <div class="addToCart">
-                    <button (click)="addToCart(drink.name, drink.description, drink.price)" class="addToCartBtn">add to cart</button>
-                </div>
-
-            </div>
-
-
-        </div>
-        <div class="desertsContent" *ngIf="desertsArray">
-
-
-            <div class="desertsContent" *ngFor="let desert of desertsArray">
-                <div class="data">
-                    <div class="Mname">{{desert.name}}</div>
-                    <div class="Mdescription">{{desert.description}}</div>
-                    <div class="Mprice">${{desert.price}}</div>
-                    <div class="Mhalal" *ngIf="desert.halal"> halal _/</div>
-                    <div class="Mvegan" *ngIf="desert.vegan"> vegan _/</div>
-                    <div class="Mvegetarian" *ngIf="desert.vegetarian"> vegetarian _/</div>
-                    <div class="Mlactosefree" *ngIf="desert.lactoseFree">lactose free _/</div>
-                    <div class="Mglutenfree" *ngIf="desert.glutenFree"> gluten free _/</div>
-                </div>
-                <div class="image">
-                    <img [src]=" 'http://localhost:3000/' + desert.imgPath" alt="Description of image"/>
-                </div>
-                <div class="addToCart">
-                    <button (click)="addToCart(desert.name, desert.description, desert.price)" class="addToCartBtn">add to cart</button>
-                </div>
-
-            </div>
-
-        </div>
-        
-    </div>
-    
-    
-</div> -->

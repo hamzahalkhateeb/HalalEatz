@@ -2,7 +2,7 @@
 
     <div class="topBar">
         <div class="logo">
-            <img class="logoimg" src = "http://localhost:3000/uploads/newlogo33.png" alt="Logo"/>
+            <img class="logoimg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/newlogo33_zreu21.png" alt="Logo"/>
     
         </div>
         
@@ -15,7 +15,7 @@
 
     <div class="mainContent">
         <div class="coverPhoto">
-            <img class="coverImg" src = "http://localhost:3000/uploads/CoverImg.jpg" alt="Cover Image"/>
+            <img class="coverImg" src = "https://res.cloudinary.com/ddskaubab/image/upload/f_auto,q_auto/CoverImg_ltja3b.png" alt="Cover Image"/>
         </div>
 
          <div class="crammedDiv">
@@ -23,7 +23,7 @@
 
                 <div class="restaurant" *ngFor="let restaurant of restaurantPackage">
                     <div class="coverImgDiv">
-                        <img class="restaurantCoverImg" [src]=" 'http://localhost:3000/' + restaurant.images" alt="Description of image"/>
+                        <img class="restaurantCoverImg" [src]="restaurant.images" alt="Description of image"/>
                     </div>
 
                     <div class="restaurantDetails">

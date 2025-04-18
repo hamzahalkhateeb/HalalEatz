@@ -170,10 +170,10 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
     const sanitizedName = restaurantName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
     if(type == "main"){
-        let imgName = `${sanitizedName}_${type}_${Date.now()}${path.extname(originalname)}`;
+        let imgName = `${sanitizedName}_${type}_${Date.now()}`;
         return imgName;
     } else {
-        let imgName = `${sanitizedName}_${type}_${relItem}_${Date.now()}${path.extname(originalname)}`;
+        let imgName = `${sanitizedName}_${type}_${relItem}_${Date.now()}`;
         return imgName;
     }
     
