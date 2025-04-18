@@ -20,6 +20,7 @@
     "@agm/core": "^3.0.0-beta.0",
     "@paypal/paypal-server-sdk": "^0.6.1",
     "axios": "^1.7.9",
+    "cloudinary": "^2.6.0",
     "connect-redis": "^8.0.1",
     "connect-session-sequelize": "^7.1.7",
     "cookie-parser": "^1.4.7",
