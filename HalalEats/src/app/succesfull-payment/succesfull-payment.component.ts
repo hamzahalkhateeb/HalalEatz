@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 
 
@@ -41,7 +42,7 @@ export class SuccesfullPaymentComponent implements OnInit{
         console.log(`paymentId aka token: ${this.token}`);
         console.log(`orderId: ${this.orderId}`);
         console.log('about to send capture payment request');
-        this.http.post(`http://localhost:3000/capturePayment`, {token: this.token, orderId: this.orderId})
+        this.http.post(`${environment.backendURL}/capturePayment`, {token: this.token, orderId: this.orderId})
         .subscribe({
           next:(data: any)=>{
             if (data.success){
