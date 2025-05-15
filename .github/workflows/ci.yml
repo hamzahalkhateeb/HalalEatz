@@ -1,0 +1,59 @@
+name: CI/CD Pipeline
+
+#trigger this workflow on push to main branch
+on:
+  push:
+    branches: [main]
+
+# first  major task is to build and push the angular image
+jobs:
+  build-angular:
+    name: Build and Push Angular Image
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Angular image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./HalalEats
+          
+          push: true
+          tags: hamzahalkhateeb/angular-app:latest
+  
+  build-express:
+    name: Build and Push Express Image
+    runs-on: ubuntu-latest
+    needs: build-angular # this job depends on the completion of the build-angular job
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Express image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./API
+          push: true
+          tags: hamzahalkhateeb/express-app:latest
