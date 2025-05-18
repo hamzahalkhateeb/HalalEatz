@@ -28,7 +28,8 @@ RUN rm -rf ./*
 COPY --from=builder /app/dist/halal-eats/browser /usr/share/nginx/html
 
 # Copy our nginx config
-COPY nginx.conf /etc/nginx/templates/default.conf.template
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 
 
 
@@ -42,7 +43,7 @@ RUN chmod -R 755 /usr/share/nginx/html
 
 
 
-EXPOSE 8080
+EXPOSE 80
 
 
 
