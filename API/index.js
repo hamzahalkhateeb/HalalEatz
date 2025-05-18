@@ -37,10 +37,11 @@ const sessionMiddleWare = session({
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-        secure: true, 
+        secure: false, 
         httpOnly: true,
         maxAge: 1000 * 60 * 60,
-        sameSite: 'None'
+        sameSite: 'strict',
+        domain: 'localhost'
     }
 });
 
@@ -197,7 +198,9 @@ const generateImgName = (restaurantName, type, originalname, relItem ) => {
 const google_client = new OAuth2Client(process.env.google_api_auth_key);
 
 app.post('/login', async (req, res) => {
-
+    //Menue.destroy({ where: {} });
+    //Restaurant.destroy({ where: {} });
+    //User.destroy({ where: {} });
     // User.destroy({ where: {id: 72} });
     
     const {auth_token} = req.body;
@@ -790,8 +793,8 @@ app.post('/placeOrder', isAuthenticated, async (req, res) => {
                 intent: 'CAPTURE',
                 purchase_units: purchase_units,
                 application_context: {
-                    return_url : `https://halaleats-2272d9855c59.herokuapp.com/succesfullPayment?orderId=${orderId}`,
-                    cancel_url : `https://halaleats-2272d9855c59.herokuapp.com/restaurantPage/${restaurantId}?restaurantId=${restaurantId}&${userId}=userId`,
+                    return_url : `http:localhost:4200/succesfullPayment?orderId=${orderId}`,
+                    cancel_url : `http:localhost:4200/restaurantPage/${restaurantId}?restaurantId=${restaurantId}&${userId}=userId`,
                     shipping_preference: 'NO_SHIPPING',
                     user_action: 'PAY_NOW',
                     brand_name: 'Halal Eatz'
