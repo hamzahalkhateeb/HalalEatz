@@ -12,7 +12,7 @@
     "docker-build:dev": "docker build -t frontend-angular:dev -f Dockerfile.dev .",
     "docker-run:dev": "docker run -it -p 4200:4200 --name frontend-Angular-dev frontend-angular:dev",
     "docker-build:prod": "docker build -t registry.heroku.com/halaleats/web:latest -f Dockerfile --build-arg NODE_ENV=production .",
-    "docker-run:prod": "docker run -it -p 4200:80 --name registry.heroku.com/halaleats/web:latest"
+    "docker-run:prod": "docker run -it -p 4200:4200 --name registry.heroku.com/halaleats/web:latest"
   },
   "private": true,
   "dependencies": {
