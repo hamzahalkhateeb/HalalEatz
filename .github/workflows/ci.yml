@@ -16,6 +16,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+
+      - name: Generate Angular environment.ts
+        run: |
+          mkdir -p ./HalalEats/src/environments
+          echo "export const environment = {" > ./HalalEats/src/environments/environment.ts
+          echo "  production: false," >> ./HalalEats/src/environments/environment.ts
+          echo " googleMaps_api_key: '${{ secrets.googleMaps_api_key }}'," >> ./HalalEats/src/environments/environment.ts
+          echo " google_Oauth2_key: '${{ secrets.google_Oauth2_key }}'," >> ./HalalEats/src/environments/environment.ts
+          echo " backendURL: '${{ secrets.backendURL }}'," >> ./HalalEats/src/environments/environment.ts
+          echo " base_image_url: '${{ secrets.base_image_url }}'," >> ./HalalEats/src/environments/environment.ts
+          echo "}" >> ./HalalEats/src/environments/environment.ts
+
+
       - name: set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -41,6 +54,25 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Generate Express .env file
+        run: |
+          echo "google_api_auth_key=${{ secrets.google_api_auth_key }}" >> ./API/.env
+          echo "session_secret=${{ secrets.session_secret }}" >> ./API/.env
+          echo "paypal_oauth_ClientId=${{ secrets.paypal_oauth_ClientId }}" >> ./API/.env
+          echo "paypal_oauth_ClientSecret=${{ secrets.paypal_oauth_ClientSecret }}" >> ./API/.env
+          echo "paypal_accessToken_auth_username=${{ secrets.paypal_accessToken_auth_username }}" >> ./API/.env
+          echo "paypal_accessToken_auth_password=${{ secrets.paypal_accessToken_auth_password }}" >> ./API/.env
+          echo "db_name=${{ secrets.db_name }}" >> ./API/.env
+          echo "db_user=${{ secrets.db_user }}" >> ./API/.env
+          echo "db_password=${{ secrets.db_password }}" >> ./API/.env
+          echo "db_host=${{ secrets.db_host }}" >> ./API/.env
+          echo "db_dialect=${{ secrets.db_dialect }}" >> ./API/.env
+          echo "PORT=${{ secrets.PORT }}" >> ./API/.env
+          echo "cloudinary_name=${{ secrets.cloudinary_name }}" >> ./API/.env
+          echo "cloudinary_api_key=${{ secrets.cloudinary_api_key }}" >> ./API/.env
+          echo "cloudinary_api_secret=${{ secrets.cloudinary_api_secret }}" >> ./API/.env
+          
 
       - name: set up Docker Buildx
         uses: docker/setup-buildx-action@v3
