@@ -137,6 +137,20 @@ cloudinary.config({
 
 const storage = multer.memoryStorage();
 
+
+/*
+const storage = multer.diskStorage({
+    destination: (req, file, cb) =>{
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        
+        const ogName = file.originalname;
+        cb(null, ogName);
+        
+    }
+}); */
+
 const upload = multer({ storage: storage });
 
 const streamUpload = (buffer, public_id)=>{
