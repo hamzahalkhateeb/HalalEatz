@@ -150,7 +150,7 @@ const storage = multer.diskStorage({
         cb(null, ogName);
         
     }
-}); s*/
+}); */
 
 const upload = multer({ storage: storage });
 
