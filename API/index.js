@@ -48,8 +48,8 @@ const sessionMiddleWare = session({
 app.set('trust proxy', 1);
 
 app.use(cors({
-    origin: ['http://localhost:4200', 
-            'https://halaleats-2272d9855c59.herokuapp.com'],
+    origin:  '*' /*['http://localhost:4200', 
+            'https://halaleats-2272d9855c59.herokuapp.com']*/,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     
